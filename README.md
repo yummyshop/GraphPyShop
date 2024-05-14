@@ -42,15 +42,17 @@ asyncio.run(fetch_products())
 # Development setup
 
 - Rename .env.example to .env and fill in the values
-- Currently also need to update the shopify store url in pyproject.toml
+- Update remote_schema_url in pyproject.toml
 
 Modify and the required graphql queries under `graphpyshop/queries`
 Run `ariadne-codegen` to generate the corresponding client
 
 # Roadmap
 
-## Organize and improve code
+## Developer Experience
 
+- **Easily extend and write new queries if you use the library alone, integrated into your project without repackaging**
+- Support codegen from inline graphql queries
 - Move utility queries separately from user queries
 - Add basic tests
 - Make jsonl reader handle nested connections
@@ -61,6 +63,7 @@ Run `ariadne-codegen` to generate the corresponding client
 - Improve typing in the base client
 - Get rid of ariadne-codegen dependency on the generated client
 - Update variable injection to be more robust (ie AST based)
+- Pass on docs from schema
 
 ## Documentation
 
@@ -82,8 +85,7 @@ Run `ariadne-codegen` to generate the corresponding client
 - Make rate limit read max values and restore rate etc from responses
 - Implement bulk mutations
 - Improve checks for which queries are bulk query compatible and avoid generating bulk query versions and issue warnings for those that aren't
-- Support multiple api versions
-- Support customer and storefront APIs in addition to admin
+- Support multiple Shopify endpoints with api versions & Customer & StoreFront APIs in same codebase
 - Support & test multiple graphql queries
 - Add the support to receive create, update, delete events over webhooks (ie just some fastapi instance, that can then easily be added to Modal as well)
 - Auto handle defaults for input variables, ie first could be filled up to be 250 which is the shopify max
@@ -96,3 +98,22 @@ Run `ariadne-codegen` to generate the corresponding client
 - Use a single more performant json library like orjson or try to do it all via pydantic's faster built in parser
 - Queue for bulk jobs
 - Add benchmarks for deserializing JSONL and other common tasks
+
+# Contributing
+
+We welcome contributions from the community to help make this project better. Whether it's fixing bugs, adding new features, improving documentation, or any other form of contribution, your help is appreciated.
+
+## How to Contribute
+
+1. Fork the repository.
+2. Create a new branch for your feature or bugfix.
+3. Make your changes.
+4. Submit a pull request with a clear description of your changes.
+
+## Join the Community
+
+Feel free to join our discussions and share your ideas. You can reach out to us via:
+
+- [GitHub Issues](https://github.com/yummyshop/GraphPyShop/issues)
+
+Together, we can build a robust and up-to-date Python Shopify client. Thank you for your support!

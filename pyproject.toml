@@ -1,22 +1,23 @@
 [build-system]
-requires = ["setuptools", "wheel"]
+requires = ["setuptools>=64", "setuptools_scm>=8", "wheel", "python-dotenv", "ariadne-codegen"]
 build-backend = "setuptools.build_meta"
-
 
 [project]
 name = "GraphPyShop"
-version = "0.1.0"
+dynamic = ["version"]
 authors = [{ name = "Martin Salo", email = "martin@yummy.eu" }]
 readme = "README.md"
 description = "Shopify client for Python using automatic code generation, so it's always up to date"
-dependencies = ["httpx","pydantic"]
+dependencies = ["httpx","pydantic","ariadne-codegen"]
 
-[project.optional-dependencies]
-dev = ["ariadne-codegen","python-dotenv"]
+[project.urls]
+Home = "https://github.com/sirrobin/GraphPyShop"
+
+[project.scripts]
+generate = "graphpyshop:generate"
 
 [tool.ariadne-codegen]
 queries_path = "./graphpyshop/queries"
-#remote_schema_url = "https://$SHOPIFY_STORE.myshopify.com/admin/api/$SHOPIFY_VERSION/graphql.json"
 remote_schema_url = "https://clean-kitchen-meal-kits.myshopify.com/admin/api/unstable/graphql.json"
 remote_schema_headers = { "X-Shopify-Access-Token" = "$SHOPIFY_ACCESS_TOKEN" }
 remote_schema_verify_ssl = false
@@ -36,5 +37,5 @@ minversion = "8.0"
 addopts = "--strict-markers"
 testpaths = ["tests"]
 
-[tool.setuptools]
-packages = ["graphpyshop"]
+[tool.setuptools.packages.find]
+where = ["graphpyshop"]
