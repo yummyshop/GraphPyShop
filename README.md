@@ -56,3 +56,4 @@ Run `ariadne-codegen` to generate the code
 - Allow webhook notifications for checking job completion
 - Store average requested query cost per each query and variable combinations and use those instead of the 1k max cost
 - Use a single more performant json library like orjson or try to do it all via pydantic's faster built in parser
+- Queue for bulk jobs
