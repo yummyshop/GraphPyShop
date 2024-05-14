@@ -87,6 +87,7 @@ Run `ariadne-codegen` to generate the corresponding client
 - Support & test multiple graphql queries
 - Add the support to receive create, update, delete events over webhooks (ie just some fastapi instance, that can then easily be added to Modal as well)
 - Auto handle defaults for input variables, ie first could be filled up to be 250 which is the shopify max
+- Use TQDM or allow generic progress bar implementation for tracking progress
 
 ## Performance
 
