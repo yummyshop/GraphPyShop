@@ -14,7 +14,7 @@ dependencies = ["httpx","pydantic","ariadne-codegen"]
 Home = "https://github.com/sirrobin/GraphPyShop"
 
 [project.scripts]
-generate = "graphpyshop:generate"
+generate = "graphpyshop:main"
 
 [tool.ariadne-codegen]
 queries_path = "./graphpyshop/queries"

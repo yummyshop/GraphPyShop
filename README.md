@@ -41,11 +41,12 @@ asyncio.run(fetch_products())
 
 # Development setup
 
-- Rename .env.example to .env and fill in the values
+- Make sure variables in .env.example are exported in your shell
 - Update remote_schema_url in pyproject.toml
 
 Modify and the required graphql queries under `graphpyshop/queries`
-Run `ariadne-codegen` to generate the corresponding client
+Run `python -m graphpyshop generate` to generate the code for the client
+Run `python -m build` to build the client
 
 # Roadmap
 
