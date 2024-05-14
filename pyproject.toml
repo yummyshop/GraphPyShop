@@ -8,7 +8,7 @@ dynamic = ["version"]
 authors = [{ name = "Martin Salo", email = "martin@yummy.eu" }]
 readme = "README.md"
 description = "Shopify client for Python using automatic code generation, so it's always up to date"
-dependencies = ["httpx","pydantic","ariadne-codegen", "python-dotenv"]
+dependencies = ["httpx","pydantic","ariadne-codegen", "python-dotenv", "graphql-core"]
 
 [project.urls]
 Home = "https://github.com/sirrobin/GraphPyShop"
