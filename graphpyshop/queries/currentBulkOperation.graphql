@@ -1,0 +1,16 @@
+query CurrentBulkOperation($type: BulkOperationType = QUERY) {
+  currentBulkOperation(type: $type) {
+    id
+    type
+    status
+    completedAt
+    createdAt
+    errorCode
+    fileSize
+    objectCount
+    partialDataUrl
+    query
+    rootObjectCount
+    url
+  }
+}

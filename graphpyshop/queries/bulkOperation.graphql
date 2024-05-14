@@ -1,0 +1,19 @@
+query bulkOperation($id: ID!) {
+  node(id: $id) {
+    __typename
+    ... on BulkOperation {
+      id
+      status
+      errorCode
+      createdAt
+      completedAt
+      objectCount
+      rootObjectCount
+      query
+      url
+      partialDataUrl
+      fileSize
+      type
+    }
+  }
+}

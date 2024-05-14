@@ -1,0 +1,47 @@
+query collections($first: Int!, $query: String!) {
+  collections(first: $first, query: $query) {
+    edges {
+      node {
+        id
+        description
+        availablePublicationsCount {
+          count
+          precision
+        }
+        descriptionHtml
+        feedback {
+          summary
+        }
+        handle
+        image {
+          id
+          altText
+          height
+          url
+          width
+        }
+        publishedOnCurrentPublication
+        resourcePublicationsCount {
+          count
+          precision
+        }
+        ruleSet {
+          appliedDisjunctively
+          rules {
+            column
+            condition
+            relation
+          }
+        }
+        seo {
+          description
+          title
+        }
+        sortOrder
+        templateSuffix
+        title
+        updatedAt
+      }
+    }
+  }
+}

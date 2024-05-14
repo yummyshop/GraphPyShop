@@ -1,0 +1,10 @@
+query productVariants($first: Int!, $query: String!) {
+  productVariants(first: $first, query: $query) {
+    edges {
+      node {
+        id
+        updatedAt
+      }
+    }
+  }
+}

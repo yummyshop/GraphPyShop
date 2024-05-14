@@ -1,0 +1,40 @@
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
+
+
+[project]
+name = "GraphPyShop"
+version = "0.1.0"
+authors = [{ name = "Martin Salo", email = "martin@yummy.eu" }]
+readme = "README.md"
+description = "Shopify client for Python using automatic code generation, so it's always up to date"
+dependencies = ["httpx","pydantic"]
+
+[project.optional-dependencies]
+dev = ["ariadne-codegen","python-dotenv"]
+
+[tool.ariadne-codegen]
+queries_path = "./graphpyshop/queries"
+#remote_schema_url = "https://$SHOPIFY_STORE.myshopify.com/admin/api/$SHOPIFY_VERSION/graphql.json"
+remote_schema_url = "https://clean-kitchen-meal-kits.myshopify.com/admin/api/unstable/graphql.json"
+remote_schema_headers = { "X-Shopify-Access-Token" = "$SHOPIFY_ACCESS_TOKEN" }
+remote_schema_verify_ssl = false
+target_package_name = "client"
+target_package_path = "./graphpyshop"
+client_name = "ShopifyClient"
+base_client_name = "ShopifyAsyncBaseClient"
+base_client_file_path = "./graphpyshop/extensions/shopify_async_base_client.py"
+plugins = [
+    "ariadne_codegen.contrib.extract_operations.ExtractOperationsPlugin",
+    "ariadne_codegen.contrib.shorter_results.ShorterResultsPlugin",
+    "graphpyshop.extensions.ShopifyBulkQueriesPlugin",
+]
+
+[tool.pytest.ini_options]
+minversion = "8.0"
+addopts = "--strict-markers"
+testpaths = ["tests"]
+
+[tool.setuptools]
+packages = ["graphpyshop"]

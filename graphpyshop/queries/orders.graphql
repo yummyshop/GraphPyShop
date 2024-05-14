@@ -1,0 +1,14 @@
+query orders($first: Int!, $query: String!) {
+  orders(first: $first, query: $query) {
+    edges {
+      node {
+        id
+        updatedAt
+        name
+        customer {
+          id
+        }
+      }
+    }
+  }
+}

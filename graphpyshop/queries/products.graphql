@@ -1,0 +1,94 @@
+query products($first: Int!, $query: String!) {
+  products(first: $first, query: $query) {
+    edges {
+      node {
+        id
+        availablePublicationsCount {
+          count
+          precision
+        }
+        category {
+          id
+          ancestorIds
+          childrenIds
+          fullName
+          isArchived
+          isLeaf
+          isRoot
+          level
+          name
+          parentId
+        }
+        compareAtPriceRange {
+          minVariantCompareAtPrice {
+            amount
+            currencyCode
+          }
+        }
+        createdAt
+        defaultCursor
+        description
+        descriptionHtml
+        featuredImage {
+          url
+          width
+          height
+        }
+        feedback {
+          summary
+        }
+        giftCardTemplateSuffix
+        handle
+        hasOnlyDefaultVariant
+        hasOutOfStockVariants
+        hasVariantsThatRequiresComponents
+        id
+        isGiftCard
+        legacyResourceId
+        onlineStorePreviewUrl
+        onlineStoreUrl
+        options (first: 20) {
+          id
+          name
+          optionValues {
+            hasVariants
+            id
+            linkedMetafieldValue
+            name
+          }
+          position
+          values
+        }
+        priceRangeV2 {
+          minVariantPrice {
+            amount
+            currencyCode
+          }
+        }
+        productType
+        publishedAt
+        requiresSellingPlan
+        sellingPlanGroupsCount {
+          count
+          precision
+        }
+        seo {
+          description
+          title
+        }
+        status
+        tags
+        templateSuffix
+        title
+        totalInventory
+        tracksInventory
+        updatedAt
+        variantsCount {
+          count
+          precision
+        }
+        vendor
+      }
+    }
+  }
+}
