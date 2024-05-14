@@ -33,11 +33,28 @@ class QueryCost(BaseModel):
     actualQueryCost: int | None
     throttleStatus: ThrottleStatus
 
+class BulkOperationsFinish(BaseModel):
+    admin_graphql_api_id: str
+    completed_at: Optional[datetime]
+    created_at: datetime
+    error_code: Optional[str]
+    status: str
+    type: str
+
+def verify_webhook(data: bytes, hmac_header: str, secret: str) -> bool:
+    digest = hmac.new(secret.encode("utf-8"), data, digestmod=hashlib.sha256).digest()
+    computed_hmac = base64.b64encode(digest)
+
+    return hmac.compare_digest(computed_hmac, hmac_header.encode("utf-8"))
+
+def parse_query_name(query: str) -> str:
+    match = re.search(r"query\s+(\w+)", query)
+    return match.group(1) if match else "UnknownQuery"
 
 class AsyncLimiterTransport(AsyncHTTPTransport):
-    MAX_RETRIES = 3
+    MAX_RETRIES = 10
     TOTAL_CAPACITY = 20000
-    RESTORE_RATE = 1000  # points per 100ms
+    RESTORE_RATE = 1000  # points per 1000ms
     BACKOFF_FACTOR = 3
 
     def __init__(self):
@@ -78,9 +95,13 @@ class AsyncLimiterTransport(AsyncHTTPTransport):
                     await self.sync_with_server(
                         cost.throttleStatus.currentlyAvailable, request_id
                     )
-                    logging.info(
+                    log_message = (
                         f"Request {request_id}: Retry {self.MAX_RETRIES - retries + 1} of {self.MAX_RETRIES} at cost {requested_query_cost} due to throttling. Current capacity: {self.current_capacity}"
                     )
+                    if retries > self.MAX_RETRIES / 2:
+                        logging.warning(log_message)
+                    else:
+                        logging.info(log_message)
                     retries -= 1
 
                     if retries < self.MAX_RETRIES - 1:
@@ -165,6 +186,8 @@ global_transport = AsyncLimiterTransport()
 
 
 class ShopifyAsyncBaseClient(AsyncBaseClient):
+    BULK_QUERY_TRY_START_TIMEOUT = 600
+
     def __init__(
         self, url: str, access_token: str, transport: AsyncHTTPTransport | None = None
     ):
@@ -198,7 +221,7 @@ class ShopifyAsyncBaseClient(AsyncBaseClient):
                     for error in user_errors
                 ]
             )
-            raise Exception(f"User errors occurred: {error_details}")
+            raise Exception(error_details)
 
         return data
 
@@ -213,16 +236,18 @@ class ShopifyAsyncBaseClient(AsyncBaseClient):
                 query = query.replace(f"${key}", str(value))
 
         return query
-
+    
     async def try_create_bulk_query(
         self,
         bulk_operation_call: Callable[[str], Awaitable[Any]],
         gql_query: str,
         variables: Dict[str, object],
     ) -> Any:
+
+        query_name = parse_query_name(gql_query)
         start_time = time.time()
         total_wait_time = 0
-        while time.time() - start_time < 600:  # 10 minutes
+        while time.time() - start_time < self.BULK_QUERY_TRY_START_TIMEOUT: 
             try:
                 query = self.inject_variables(gql_query, variables)
                 return await bulk_operation_call(query)
@@ -233,15 +258,16 @@ class ShopifyAsyncBaseClient(AsyncBaseClient):
                     "A bulk query operation for this app and shop is already in progress"
                     in str(e)
                 ):
+                    formatted_time = time.strftime("%H:%M:%S.%f", time.gmtime(elapsed_time))
                     logging.info(
-                        f"Total wait time so far: {int(elapsed_time // 3600):02}:{int((elapsed_time % 3600) // 60):02}:{int(elapsed_time % 60):02}. Waiting due to {str(e)}"
+                        f"[{query_name}] Total wait time so far: {formatted_time}. Waiting due to job {str(e)}."
                     )
                     await asyncio.sleep(2)
                     total_wait_time += 2
                 else:
                     raise
         raise TimeoutError(
-            "Timed out trying to create bulk query after waiting for 600 seconds."
+            f"[{query_name}] Timed out trying to create bulk query after waiting for {self.BULK_QUERY_TRY_START_TIMEOUT} seconds."
         )
 
     def flatten_gql_response(
@@ -277,6 +303,7 @@ class ShopifyAsyncBaseClient(AsyncBaseClient):
         bulk_operation_node_bulk_operation: Any,
         return_type: Any,
     ) -> AsyncGenerator[Any, None]:
+        query_name = parse_query_name(gql_query)
         response = await self.try_create_bulk_query(
             operation_callable, gql_query, variables
         )
@@ -294,8 +321,16 @@ class ShopifyAsyncBaseClient(AsyncBaseClient):
                     status_response.created_at.replace("Z", "+00:00")
                 )
                 running_duration = current_time - created_at_datetime
+                object_count = float(status_response.object_count)  # Ensure object_count is a float
+                elapsed_seconds = running_duration.total_seconds()
+
+                if elapsed_seconds > 0:
+                    objects_per_second = round(object_count / elapsed_seconds, 2)
+                else:
+                    objects_per_second = 0
+
                 logging.info(
-                    f"Job {status_response.id} Current status: {status_response.status}, Object count: {status_response.object_count}, Running duration: {running_duration}"
+                    f"[{query_name}] Job: {status_response.id}, Status: {status_response.status.value}, Runtime: {running_duration}, Objects: {status_response.object_count}, Rate: {objects_per_second}/s"
                 )
                 if status_response and isinstance(
                     status_response, bulk_operation_node_bulk_operation
@@ -305,6 +340,7 @@ class ShopifyAsyncBaseClient(AsyncBaseClient):
                         status == bulk_operation_status.COMPLETED
                         and status_response.url
                     ):
+                        logging.info(f"[{query_name}] Retrieving JSONL file for job {status_response.id}")
                         async for item in self.get_jsonl(
                             status_response.url, return_type
                         ):
@@ -387,19 +423,3 @@ class ShopifyAsyncBaseClient(AsyncBaseClient):
             yield return_type.model_validate(parent_objects[last_parent_id])
             # Log the missing fields
             logging.debug(f"Missing fields: {missing_fields}")
-
-
-def verify_webhook(data: bytes, hmac_header: str, secret: str) -> bool:
-    digest = hmac.new(secret.encode("utf-8"), data, digestmod=hashlib.sha256).digest()
-    computed_hmac = base64.b64encode(digest)
-
-    return hmac.compare_digest(computed_hmac, hmac_header.encode("utf-8"))
-
-
-class BulkOperationsFinish(BaseModel):
-    admin_graphql_api_id: str
-    completed_at: Optional[datetime]
-    created_at: datetime
-    error_code: Optional[str]
-    status: str
-    type: str
