@@ -245,7 +245,7 @@ def is_core_type(type_name: str, scalar_types: set, enum_types: set) -> bool:
     core_types = {"String", "Int", "Float", "Boolean", "ID", "DateTime", "UnsignedInt64"}
     return type_name in core_types or type_name in scalar_types or type_name in enum_types
 
-def generate_queries(config_dict: Dict[str, Any], include_definitions: List[str] = ['QueryRoot'], exclude_definitions: List[str] = [], included_queries: List[str] = [], excluded_queries: List[str] = ["node", "nodes"]) -> None:
+def shopify_generate_queries(config_dict: Dict[str, Any], include_definitions: List[str] = ['QueryRoot'], exclude_definitions: List[str] = [], included_queries: List[str] = [], excluded_queries: List[str] = ["node", "nodes"]) -> None:
     logging.info("Starting generation of queries")
     settings = get_client_settings(config_dict)
     if settings.schema_path:

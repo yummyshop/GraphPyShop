@@ -1,9 +1,9 @@
-import os
 from dotenv import load_dotenv, find_dotenv
 from ariadne_codegen.main import client
 from ariadne_codegen.config import get_config_dict
-from .extensions.shopify_generate_queries import generate_queries
+from .extensions.shopify_generate_queries import shopify_generate_queries
 import logging 
+import argparse
 
 logging.basicConfig(level=logging.INFO)
 
@@ -14,7 +14,18 @@ def generate_client():
     client(get_config_dict())
 
 def generate_queries():
-    logging.info("Starting generation of queries")
-
     load_dotenv(find_dotenv())
-    generate_queries(get_config_dict())
+    shopify_generate_queries(get_config_dict())
+
+def main():
+    parser = argparse.ArgumentParser(description="GraphPyShop CLI")
+    parser.add_argument("command", choices=["generate-client", "generate-queries"], help="Command to run")
+    args = parser.parse_args()
+
+    if args.command == "generate-client":
+        generate_client()
+    elif args.command == "generate-queries":
+        generate_queries()
+
+if __name__ == "__main__":
+    main()
