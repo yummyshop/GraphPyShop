@@ -86,17 +86,42 @@ for definition in ast.definitions:
                 if returns_a_list(field):
                     list_returning_queries[field.name.value] = ultimate_object
 
-reversed_queries = {}
+list_returning_queries_by_type = {}
 for key, value in list_returning_queries.items():
-    if value in reversed_queries:
-        if isinstance(reversed_queries[value], list):
-            reversed_queries[value].append(key)
+    if value in list_returning_queries_by_type:
+        if isinstance(list_returning_queries_by_type[value], list):
+            list_returning_queries_by_type[value].append(key)
         else:
-            reversed_queries[value] = [reversed_queries[value], key]
+            list_returning_queries_by_type[value] = [list_returning_queries_by_type[value], key]
     else:
-        reversed_queries[value] = key
-#TODO: Avoid implementing faulty one
-list_returning_queries = reversed_queries
+        list_returning_queries_by_type[value] = key
+
+# Create a dictionary to store the direct object references
+direct_object_references = {}
+
+for key in list_returning_queries_by_type:
+    direct_references = set()
+    for definition in ast.definitions:
+        if isinstance(definition, graphql_ast.ObjectTypeDefinitionNode) and definition.name.value == key:
+            for field in definition.fields:
+                field_type = get_field_type(field.type)
+                if isinstance(field_type, graphql_ast.NamedTypeNode) and field_type.name.value in list_returning_queries_by_type:
+                    direct_references.add(field_type.name.value)
+    if key == "MetafieldDefinition":
+        for enum_definition in ast.definitions:
+            if isinstance(enum_definition, graphql_ast.EnumTypeDefinitionNode) and enum_definition.name.value == "MetafieldOwnerType":
+                for enum_value in enum_definition.values:
+                    formatted_value = ''.join(word.capitalize() for word in enum_value.name.value.split('_'))
+                    direct_references.add(formatted_value)
+    if direct_references:  # Only add the key if the list is not empty
+        direct_object_references[key] = list(direct_references)
+
+import json
+
+def print_indented_json(data, indent=4):
+    print(json.dumps(data, indent=indent))
+
+
 
 scalar_types = {definition.name.value for definition in ast.definitions if isinstance(definition, graphql_ast.ScalarTypeDefinitionNode)}
 enum_types = {definition.name.value for definition in ast.definitions if isinstance(definition, graphql_ast.EnumTypeDefinitionNode)}
@@ -110,6 +135,9 @@ def is_core_type(type_name: str) -> bool:
 def generate_query_ast(query_name: str, field: graphql_ast.FieldDefinitionNode, visited_types: dict[str, int], depth: int = 0, max_depth: int = max_depth, parent: Optional[graphql_ast.FieldDefinitionNode] = None, path: str = "") -> graphql_ast.SelectionSetNode:
     current_path = f"{path} > {field.name.value}" if path else field.name.value
     field_type_name = get_field_type_name(field.type)
+    ultimate_field_type_name = find_ultimate_object(field_type_name)
+    query_return_type = list_returning_queries[query_name]
+
     logging.info(f"[{query_name}][{current_path}][depth: {depth}] Generating query AST for field: {current_path}, depth: {depth}")
     
     # Are there any fields with only nodes without edges?
@@ -124,6 +152,12 @@ def generate_query_ast(query_name: str, field: graphql_ast.FieldDefinitionNode, 
     if is_deprecated(field):
         logging.info(f"[{query_name}][{current_path}][depth: {depth}] Field {field.name.value} is deprecated. Skipping.")
         return graphql_ast.SelectionSetNode(selections=[])
+    
+    # This also removes connections like lastOrder, which is actually fine as it keeps the data nesting sane
+    if ultimate_field_type_name in list_returning_queries_by_type:
+        if ultimate_field_type_name in direct_object_references and query_return_type in direct_object_references[ultimate_field_type_name]:
+            logging.warning(f"[{query_name}][{current_path}][depth: {depth}] Skipping field as it matches direct object reference.")
+            return graphql_ast.SelectionSetNode(selections=[])
 
     selections: List[Union[graphql_ast.FieldNode, graphql_ast.InlineFragmentNode]] = []
     # Check if the field has children (fields)
@@ -149,8 +183,9 @@ def generate_query_ast(query_name: str, field: graphql_ast.FieldDefinitionNode, 
                         logging.warning(f"[{query_name}][{current_path}][depth: {depth}] Max depth reached for field {sub_field.name.value}. Skipping this field.")
                         continue
                     
+
                     subfield_type_name = get_field_type_name(sub_field.type)
-                    if field_type_name in list_returning_queries and depth != 0 and subfield_type_name != "ID":
+                    if field_type_name in list_returning_queries_by_type and depth != 0 and subfield_type_name != "ID":
                         logging.info(f"[{query_name}][{current_path}][depth: {depth}] It's a list returning field and type is not id, returning empty set")
                         continue
                     
@@ -187,7 +222,7 @@ def generate_query_ast(query_name: str, field: graphql_ast.FieldDefinitionNode, 
                                     continue
 
                                 subfield_type_name = get_field_type_name(sub_field.type)
-                                if field_type_name in list_returning_queries and depth != 0 and subfield_type_name != "ID":
+                                if field_type_name in list_returning_queries_by_type and depth != 0 and subfield_type_name != "ID":
                                     logging.info(f"[{query_name}][{current_path}][depth: {depth}] It's a list returning field and type is not id, returning empty set")
                                     continue
 
@@ -270,3 +305,12 @@ for definition in ast.definitions:
                     print(query_str)
 
 
+
+print("direct_object_references:")
+print_indented_json(direct_object_references)
+
+print("list_returning_queries_by_type:")
+print_indented_json(list_returning_queries_by_type)
+
+print("list_returning_queries:")
+print_indented_json(list_returning_queries)
