@@ -1,0 +1,257 @@
+query checkoutBranding($transform: ImageTransformInput, $checkoutProfileId: ID!) {
+  checkoutBranding(checkoutProfileId: $checkoutProfileId) {
+    customizations {
+      buyerJourney {
+        visibility
+        __typename
+      }
+      cartLink {
+        visibility
+        __typename
+      }
+      checkbox {
+        cornerRadius
+        __typename
+      }
+      choiceList {
+        group {
+          spacing
+          __typename
+        }
+        __typename
+      }
+      control {
+        border
+        color
+        cornerRadius
+        labelPosition
+        __typename
+      }
+      expressCheckout {
+        button {
+          cornerRadius
+          __typename
+        }
+        __typename
+      }
+      favicon {
+        image {
+          altText
+          height
+          id
+          thumbhash
+          url(transform: $transform)
+          width
+          __typename
+        }
+        __typename
+      }
+      footer {
+        alignment
+        background
+        colorScheme
+        content {
+          visibility
+          __typename
+        }
+        divided
+        padding
+        position
+        __typename
+      }
+      global {
+        cornerRadius
+        typography {
+          kerning
+          letterCase
+          __typename
+        }
+        __typename
+      }
+      header {
+        alignment
+        background
+        cartLink {
+          contentType
+          __typename
+        }
+        colorScheme
+        divided
+        logo {
+          maxWidth
+          visibility
+          __typename
+        }
+        padding
+        position
+        __typename
+      }
+      headingLevel1 {
+        typography {
+          font
+          kerning
+          letterCase
+          size
+          weight
+          __typename
+        }
+        __typename
+      }
+      headingLevel2 {
+        typography {
+          font
+          kerning
+          letterCase
+          size
+          weight
+          __typename
+        }
+        __typename
+      }
+      headingLevel3 {
+        typography {
+          font
+          kerning
+          letterCase
+          size
+          weight
+          __typename
+        }
+        __typename
+      }
+      main {
+        colorScheme
+        section {
+          background
+          border
+          borderStyle
+          borderWidth
+          colorScheme
+          cornerRadius
+          padding
+          shadow
+          __typename
+        }
+        __typename
+      }
+      merchandiseThumbnail {
+        border
+        cornerRadius
+        __typename
+      }
+      orderSummary {
+        colorScheme
+        section {
+          background
+          border
+          borderStyle
+          borderWidth
+          colorScheme
+          cornerRadius
+          padding
+          shadow
+          __typename
+        }
+        __typename
+      }
+      primaryButton {
+        background
+        blockPadding
+        border
+        cornerRadius
+        inlinePadding
+        typography {
+          font
+          kerning
+          letterCase
+          size
+          weight
+          __typename
+        }
+        __typename
+      }
+      secondaryButton {
+        background
+        blockPadding
+        border
+        cornerRadius
+        inlinePadding
+        typography {
+          font
+          kerning
+          letterCase
+          size
+          weight
+          __typename
+        }
+        __typename
+      }
+      select {
+        border
+        typography {
+          font
+          kerning
+          letterCase
+          size
+          weight
+          __typename
+        }
+        __typename
+      }
+      textField {
+        border
+        typography {
+          font
+          kerning
+          letterCase
+          size
+          weight
+          __typename
+        }
+        __typename
+      }
+      __typename
+    }
+    designSystem {
+      colors {
+        global {
+          accent
+          brand
+          critical
+          decorative
+          info
+          success
+          warning
+          __typename
+        }
+        __typename
+      }
+      cornerRadius {
+        base
+        large
+        small
+        __typename
+      }
+      typography {
+        primary {
+          loadingStrategy
+          name
+          __typename
+        }
+        secondary {
+          loadingStrategy
+          name
+          __typename
+        }
+        size {
+          base
+          ratio
+          __typename
+        }
+        __typename
+      }
+      __typename
+    }
+    __typename
+  }
+}

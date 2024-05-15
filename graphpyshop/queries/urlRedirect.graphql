@@ -1,7 +1,0 @@
-query urlRedirect($urlRedirect_id: ID!) {
-  urlRedirect(id: $urlRedirect_id) {
-    id
-    path
-    target
-  }
-}

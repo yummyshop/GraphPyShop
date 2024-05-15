@@ -1,0 +1,20 @@
+query appDiscountType($transform: ImageTransformInput, $url_transform_Image: ImageTransformInput, $functionId: String!) {
+  appDiscountType(functionId: $functionId) {
+    app {
+      id
+      __typename
+    }
+    appBridge {
+      createPath
+      detailsPath
+      __typename
+    }
+    appKey
+    description
+    discountClass
+    functionId
+    targetType
+    title
+    __typename
+  }
+}

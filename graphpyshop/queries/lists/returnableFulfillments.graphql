@@ -1,0 +1,193 @@
+query returnableFulfillments($first: Int = 250, $after: String, $last: Int, $before: String, $reverse: Boolean = false, $sortKey: FulfillmentEventSortKeys = HAPPENED_AT, $fulfillmentLineItems_first_Fulfillment: Int = 250, $fulfillmentLineItems_after_Fulfillment: String, $fulfillmentLineItems_last_Fulfillment: Int, $fulfillmentLineItems_before_Fulfillment: String, $fulfillmentLineItems_reverse_Fulfillment: Boolean = false, $fulfillmentOrders_first_Fulfillment: Int = 250, $fulfillmentOrders_after_Fulfillment: String, $fulfillmentOrders_last_Fulfillment: Int, $fulfillmentOrders_before_Fulfillment: String, $fulfillmentOrders_reverse_Fulfillment: Boolean = false, $trackingInfo_first_Fulfillment: Int = 250, $returnableFulfillmentLineItems_first_ReturnableFulfillment: Int = 250, $returnableFulfillmentLineItems_after_ReturnableFulfillment: String, $returnableFulfillmentLineItems_last_ReturnableFulfillment: Int, $returnableFulfillmentLineItems_before_ReturnableFulfillment: String, $returnableFulfillmentLineItems_reverse_ReturnableFulfillment: Boolean = false, $orderId: ID!, $returnableFulfillments_first_ReturnableFulfillmentConnection: Int = 250, $returnableFulfillments_after_ReturnableFulfillmentConnection: String, $returnableFulfillments_last_ReturnableFulfillmentConnection: Int, $returnableFulfillments_before_ReturnableFulfillmentConnection: String, $returnableFulfillments_reverse_ReturnableFulfillmentConnection: Boolean = false) {
+  returnableFulfillments(
+    orderId: $orderId
+    first: $returnableFulfillments_first_ReturnableFulfillmentConnection
+    after: $returnableFulfillments_after_ReturnableFulfillmentConnection
+    last: $returnableFulfillments_last_ReturnableFulfillmentConnection
+    before: $returnableFulfillments_before_ReturnableFulfillmentConnection
+    reverse: $returnableFulfillments_reverse_ReturnableFulfillmentConnection
+  ) {
+    edges {
+      cursor
+      node {
+        fulfillment {
+          createdAt
+          deliveredAt
+          displayStatus
+          estimatedDeliveryAt
+          events(
+            first: $first
+            after: $after
+            last: $last
+            before: $before
+            reverse: $reverse
+            sortKey: $sortKey
+          ) {
+            edges {
+              cursor
+              node {
+                address1
+                city
+                country
+                createdAt
+                estimatedDeliveryAt
+                happenedAt
+                id
+                latitude
+                longitude
+                message
+                province
+                status
+                zip
+                __typename
+              }
+              __typename
+            }
+            pageInfo {
+              endCursor
+              hasNextPage
+              hasPreviousPage
+              startCursor
+              __typename
+            }
+            __typename
+          }
+          fulfillmentLineItems(
+            first: $fulfillmentLineItems_first_Fulfillment
+            after: $fulfillmentLineItems_after_Fulfillment
+            last: $fulfillmentLineItems_last_Fulfillment
+            before: $fulfillmentLineItems_before_Fulfillment
+            reverse: $fulfillmentLineItems_reverse_Fulfillment
+          ) {
+            edges {
+              cursor
+              node {
+                id
+                quantity
+                __typename
+              }
+              __typename
+            }
+            pageInfo {
+              endCursor
+              hasNextPage
+              hasPreviousPage
+              startCursor
+              __typename
+            }
+            __typename
+          }
+          fulfillmentOrders(
+            first: $fulfillmentOrders_first_Fulfillment
+            after: $fulfillmentOrders_after_Fulfillment
+            last: $fulfillmentOrders_last_Fulfillment
+            before: $fulfillmentOrders_before_Fulfillment
+            reverse: $fulfillmentOrders_reverse_Fulfillment
+          ) {
+            edges {
+              cursor
+              node {
+                channelId
+                id
+                orderId
+                __typename
+              }
+              __typename
+            }
+            pageInfo {
+              endCursor
+              hasNextPage
+              hasPreviousPage
+              startCursor
+              __typename
+            }
+            __typename
+          }
+          id
+          inTransitAt
+          legacyResourceId
+          location {
+            id
+            __typename
+          }
+          name
+          order {
+            id
+            __typename
+          }
+          originAddress {
+            address1
+            address2
+            city
+            countryCode
+            provinceCode
+            zip
+            __typename
+          }
+          requiresShipping
+          service {
+            callbackUrl
+            handle
+            id
+            inventoryManagement
+            permitsSkuSharing
+            serviceName
+            trackingSupport
+            type
+            __typename
+          }
+          status
+          totalQuantity
+          trackingInfo(first: $trackingInfo_first_Fulfillment) {
+            company
+            number
+            url
+            __typename
+          }
+          updatedAt
+          __typename
+        }
+        id
+        returnableFulfillmentLineItems(
+          first: $returnableFulfillmentLineItems_first_ReturnableFulfillment
+          after: $returnableFulfillmentLineItems_after_ReturnableFulfillment
+          last: $returnableFulfillmentLineItems_last_ReturnableFulfillment
+          before: $returnableFulfillmentLineItems_before_ReturnableFulfillment
+          reverse: $returnableFulfillmentLineItems_reverse_ReturnableFulfillment
+        ) {
+          edges {
+            cursor
+            node {
+              fulfillmentLineItem {
+                id
+                quantity
+                __typename
+              }
+              quantity
+              __typename
+            }
+            __typename
+          }
+          pageInfo {
+            endCursor
+            hasNextPage
+            hasPreviousPage
+            startCursor
+            __typename
+          }
+          __typename
+        }
+        __typename
+      }
+      __typename
+    }
+    pageInfo {
+      endCursor
+      hasNextPage
+      hasPreviousPage
+      startCursor
+      __typename
+    }
+    __typename
+  }
+}

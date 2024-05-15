@@ -1,0 +1,19 @@
+query productOperation($transform: ImageTransformInput, $url_transform_Image: ImageTransformInput, $id: ID!, $productOperation_id_ProductOperation: ID!) {
+  productOperation(id: $productOperation_id_ProductOperation) {
+    ... on ProductSetOperation {
+      id
+      product {
+        id
+        __typename
+      }
+      status
+      userErrors {
+        code
+        field
+        message
+        __typename
+      }
+      __typename
+    }
+  }
+}

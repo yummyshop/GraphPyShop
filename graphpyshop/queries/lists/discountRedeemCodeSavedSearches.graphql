@@ -1,0 +1,38 @@
+query discountRedeemCodeSavedSearches($first: Int = 250, $after: String, $last: Int, $before: String, $reverse: Boolean = false, $sortKey: DiscountCodeSortKeys = ID, $query: String) {
+  discountRedeemCodeSavedSearches(
+    first: $first
+    after: $after
+    last: $last
+    before: $before
+    reverse: $reverse
+    sortKey: $sortKey
+    query: $query
+  ) {
+    edges {
+      cursor
+      node {
+        filters {
+          key
+          value
+          __typename
+        }
+        id
+        legacyResourceId
+        name
+        query
+        resourceType
+        searchTerms
+        __typename
+      }
+      __typename
+    }
+    pageInfo {
+      endCursor
+      hasNextPage
+      hasPreviousPage
+      startCursor
+      __typename
+    }
+    __typename
+  }
+}

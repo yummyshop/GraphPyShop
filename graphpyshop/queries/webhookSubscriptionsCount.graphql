@@ -1,6 +1,0 @@
-query webhookSubscriptionsCount($webhookSubscriptionsCount_query: String) {
-  webhookSubscriptionsCount(query: $webhookSubscriptionsCount_query) {
-    count
-    precision
-  }
-}

@@ -1,0 +1,237 @@
+query publication($truncateAt: Int, $id: ID!, $publicationId: ID!, $description_truncateAt_Publishable: Int, $inCollection_id_Publishable: ID!, $context: ContextualPublicationContext!, $publishedOnPublication_publicationId_Publishable: ID!, $first: Int = 250, $after: String, $last: Int, $before: String, $reverse: Boolean = false, $transform: ImageTransformInput, $collections_first_Publication: Int = 250, $collections_after_Publication: String, $collections_last_Publication: Int, $collections_before_Publication: String, $collections_reverse_Publication: Boolean = false, $hasCollection_id_Publication: ID!, $hasProduct_id_Publishable: ID!, $publishedInContext_context_Publishable: ContextualPublicationContext!, $productPublicationsV3_first_Publication: Int = 250, $productPublicationsV3_after_Publication: String, $productPublicationsV3_last_Publication: Int, $productPublicationsV3_before_Publication: String, $productPublicationsV3_reverse_Publication: Boolean = false, $url_transform_Image: ImageTransformInput, $hasCollection_id_Channel: ID!, $products_first_Publication: Int = 250, $products_after_Publication: String, $products_last_Publication: Int, $products_before_Publication: String, $products_reverse_Publication: Boolean = false, $publication_id_Publication: ID!) {
+  publication(id: $publication_id_Publication) {
+    autoPublish
+    catalog {
+      ... on AppCatalog {
+        id
+        __typename
+      }
+      ... on CompanyLocationCatalog {
+        id
+        __typename
+      }
+      ... on MarketCatalog {
+        id
+        __typename
+      }
+    }
+    collectionPublicationsV3(
+      first: $first
+      after: $after
+      last: $last
+      before: $before
+      reverse: $reverse
+    ) {
+      edges {
+        cursor
+        node {
+          isPublished
+          publication {
+            id
+            __typename
+          }
+          publicationStatusOnChannel
+          publishDate
+          publishable {
+            ... on Collection {
+              description(truncateAt: $truncateAt)
+              descriptionHtml
+              handle
+              hasProduct(id: $id)
+              id
+              legacyResourceId
+              publishedOnCurrentPublication
+              publishedOnPublication(publicationId: $publicationId)
+              sortOrder
+              templateSuffix
+              title
+              updatedAt
+              __typename
+            }
+            ... on Product {
+              combinedListingRole
+              createdAt
+              defaultCursor
+              description(truncateAt: $description_truncateAt_Publishable)
+              descriptionHtml
+              giftCardTemplateSuffix
+              handle
+              hasOnlyDefaultVariant
+              hasOutOfStockVariants
+              hasVariantsThatRequiresComponents
+              id
+              inCollection(id: $inCollection_id_Publishable)
+              isGiftCard
+              legacyResourceId
+              onlineStorePreviewUrl
+              onlineStoreUrl
+              productType
+              publishedAt
+              publishedInContext(context: $context)
+              publishedOnCurrentPublication
+              publishedOnPublication(
+                publicationId: $publishedOnPublication_publicationId_Publishable
+              )
+              requiresSellingPlan
+              status
+              tags
+              templateSuffix
+              title
+              totalInventory
+              tracksInventory
+              updatedAt
+              vendor
+              __typename
+            }
+          }
+          __typename
+        }
+        __typename
+      }
+      pageInfo {
+        endCursor
+        hasNextPage
+        hasPreviousPage
+        startCursor
+        __typename
+      }
+      __typename
+    }
+    collections(
+      first: $collections_first_Publication
+      after: $collections_after_Publication
+      last: $collections_last_Publication
+      before: $collections_before_Publication
+      reverse: $collections_reverse_Publication
+    ) {
+      edges {
+        cursor
+        node {
+          id
+          __typename
+        }
+        __typename
+      }
+      pageInfo {
+        endCursor
+        hasNextPage
+        hasPreviousPage
+        startCursor
+        __typename
+      }
+      __typename
+    }
+    hasCollection(id: $hasCollection_id_Publication)
+    id
+    productPublicationsV3(
+      first: $productPublicationsV3_first_Publication
+      after: $productPublicationsV3_after_Publication
+      last: $productPublicationsV3_last_Publication
+      before: $productPublicationsV3_before_Publication
+      reverse: $productPublicationsV3_reverse_Publication
+    ) {
+      edges {
+        cursor
+        node {
+          isPublished
+          publication {
+            id
+            __typename
+          }
+          publicationStatusOnChannel
+          publishDate
+          publishable {
+            ... on Collection {
+              description(truncateAt: $description_truncateAt_Publishable)
+              descriptionHtml
+              handle
+              hasProduct(id: $hasProduct_id_Publishable)
+              id
+              legacyResourceId
+              publishedOnCurrentPublication
+              publishedOnPublication(
+                publicationId: $publishedOnPublication_publicationId_Publishable
+              )
+              sortOrder
+              templateSuffix
+              title
+              updatedAt
+              __typename
+            }
+            ... on Product {
+              combinedListingRole
+              createdAt
+              defaultCursor
+              description(truncateAt: $description_truncateAt_Publishable)
+              descriptionHtml
+              giftCardTemplateSuffix
+              handle
+              hasOnlyDefaultVariant
+              hasOutOfStockVariants
+              hasVariantsThatRequiresComponents
+              id
+              inCollection(id: $inCollection_id_Publishable)
+              isGiftCard
+              legacyResourceId
+              onlineStorePreviewUrl
+              onlineStoreUrl
+              productType
+              publishedAt
+              publishedInContext(context: $publishedInContext_context_Publishable)
+              publishedOnCurrentPublication
+              publishedOnPublication(
+                publicationId: $publishedOnPublication_publicationId_Publishable
+              )
+              requiresSellingPlan
+              status
+              tags
+              templateSuffix
+              title
+              totalInventory
+              tracksInventory
+              updatedAt
+              vendor
+              __typename
+            }
+          }
+          __typename
+        }
+        __typename
+      }
+      pageInfo {
+        endCursor
+        hasNextPage
+        hasPreviousPage
+        startCursor
+        __typename
+      }
+      __typename
+    }
+    products(
+      first: $products_first_Publication
+      after: $products_after_Publication
+      last: $products_last_Publication
+      before: $products_before_Publication
+      reverse: $products_reverse_Publication
+    ) {
+      edges {
+        cursor
+        node {
+          id
+          __typename
+        }
+        __typename
+      }
+      pageInfo {
+        endCursor
+        hasNextPage
+        hasPreviousPage
+        startCursor
+        __typename
+      }
+      __typename
+    }
+    supportsFuturePublishing
+    __typename
+  }
+}

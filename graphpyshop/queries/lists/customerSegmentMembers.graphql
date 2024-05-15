@@ -1,0 +1,144 @@
+query customerSegmentMembers($withName: Boolean = false, $withCompany: Boolean = true, $first: Int = 250, $after: String, $last: Int, $before: String, $namespace: String, $keys: [String!], $metafields_first_CustomerSegmentMember: Int = 250, $metafields_after_CustomerSegmentMember: String, $metafields_last_CustomerSegmentMember: Int, $metafields_before_CustomerSegmentMember: String, $reverse: Boolean = false, $segmentId: ID, $query: String, $queryId: ID, $timezone: String, $customerSegmentMembers_reverse_CustomerSegmentMemberConnection: Boolean = false, $sortKey: String, $customerSegmentMembers_first_CustomerSegmentMemberConnection: Int = 250, $customerSegmentMembers_after_CustomerSegmentMemberConnection: String, $customerSegmentMembers_last_CustomerSegmentMemberConnection: Int, $customerSegmentMembers_before_CustomerSegmentMemberConnection: String) {
+  customerSegmentMembers(
+    segmentId: $segmentId
+    query: $query
+    queryId: $queryId
+    timezone: $timezone
+    reverse: $customerSegmentMembers_reverse_CustomerSegmentMemberConnection
+    sortKey: $sortKey
+    first: $customerSegmentMembers_first_CustomerSegmentMemberConnection
+    after: $customerSegmentMembers_after_CustomerSegmentMemberConnection
+    last: $customerSegmentMembers_last_CustomerSegmentMemberConnection
+    before: $customerSegmentMembers_before_CustomerSegmentMemberConnection
+  ) {
+    edges {
+      cursor
+      node {
+        amountSpent {
+          amount
+          currencyCode
+          __typename
+        }
+        defaultAddress {
+          address1
+          address2
+          city
+          company
+          coordinatesValidated
+          country
+          countryCodeV2
+          firstName
+          formatted(withName: $withName, withCompany: $withCompany)
+          formattedArea
+          id
+          lastName
+          latitude
+          longitude
+          name
+          phone
+          province
+          provinceCode
+          timeZone
+          zip
+          __typename
+        }
+        defaultEmailAddress {
+          emailAddress
+          marketingState
+          marketingUnsubscribeUrl
+          openTrackingLevel
+          openTrackingUrl
+          __typename
+        }
+        defaultPhoneNumber {
+          marketingState
+          phoneNumber
+          __typename
+        }
+        displayName
+        firstName
+        id
+        lastName
+        lastOrderId
+        mergeable {
+          errorFields
+          isMergeable
+          mergeInProgress {
+            jobId
+            resultingCustomerId
+            status
+            __typename
+          }
+          reason
+          __typename
+        }
+        metafields(
+          namespace: $namespace
+          keys: $keys
+          first: $metafields_first_CustomerSegmentMember
+          after: $metafields_after_CustomerSegmentMember
+          last: $metafields_last_CustomerSegmentMember
+          before: $metafields_before_CustomerSegmentMember
+          reverse: $reverse
+        ) {
+          edges {
+            cursor
+            node {
+              createdAt
+              definition {
+                id
+                __typename
+              }
+              description
+              id
+              key
+              legacyResourceId
+              namespace
+              ownerType
+              references(first: $first, after: $after, last: $last, before: $before) {
+                edges {
+                  cursor
+                  __typename
+                }
+                pageInfo {
+                  endCursor
+                  hasNextPage
+                  hasPreviousPage
+                  startCursor
+                  __typename
+                }
+                __typename
+              }
+              type
+              updatedAt
+              value
+              __typename
+            }
+            __typename
+          }
+          pageInfo {
+            endCursor
+            hasNextPage
+            hasPreviousPage
+            startCursor
+            __typename
+          }
+          __typename
+        }
+        note
+        numberOfOrders
+        __typename
+      }
+      __typename
+    }
+    pageInfo {
+      endCursor
+      hasNextPage
+      hasPreviousPage
+      startCursor
+      __typename
+    }
+    totalCount
+    __typename
+  }
+}

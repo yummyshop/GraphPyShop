@@ -16,6 +16,7 @@ Home = "https://github.com/sirrobin/GraphPyShop"
 [project.scripts]
 generate-client = "graphpyshop:generate_client"
 generate-queries = "graphpyshop:generate_queries"
+clean = "graphpyshop:clean"
 
 [tool.ariadne-codegen]
 queries_path = "./graphpyshop/queries"
@@ -30,7 +31,7 @@ base_client_file_path = "./graphpyshop/extensions/shopify_async_base_client.py"
 plugins = [
     "ariadne_codegen.contrib.extract_operations.ExtractOperationsPlugin",
     "ariadne_codegen.contrib.shorter_results.ShorterResultsPlugin",
-    "graphpyshop.extensions.ShopifyBulkQueriesPlugin",
+    #"graphpyshop.extensions.ShopifyBulkQueriesPlugin",
 ]
 
 [tool.pytest.ini_options]

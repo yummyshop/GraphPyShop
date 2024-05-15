@@ -1,0 +1,39 @@
+query hydrogenStorefronts($branchName: String, $handle: String) {
+  hydrogenStorefronts {
+    createdAt
+    currentProductionDeployment {
+      commitMessage
+      commitSha
+      createdAt
+      id
+      updatedAt
+      __typename
+    }
+    environmentVariables(branchName: $branchName, handle: $handle) {
+      id
+      isSecret
+      key
+      readOnly
+      value
+      __typename
+    }
+    environments {
+      branch
+      createdAt
+      handle
+      id
+      name
+      type
+      updatedAt
+      url
+      __typename
+    }
+    handle
+    id
+    oxygenDeploymentToken
+    productionUrl
+    title
+    updatedAt
+    __typename
+  }
+}

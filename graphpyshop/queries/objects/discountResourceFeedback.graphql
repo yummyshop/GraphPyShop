@@ -1,0 +1,10 @@
+query discountResourceFeedback($id: ID!) {
+  discountResourceFeedback(id: $id) {
+    discountId
+    discountUpdatedAt
+    feedbackGeneratedAt
+    messages
+    state
+    __typename
+  }
+}

@@ -1,0 +1,40 @@
+query tenderTransactions($withName: Boolean = false, $withCompany: Boolean = true, $formatted_withName_MailingAddress: Boolean = false, $formatted_withCompany_MailingAddress: Boolean = true, $first: Int = 250, $after: String, $last: Int, $before: String, $reverse: Boolean = false, $query: String) {
+  tenderTransactions(
+    first: $first
+    after: $after
+    last: $last
+    before: $before
+    reverse: $reverse
+    query: $query
+  ) {
+    edges {
+      cursor
+      node {
+        amount {
+          amount
+          currencyCode
+          __typename
+        }
+        id
+        order {
+          id
+          __typename
+        }
+        paymentMethod
+        processedAt
+        remoteReference
+        test
+        __typename
+      }
+      __typename
+    }
+    pageInfo {
+      endCursor
+      hasNextPage
+      hasPreviousPage
+      startCursor
+      __typename
+    }
+    __typename
+  }
+}

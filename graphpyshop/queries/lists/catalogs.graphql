@@ -1,0 +1,205 @@
+query catalogs($transform: ImageTransformInput, $url_transform_Image: ImageTransformInput, $first: Int = 250, $after: String, $last: Int, $before: String, $reverse: Boolean = false, $withName: Boolean = false, $withCompanyName: Boolean = true, $formattedAddress_withName_CompanyAddress: Boolean = false, $formattedAddress_withCompanyName_CompanyAddress: Boolean = true, $companyLocations_first_Catalog: Int = 250, $companyLocations_after_Catalog: String, $companyLocations_last_Catalog: Int, $companyLocations_before_Catalog: String, $companyLocations_reverse_Catalog: Boolean = false, $sortKey: CompanyLocationSortKeys = ID, $query: String, $type: CatalogType = null, $catalogs_first_CatalogConnection: Int = 250, $catalogs_after_CatalogConnection: String, $catalogs_last_CatalogConnection: Int, $catalogs_before_CatalogConnection: String, $catalogs_reverse_CatalogConnection: Boolean = false, $catalogs_sortKey_CatalogConnection: CatalogSortKeys = ID, $catalogs_query_CatalogConnection: String) {
+  catalogs(
+    type: $type
+    first: $catalogs_first_CatalogConnection
+    after: $catalogs_after_CatalogConnection
+    last: $catalogs_last_CatalogConnection
+    before: $catalogs_before_CatalogConnection
+    reverse: $catalogs_reverse_CatalogConnection
+    sortKey: $catalogs_sortKey_CatalogConnection
+    query: $catalogs_query_CatalogConnection
+  ) {
+    edges {
+      cursor
+      node {
+        ... on AppCatalog {
+          apps(
+            first: $first
+            after: $after
+            last: $last
+            before: $before
+            reverse: $reverse
+          ) {
+            edges {
+              cursor
+              node {
+                id
+                __typename
+              }
+              __typename
+            }
+            pageInfo {
+              endCursor
+              hasNextPage
+              hasPreviousPage
+              startCursor
+              __typename
+            }
+            __typename
+          }
+          id
+          operations {
+            ... on AddAllProductsOperation {
+              id
+              processedRowCount
+              rowCount {
+                count
+                exceedsMax
+                __typename
+              }
+              status
+              __typename
+            }
+            ... on CatalogCsvOperation {
+              id
+              processedRowCount
+              rowCount {
+                count
+                exceedsMax
+                __typename
+              }
+              status
+              __typename
+            }
+            ... on PublicationResourceOperation {
+              id
+              processedRowCount
+              rowCount {
+                count
+                exceedsMax
+                __typename
+              }
+              status
+              __typename
+            }
+          }
+          status
+          title
+          __typename
+        }
+        ... on CompanyLocationCatalog {
+          companyLocations(
+            first: $companyLocations_first_Catalog
+            after: $companyLocations_after_Catalog
+            last: $companyLocations_last_Catalog
+            before: $companyLocations_before_Catalog
+            reverse: $companyLocations_reverse_Catalog
+            sortKey: $sortKey
+            query: $query
+          ) {
+            edges {
+              cursor
+              node {
+                id
+                __typename
+              }
+              __typename
+            }
+            pageInfo {
+              endCursor
+              hasNextPage
+              hasPreviousPage
+              startCursor
+              __typename
+            }
+            __typename
+          }
+          companyLocationsCount {
+            count
+            precision
+            __typename
+          }
+          id
+          operations {
+            ... on AddAllProductsOperation {
+              id
+              processedRowCount
+              rowCount {
+                count
+                exceedsMax
+                __typename
+              }
+              status
+              __typename
+            }
+            ... on CatalogCsvOperation {
+              id
+              processedRowCount
+              rowCount {
+                count
+                exceedsMax
+                __typename
+              }
+              status
+              __typename
+            }
+            ... on PublicationResourceOperation {
+              id
+              processedRowCount
+              rowCount {
+                count
+                exceedsMax
+                __typename
+              }
+              status
+              __typename
+            }
+          }
+          status
+          title
+          __typename
+        }
+        ... on MarketCatalog {
+          id
+          operations {
+            ... on AddAllProductsOperation {
+              id
+              processedRowCount
+              rowCount {
+                count
+                exceedsMax
+                __typename
+              }
+              status
+              __typename
+            }
+            ... on CatalogCsvOperation {
+              id
+              processedRowCount
+              rowCount {
+                count
+                exceedsMax
+                __typename
+              }
+              status
+              __typename
+            }
+            ... on PublicationResourceOperation {
+              id
+              processedRowCount
+              rowCount {
+                count
+                exceedsMax
+                __typename
+              }
+              status
+              __typename
+            }
+          }
+          status
+          title
+          __typename
+        }
+      }
+      __typename
+    }
+    pageInfo {
+      endCursor
+      hasNextPage
+      hasPreviousPage
+      startCursor
+      __typename
+    }
+    __typename
+  }
+}

@@ -1,0 +1,197 @@
+query discountNodes($first: Int = 250, $after: String, $last: Int, $before: String, $reverse: Boolean = false, $sortKey: EventSortKeys = ID, $query: String, $namespace: String, $pinnedStatus: MetafieldDefinitionPinnedStatus = ANY, $metafieldDefinitions_first_DiscountNode: Int = 250, $metafieldDefinitions_after_DiscountNode: String, $metafieldDefinitions_last_DiscountNode: Int, $metafieldDefinitions_before_DiscountNode: String, $metafieldDefinitions_reverse_DiscountNode: Boolean = false, $metafieldDefinitions_sortKey_DiscountNode: MetafieldDefinitionSortKeys = ID, $metafieldDefinitions_query_DiscountNode: String, $references_first_Metafield: Int = 250, $references_after_Metafield: String, $references_last_Metafield: Int, $references_before_Metafield: String, $metafields_namespace_DiscountNode: String, $keys: [String!], $metafields_first_DiscountNode: Int = 250, $metafields_after_DiscountNode: String, $metafields_last_DiscountNode: Int, $metafields_before_DiscountNode: String, $metafields_reverse_DiscountNode: Boolean = false, $discountNodes_first_DiscountNodeConnection: Int = 250, $discountNodes_after_DiscountNodeConnection: String, $discountNodes_last_DiscountNodeConnection: Int, $discountNodes_before_DiscountNodeConnection: String, $discountNodes_reverse_DiscountNodeConnection: Boolean = false, $discountNodes_sortKey_DiscountNodeConnection: DiscountSortKeys = CREATED_AT, $discountNodes_query_DiscountNodeConnection: String, $savedSearchId: ID) {
+  discountNodes(
+    first: $discountNodes_first_DiscountNodeConnection
+    after: $discountNodes_after_DiscountNodeConnection
+    last: $discountNodes_last_DiscountNodeConnection
+    before: $discountNodes_before_DiscountNodeConnection
+    reverse: $discountNodes_reverse_DiscountNodeConnection
+    sortKey: $discountNodes_sortKey_DiscountNodeConnection
+    query: $discountNodes_query_DiscountNodeConnection
+    savedSearchId: $savedSearchId
+  ) {
+    edges {
+      cursor
+      node {
+        events(
+          first: $first
+          after: $after
+          last: $last
+          before: $before
+          reverse: $reverse
+          sortKey: $sortKey
+          query: $query
+        ) {
+          edges {
+            cursor
+            node {
+              ... on BasicEvent {
+                appTitle
+                attributeToApp
+                attributeToUser
+                createdAt
+                criticalAlert
+                id
+                message
+                __typename
+              }
+              ... on CommentEvent {
+                appTitle
+                attachments {
+                  fileExtension
+                  id
+                  name
+                  size
+                  url
+                  __typename
+                }
+                attributeToApp
+                attributeToUser
+                canDelete
+                canEdit
+                createdAt
+                criticalAlert
+                edited
+                id
+                message
+                rawMessage
+                subject {
+                  ... on Company {
+                    id
+                    __typename
+                  }
+                  ... on CompanyLocation {
+                    id
+                    __typename
+                  }
+                  ... on Customer {
+                    id
+                    __typename
+                  }
+                  ... on DraftOrder {
+                    id
+                    __typename
+                  }
+                  ... on Order {
+                    id
+                    __typename
+                  }
+                  ... on PriceRule {
+                    id
+                    __typename
+                  }
+                }
+                __typename
+              }
+            }
+            __typename
+          }
+          pageInfo {
+            endCursor
+            hasNextPage
+            hasPreviousPage
+            startCursor
+            __typename
+          }
+          __typename
+        }
+        id
+        metafieldDefinitions(
+          namespace: $namespace
+          pinnedStatus: $pinnedStatus
+          first: $metafieldDefinitions_first_DiscountNode
+          after: $metafieldDefinitions_after_DiscountNode
+          last: $metafieldDefinitions_last_DiscountNode
+          before: $metafieldDefinitions_before_DiscountNode
+          reverse: $metafieldDefinitions_reverse_DiscountNode
+          sortKey: $metafieldDefinitions_sortKey_DiscountNode
+          query: $metafieldDefinitions_query_DiscountNode
+        ) {
+          edges {
+            cursor
+            node {
+              id
+              __typename
+            }
+            __typename
+          }
+          pageInfo {
+            endCursor
+            hasNextPage
+            hasPreviousPage
+            startCursor
+            __typename
+          }
+          __typename
+        }
+        metafields(
+          namespace: $metafields_namespace_DiscountNode
+          keys: $keys
+          first: $metafields_first_DiscountNode
+          after: $metafields_after_DiscountNode
+          last: $metafields_last_DiscountNode
+          before: $metafields_before_DiscountNode
+          reverse: $metafields_reverse_DiscountNode
+        ) {
+          edges {
+            cursor
+            node {
+              createdAt
+              definition {
+                id
+                __typename
+              }
+              description
+              id
+              key
+              legacyResourceId
+              namespace
+              ownerType
+              references(
+                first: $references_first_Metafield
+                after: $references_after_Metafield
+                last: $references_last_Metafield
+                before: $references_before_Metafield
+              ) {
+                edges {
+                  cursor
+                  __typename
+                }
+                pageInfo {
+                  endCursor
+                  hasNextPage
+                  hasPreviousPage
+                  startCursor
+                  __typename
+                }
+                __typename
+              }
+              type
+              updatedAt
+              value
+              __typename
+            }
+            __typename
+          }
+          pageInfo {
+            endCursor
+            hasNextPage
+            hasPreviousPage
+            startCursor
+            __typename
+          }
+          __typename
+        }
+        __typename
+      }
+      __typename
+    }
+    pageInfo {
+      endCursor
+      hasNextPage
+      hasPreviousPage
+      startCursor
+      __typename
+    }
+    __typename
+  }
+}

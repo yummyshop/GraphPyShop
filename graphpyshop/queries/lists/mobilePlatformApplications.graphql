@@ -1,0 +1,22 @@
+query mobilePlatformApplications($first: Int = 250, $after: String, $last: Int, $before: String, $reverse: Boolean = false) {
+  mobilePlatformApplications(
+    first: $first
+    after: $after
+    last: $last
+    before: $before
+    reverse: $reverse
+  ) {
+    edges {
+      cursor
+      __typename
+    }
+    pageInfo {
+      endCursor
+      hasNextPage
+      hasPreviousPage
+      startCursor
+      __typename
+    }
+    __typename
+  }
+}

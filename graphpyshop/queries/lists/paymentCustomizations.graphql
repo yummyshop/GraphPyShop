@@ -1,0 +1,86 @@
+query paymentCustomizations($first: Int = 250, $after: String, $last: Int, $before: String, $namespace: String, $keys: [String!], $metafields_first_PaymentCustomization: Int = 250, $metafields_after_PaymentCustomization: String, $metafields_last_PaymentCustomization: Int, $metafields_before_PaymentCustomization: String, $reverse: Boolean = false, $paymentCustomizations_first_PaymentCustomizationConnection: Int = 250, $paymentCustomizations_after_PaymentCustomizationConnection: String, $paymentCustomizations_last_PaymentCustomizationConnection: Int, $paymentCustomizations_before_PaymentCustomizationConnection: String, $paymentCustomizations_reverse_PaymentCustomizationConnection: Boolean = false, $query: String) {
+  paymentCustomizations(
+    first: $paymentCustomizations_first_PaymentCustomizationConnection
+    after: $paymentCustomizations_after_PaymentCustomizationConnection
+    last: $paymentCustomizations_last_PaymentCustomizationConnection
+    before: $paymentCustomizations_before_PaymentCustomizationConnection
+    reverse: $paymentCustomizations_reverse_PaymentCustomizationConnection
+    query: $query
+  ) {
+    edges {
+      cursor
+      node {
+        enabled
+        errorHistory {
+          errorsFirstOccurredAt
+          firstOccurredAt
+          hasBeenSharedSinceLastError
+          hasSharedRecentErrors
+          __typename
+        }
+        functionId
+        id
+        metafields(
+          namespace: $namespace
+          keys: $keys
+          first: $metafields_first_PaymentCustomization
+          after: $metafields_after_PaymentCustomization
+          last: $metafields_last_PaymentCustomization
+          before: $metafields_before_PaymentCustomization
+          reverse: $reverse
+        ) {
+          edges {
+            cursor
+            node {
+              createdAt
+              description
+              id
+              key
+              legacyResourceId
+              namespace
+              ownerType
+              references(first: $first, after: $after, last: $last, before: $before) {
+                edges {
+                  cursor
+                  __typename
+                }
+                pageInfo {
+                  endCursor
+                  hasNextPage
+                  hasPreviousPage
+                  startCursor
+                  __typename
+                }
+                __typename
+              }
+              type
+              updatedAt
+              value
+              __typename
+            }
+            __typename
+          }
+          pageInfo {
+            endCursor
+            hasNextPage
+            hasPreviousPage
+            startCursor
+            __typename
+          }
+          __typename
+        }
+        title
+        __typename
+      }
+      __typename
+    }
+    pageInfo {
+      endCursor
+      hasNextPage
+      hasPreviousPage
+      startCursor
+      __typename
+    }
+    __typename
+  }
+}

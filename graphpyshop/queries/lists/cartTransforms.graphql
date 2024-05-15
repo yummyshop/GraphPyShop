@@ -1,0 +1,81 @@
+query cartTransforms($first: Int = 250, $after: String, $last: Int, $before: String, $namespace: String, $keys: [String!], $metafields_first_CartTransform: Int = 250, $metafields_after_CartTransform: String, $metafields_last_CartTransform: Int, $metafields_before_CartTransform: String, $reverse: Boolean = false, $cartTransforms_first_CartTransformConnection: Int = 250, $cartTransforms_after_CartTransformConnection: String, $cartTransforms_last_CartTransformConnection: Int, $cartTransforms_before_CartTransformConnection: String, $cartTransforms_reverse_CartTransformConnection: Boolean = false) {
+  cartTransforms(
+    first: $cartTransforms_first_CartTransformConnection
+    after: $cartTransforms_after_CartTransformConnection
+    last: $cartTransforms_last_CartTransformConnection
+    before: $cartTransforms_before_CartTransformConnection
+    reverse: $cartTransforms_reverse_CartTransformConnection
+  ) {
+    edges {
+      cursor
+      node {
+        blockOnFailure
+        functionId
+        id
+        metafields(
+          namespace: $namespace
+          keys: $keys
+          first: $metafields_first_CartTransform
+          after: $metafields_after_CartTransform
+          last: $metafields_last_CartTransform
+          before: $metafields_before_CartTransform
+          reverse: $reverse
+        ) {
+          edges {
+            cursor
+            node {
+              createdAt
+              definition {
+                id
+                __typename
+              }
+              description
+              id
+              key
+              legacyResourceId
+              namespace
+              ownerType
+              references(first: $first, after: $after, last: $last, before: $before) {
+                edges {
+                  cursor
+                  __typename
+                }
+                pageInfo {
+                  endCursor
+                  hasNextPage
+                  hasPreviousPage
+                  startCursor
+                  __typename
+                }
+                __typename
+              }
+              type
+              updatedAt
+              value
+              __typename
+            }
+            __typename
+          }
+          pageInfo {
+            endCursor
+            hasNextPage
+            hasPreviousPage
+            startCursor
+            __typename
+          }
+          __typename
+        }
+        __typename
+      }
+      __typename
+    }
+    pageInfo {
+      endCursor
+      hasNextPage
+      hasPreviousPage
+      startCursor
+      __typename
+    }
+    __typename
+  }
+}

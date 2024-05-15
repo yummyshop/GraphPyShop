@@ -1,0 +1,7 @@
+query webhookSubscriptionsCount($query: String) {
+  webhookSubscriptionsCount(query: $query) {
+    count
+    precision
+    __typename
+  }
+}

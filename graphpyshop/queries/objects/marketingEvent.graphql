@@ -1,0 +1,25 @@
+query marketingEvent($transform: ImageTransformInput, $url_transform_Image: ImageTransformInput, $id: ID!) {
+  marketingEvent(id: $id) {
+    app {
+      id
+      __typename
+    }
+    channelHandle
+    description
+    endedAt
+    id
+    legacyResourceId
+    manageUrl
+    marketingChannelType
+    previewUrl
+    remoteId
+    scheduledToEndAt
+    sourceAndMedium
+    startedAt
+    type
+    utmCampaign
+    utmMedium
+    utmSource
+    __typename
+  }
+}

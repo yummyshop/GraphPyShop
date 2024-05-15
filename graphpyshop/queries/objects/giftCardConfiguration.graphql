@@ -1,0 +1,15 @@
+query giftCardConfiguration {
+  giftCardConfiguration {
+    issueLimit {
+      amount
+      currencyCode
+      __typename
+    }
+    purchaseLimit {
+      amount
+      currencyCode
+      __typename
+    }
+    __typename
+  }
+}

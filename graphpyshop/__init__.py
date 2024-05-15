@@ -1,5 +1,1 @@
-from . import client 
-from . import extensions
-
-__all__ = ["client", "extensions"]
-
+# Empty in case failed client generation would cause generation functions to fail

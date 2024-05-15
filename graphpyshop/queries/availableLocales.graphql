@@ -1,6 +1,0 @@
-query availableLocales {
-  availableLocales {
-    isoCode
-    name
-  }
-}

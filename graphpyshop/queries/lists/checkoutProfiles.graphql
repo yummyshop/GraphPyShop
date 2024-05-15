@@ -1,0 +1,34 @@
+query checkoutProfiles($first: Int = 250, $after: String, $last: Int, $before: String, $reverse: Boolean = false, $sortKey: CheckoutProfileSortKeys = UPDATED_AT, $query: String) {
+  checkoutProfiles(
+    first: $first
+    after: $after
+    last: $last
+    before: $before
+    reverse: $reverse
+    sortKey: $sortKey
+    query: $query
+  ) {
+    edges {
+      cursor
+      node {
+        createdAt
+        editedAt
+        id
+        isPublished
+        name
+        typOspPagesActive
+        updatedAt
+        __typename
+      }
+      __typename
+    }
+    pageInfo {
+      endCursor
+      hasNextPage
+      hasPreviousPage
+      startCursor
+      __typename
+    }
+    __typename
+  }
+}

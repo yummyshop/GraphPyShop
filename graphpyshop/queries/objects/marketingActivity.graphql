@@ -1,0 +1,72 @@
+query marketingActivity($transform: ImageTransformInput, $url_transform_Image: ImageTransformInput, $id: ID!) {
+  marketingActivity(id: $id) {
+    activityListUrl
+    adSpend {
+      amount
+      currencyCode
+      __typename
+    }
+    adminEditUrl
+    app {
+      id
+      __typename
+    }
+    appErrors {
+      code
+      userErrors {
+        field
+        message
+        __typename
+      }
+      __typename
+    }
+    automationStepType
+    automationTriggerDescription
+    budget {
+      budgetType
+      total {
+        amount
+        currencyCode
+        __typename
+      }
+      __typename
+    }
+    createdAt
+    errorOccurredAt
+    flowEditorUrl
+    formData
+    hierarchyLevel
+    id
+    inMainWorkflowVersion
+    isExternal
+    marketingChannelType
+    marketingEvent {
+      id
+      __typename
+    }
+    parentActivityId
+    parentRemoteId
+    scheduledToEndAt
+    scheduledToStartAt
+    sourceAndMedium
+    status
+    statusBadgeTypeV2
+    statusLabel
+    statusTransitionedAt
+    tactic
+    targetStatus
+    title
+    trackingOpens
+    updatedAt
+    urlParameterValue
+    utmParameters {
+      campaign
+      content
+      medium
+      source
+      term
+      __typename
+    }
+    __typename
+  }
+}

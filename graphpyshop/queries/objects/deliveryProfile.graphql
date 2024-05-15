@@ -1,0 +1,154 @@
+query deliveryProfile($first: Int = 250, $after: String, $last: Int, $before: String, $reverse: Boolean = false, $profileItems_first_DeliveryProfile: Int = 250, $profileItems_after_DeliveryProfile: String, $profileItems_last_DeliveryProfile: Int, $profileItems_before_DeliveryProfile: String, $profileItems_reverse_DeliveryProfile: Boolean = false, $locationGroupZones_first_DeliveryProfileLocationGroup: Int = 250, $locationGroupZones_after_DeliveryProfileLocationGroup: String, $locationGroupZones_last_DeliveryProfileLocationGroup: Int, $locationGroupZones_before_DeliveryProfileLocationGroup: String, $locationGroupZones_reverse_DeliveryProfileLocationGroup: Boolean = false, $locationGroupId: ID, $sellingPlanGroups_first_DeliveryProfile: Int = 250, $sellingPlanGroups_after_DeliveryProfile: String, $sellingPlanGroups_last_DeliveryProfile: Int, $sellingPlanGroups_before_DeliveryProfile: String, $sellingPlanGroups_reverse_DeliveryProfile: Boolean = false, $unassignedLocationsPaginated_first_DeliveryProfile: Int = 250, $unassignedLocationsPaginated_after_DeliveryProfile: String, $unassignedLocationsPaginated_last_DeliveryProfile: Int, $unassignedLocationsPaginated_before_DeliveryProfile: String, $unassignedLocationsPaginated_reverse_DeliveryProfile: Boolean = false, $id: ID!) {
+  deliveryProfile(id: $id) {
+    activeMethodDefinitionsCount
+    default
+    id
+    legacyMode
+    locationsWithoutRatesCount
+    name
+    originLocationCount
+    productVariantsCount {
+      count
+      precision
+      __typename
+    }
+    profileItems(
+      first: $profileItems_first_DeliveryProfile
+      after: $profileItems_after_DeliveryProfile
+      last: $profileItems_last_DeliveryProfile
+      before: $profileItems_before_DeliveryProfile
+      reverse: $profileItems_reverse_DeliveryProfile
+    ) {
+      edges {
+        cursor
+        node {
+          id
+          product {
+            id
+            __typename
+          }
+          variants(
+            first: $first
+            after: $after
+            last: $last
+            before: $before
+            reverse: $reverse
+          ) {
+            edges {
+              cursor
+              node {
+                id
+                __typename
+              }
+              __typename
+            }
+            pageInfo {
+              endCursor
+              hasNextPage
+              hasPreviousPage
+              startCursor
+              __typename
+            }
+            __typename
+          }
+          __typename
+        }
+        __typename
+      }
+      pageInfo {
+        endCursor
+        hasNextPage
+        hasPreviousPage
+        startCursor
+        __typename
+      }
+      __typename
+    }
+    profileLocationGroups(locationGroupId: $locationGroupId) {
+      countriesInAnyZone {
+        zone
+        __typename
+      }
+      locationGroup {
+        id
+        locationsCount
+        __typename
+      }
+      locationGroupZones(
+        first: $locationGroupZones_first_DeliveryProfileLocationGroup
+        after: $locationGroupZones_after_DeliveryProfileLocationGroup
+        last: $locationGroupZones_last_DeliveryProfileLocationGroup
+        before: $locationGroupZones_before_DeliveryProfileLocationGroup
+        reverse: $locationGroupZones_reverse_DeliveryProfileLocationGroup
+      ) {
+        edges {
+          cursor
+          __typename
+        }
+        pageInfo {
+          endCursor
+          hasNextPage
+          hasPreviousPage
+          startCursor
+          __typename
+        }
+        __typename
+      }
+      __typename
+    }
+    sellingPlanGroups(
+      first: $sellingPlanGroups_first_DeliveryProfile
+      after: $sellingPlanGroups_after_DeliveryProfile
+      last: $sellingPlanGroups_last_DeliveryProfile
+      before: $sellingPlanGroups_before_DeliveryProfile
+      reverse: $sellingPlanGroups_reverse_DeliveryProfile
+    ) {
+      edges {
+        cursor
+        node {
+          id
+          __typename
+        }
+        __typename
+      }
+      pageInfo {
+        endCursor
+        hasNextPage
+        hasPreviousPage
+        startCursor
+        __typename
+      }
+      __typename
+    }
+    unassignedLocations {
+      id
+      __typename
+    }
+    unassignedLocationsPaginated(
+      first: $unassignedLocationsPaginated_first_DeliveryProfile
+      after: $unassignedLocationsPaginated_after_DeliveryProfile
+      last: $unassignedLocationsPaginated_last_DeliveryProfile
+      before: $unassignedLocationsPaginated_before_DeliveryProfile
+      reverse: $unassignedLocationsPaginated_reverse_DeliveryProfile
+    ) {
+      edges {
+        cursor
+        node {
+          id
+          __typename
+        }
+        __typename
+      }
+      pageInfo {
+        endCursor
+        hasNextPage
+        hasPreviousPage
+        startCursor
+        __typename
+      }
+      __typename
+    }
+    zoneCountryCount
+    __typename
+  }
+}

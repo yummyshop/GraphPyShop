@@ -1,0 +1,8 @@
+query nftSalesEligibility {
+  nftSalesEligibility {
+    giftingApproved
+    reapplyDate
+    sellApproved
+    __typename
+  }
+}

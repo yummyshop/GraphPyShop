@@ -1,7 +1,0 @@
-query publicApiVersions {
-  publicApiVersions {
-    displayName
-    handle
-    supported
-  }
-}

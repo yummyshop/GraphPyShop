@@ -1,0 +1,49 @@
+query standardMetafieldDefinitionTemplates($first: Int = 250, $after: String, $last: Int, $before: String, $reverse: Boolean = false) {
+  standardMetafieldDefinitionTemplates(
+    first: $first
+    after: $after
+    last: $last
+    before: $before
+    reverse: $reverse
+  ) {
+    edges {
+      cursor
+      node {
+        description
+        id
+        key
+        name
+        namespace
+        ownerTypes
+        type {
+          category
+          name
+          supportedValidations {
+            name
+            type
+            __typename
+          }
+          supportsDefinitionMigrations
+          __typename
+        }
+        validations {
+          name
+          type
+          value
+          __typename
+        }
+        visibleToStorefrontApi
+        __typename
+      }
+      __typename
+    }
+    pageInfo {
+      endCursor
+      hasNextPage
+      hasPreviousPage
+      startCursor
+      __typename
+    }
+    __typename
+  }
+}

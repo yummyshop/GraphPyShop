@@ -1,0 +1,31 @@
+query urlRedirects($first: Int = 250, $after: String, $last: Int, $before: String, $reverse: Boolean = false, $sortKey: UrlRedirectSortKeys = ID, $query: String, $savedSearchId: ID) {
+  urlRedirects(
+    first: $first
+    after: $after
+    last: $last
+    before: $before
+    reverse: $reverse
+    sortKey: $sortKey
+    query: $query
+    savedSearchId: $savedSearchId
+  ) {
+    edges {
+      cursor
+      node {
+        id
+        path
+        target
+        __typename
+      }
+      __typename
+    }
+    pageInfo {
+      endCursor
+      hasNextPage
+      hasPreviousPage
+      startCursor
+      __typename
+    }
+    __typename
+  }
+}

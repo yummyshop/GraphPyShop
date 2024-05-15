@@ -1,7 +1,0 @@
-query serverPixel {
-  serverPixel {
-    id
-    status
-    webhookEndpointAddress
-  }
-}

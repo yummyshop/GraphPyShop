@@ -1,0 +1,9 @@
+query subscriptionGateway {
+  subscriptionGateway {
+    enabled
+    id
+    label
+    testModeEnabled
+    __typename
+  }
+}

@@ -1,0 +1,6 @@
+query shopBillingPreferences {
+  shopBillingPreferences {
+    currency
+    __typename
+  }
+}

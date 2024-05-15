@@ -1,0 +1,133 @@
+query abandonment($first: Int = 250, $after: String, $last: Int, $before: String, $reverse: Boolean = false, $transform: ImageTransformInput, $url_transform_Image: ImageTransformInput, $withName: Boolean = false, $withCompany: Boolean = true, $formatted_withName_MailingAddress: Boolean = false, $formatted_withCompany_MailingAddress: Boolean = true, $productsAddedToCart_first_Abandonment: Int = 250, $productsAddedToCart_after_Abandonment: String, $productsAddedToCart_last_Abandonment: Int, $productsAddedToCart_before_Abandonment: String, $productsAddedToCart_reverse_Abandonment: Boolean = false, $productsViewed_first_Abandonment: Int = 250, $productsViewed_after_Abandonment: String, $productsViewed_last_Abandonment: Int, $productsViewed_before_Abandonment: String, $productsViewed_reverse_Abandonment: Boolean = false, $id: ID!) {
+  abandonment(id: $id) {
+    abandonedCheckoutPayload {
+      abandonedCheckoutUrl
+      defaultCursor
+      id
+      lineItems(
+        first: $first
+        after: $after
+        last: $last
+        before: $before
+        reverse: $reverse
+      ) {
+        edges {
+          cursor
+          node {
+            id
+            quantity
+            sku
+            title
+            variantTitle
+            __typename
+          }
+          __typename
+        }
+        pageInfo {
+          endCursor
+          hasNextPage
+          hasPreviousPage
+          startCursor
+          __typename
+        }
+        __typename
+      }
+      lineItemsQuantity
+      __typename
+    }
+    abandonmentType
+    app {
+      id
+      __typename
+    }
+    cartUrl
+    createdAt
+    customer {
+      id
+      __typename
+    }
+    customerHasNoDraftOrderSinceAbandonment
+    customerHasNoOrderSinceAbandonment
+    daysSinceLastAbandonmentEmail
+    emailSentAt
+    emailState
+    hoursSinceLastAbandonedCheckout
+    id
+    inventoryAvailable
+    isFromCustomStorefront
+    isFromOnlineStore
+    isFromShopApp
+    isFromShopPay
+    isMostSignificantAbandonment
+    lastBrowseAbandonmentDate
+    lastCartAbandonmentDate
+    lastCheckoutAbandonmentDate
+    mostRecentStep
+    productsAddedToCart(
+      first: $productsAddedToCart_first_Abandonment
+      after: $productsAddedToCart_after_Abandonment
+      last: $productsAddedToCart_last_Abandonment
+      before: $productsAddedToCart_before_Abandonment
+      reverse: $productsAddedToCart_reverse_Abandonment
+    ) {
+      edges {
+        cursor
+        node {
+          product {
+            id
+            __typename
+          }
+          quantity
+          variant {
+            id
+            __typename
+          }
+          __typename
+        }
+        __typename
+      }
+      pageInfo {
+        endCursor
+        hasNextPage
+        hasPreviousPage
+        startCursor
+        __typename
+      }
+      __typename
+    }
+    productsViewed(
+      first: $productsViewed_first_Abandonment
+      after: $productsViewed_after_Abandonment
+      last: $productsViewed_last_Abandonment
+      before: $productsViewed_before_Abandonment
+      reverse: $productsViewed_reverse_Abandonment
+    ) {
+      edges {
+        cursor
+        node {
+          product {
+            id
+            __typename
+          }
+          quantity
+          variant {
+            id
+            __typename
+          }
+          __typename
+        }
+        __typename
+      }
+      pageInfo {
+        endCursor
+        hasNextPage
+        hasPreviousPage
+        startCursor
+        __typename
+      }
+      __typename
+    }
+    visitStartedAt
+    __typename
+  }
+}

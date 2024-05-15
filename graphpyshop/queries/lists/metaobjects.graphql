@@ -1,0 +1,152 @@
+query metaobjects($transform: ImageTransformInput, $url_transform_Image: ImageTransformInput, $first: Int = 250, $after: String, $last: Int, $before: String, $referencedBy_first_Metaobject: Int = 250, $referencedBy_after_Metaobject: String, $referencedBy_last_Metaobject: Int, $referencedBy_before_Metaobject: String, $reverse: Boolean = false, $references_first_MetaobjectField: Int = 250, $references_after_MetaobjectField: String, $references_last_MetaobjectField: Int, $references_before_MetaobjectField: String, $type: String!, $sortKey: String, $metaobjects_first_MetaobjectConnection: Int = 250, $metaobjects_after_MetaobjectConnection: String, $metaobjects_last_MetaobjectConnection: Int, $metaobjects_before_MetaobjectConnection: String, $metaobjects_reverse_MetaobjectConnection: Boolean = false, $query: String) {
+  metaobjects(
+    type: $type
+    sortKey: $sortKey
+    first: $metaobjects_first_MetaobjectConnection
+    after: $metaobjects_after_MetaobjectConnection
+    last: $metaobjects_last_MetaobjectConnection
+    before: $metaobjects_before_MetaobjectConnection
+    reverse: $metaobjects_reverse_MetaobjectConnection
+    query: $query
+  ) {
+    edges {
+      cursor
+      node {
+        capabilities {
+          onlineStore {
+            templateSuffix
+            __typename
+          }
+          publishable {
+            status
+            __typename
+          }
+          __typename
+        }
+        createdAt
+        createdBy {
+          id
+          __typename
+        }
+        createdByApp {
+          id
+          __typename
+        }
+        definition {
+          id
+          __typename
+        }
+        displayName
+        fields {
+          definition {
+            description
+            key
+            name
+            required
+            visibleToStorefrontApi
+            __typename
+          }
+          key
+          references(first: $first, after: $after, last: $last, before: $before) {
+            edges {
+              cursor
+              __typename
+            }
+            pageInfo {
+              endCursor
+              hasNextPage
+              hasPreviousPage
+              startCursor
+              __typename
+            }
+            __typename
+          }
+          thumbnail {
+            hex
+            __typename
+          }
+          type
+          value
+          __typename
+        }
+        handle
+        id
+        referencedBy(
+          first: $referencedBy_first_Metaobject
+          after: $referencedBy_after_Metaobject
+          last: $referencedBy_last_Metaobject
+          before: $referencedBy_before_Metaobject
+          reverse: $reverse
+        ) {
+          edges {
+            cursor
+            node {
+              key
+              name
+              namespace
+              __typename
+            }
+            __typename
+          }
+          pageInfo {
+            endCursor
+            hasNextPage
+            hasPreviousPage
+            startCursor
+            __typename
+          }
+          __typename
+        }
+        thumbnailField {
+          definition {
+            description
+            key
+            name
+            required
+            visibleToStorefrontApi
+            __typename
+          }
+          key
+          references(
+            first: $references_first_MetaobjectField
+            after: $references_after_MetaobjectField
+            last: $references_last_MetaobjectField
+            before: $references_before_MetaobjectField
+          ) {
+            edges {
+              cursor
+              __typename
+            }
+            pageInfo {
+              endCursor
+              hasNextPage
+              hasPreviousPage
+              startCursor
+              __typename
+            }
+            __typename
+          }
+          thumbnail {
+            hex
+            __typename
+          }
+          type
+          value
+          __typename
+        }
+        type
+        updatedAt
+        __typename
+      }
+      __typename
+    }
+    pageInfo {
+      endCursor
+      hasNextPage
+      hasPreviousPage
+      startCursor
+      __typename
+    }
+    __typename
+  }
+}

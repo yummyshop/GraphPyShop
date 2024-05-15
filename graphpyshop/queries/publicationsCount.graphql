@@ -1,6 +1,0 @@
-query publicationsCount($publicationsCount_catalogType: CatalogType) {
-  publicationsCount(catalogType: $publicationsCount_catalogType) {
-    count
-    precision
-  }
-}

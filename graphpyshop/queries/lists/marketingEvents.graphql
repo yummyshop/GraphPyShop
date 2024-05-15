@@ -1,0 +1,47 @@
+query marketingEvents($transform: ImageTransformInput, $url_transform_Image: ImageTransformInput, $first: Int = 250, $after: String, $last: Int, $before: String, $reverse: Boolean = false, $sortKey: MarketingEventSortKeys = ID, $query: String) {
+  marketingEvents(
+    first: $first
+    after: $after
+    last: $last
+    before: $before
+    reverse: $reverse
+    sortKey: $sortKey
+    query: $query
+  ) {
+    edges {
+      cursor
+      node {
+        app {
+          id
+          __typename
+        }
+        channelHandle
+        description
+        endedAt
+        id
+        legacyResourceId
+        manageUrl
+        marketingChannelType
+        previewUrl
+        remoteId
+        scheduledToEndAt
+        sourceAndMedium
+        startedAt
+        type
+        utmCampaign
+        utmMedium
+        utmSource
+        __typename
+      }
+      __typename
+    }
+    pageInfo {
+      endCursor
+      hasNextPage
+      hasPreviousPage
+      startCursor
+      __typename
+    }
+    __typename
+  }
+}

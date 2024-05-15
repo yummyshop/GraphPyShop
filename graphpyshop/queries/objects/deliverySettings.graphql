@@ -1,0 +1,11 @@
+query deliverySettings {
+  deliverySettings {
+    legacyModeBlocked {
+      blocked
+      reasons
+      __typename
+    }
+    legacyModeProfiles
+    __typename
+  }
+}

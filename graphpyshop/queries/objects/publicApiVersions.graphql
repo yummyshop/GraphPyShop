@@ -1,0 +1,8 @@
+query publicApiVersions {
+  publicApiVersions {
+    displayName
+    handle
+    supported
+    __typename
+  }
+}

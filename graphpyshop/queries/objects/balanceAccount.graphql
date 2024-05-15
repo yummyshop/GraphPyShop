@@ -1,0 +1,19 @@
+query balanceAccount {
+  balanceAccount {
+    bankAccounts {
+      accountNumber
+      availableBalance {
+        amount
+        currencyCode
+        __typename
+      }
+      id
+      nickname
+      primary
+      routingNumber
+      status
+      __typename
+    }
+    __typename
+  }
+}

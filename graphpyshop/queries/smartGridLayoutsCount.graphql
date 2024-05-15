@@ -1,9 +1,0 @@
-query smartGridLayoutsCount($smartGridLayoutsCount_enabled: Boolean = null, $smartGridLayoutsCount_query: String) {
-  smartGridLayoutsCount(
-    enabled: $smartGridLayoutsCount_enabled
-    query: $smartGridLayoutsCount_query
-  ) {
-    count
-    precision
-  }
-}

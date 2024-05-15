@@ -1,0 +1,9 @@
+query privacySettings {
+  privacySettings {
+    banner {
+      enabled
+      __typename
+    }
+    __typename
+  }
+}

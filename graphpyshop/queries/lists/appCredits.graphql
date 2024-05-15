@@ -1,0 +1,35 @@
+query appCredits($first: Int = 250, $after: String, $last: Int, $before: String, $reverse: Boolean = false, $sortKey: AppTransactionSortKeys = CREATED_AT) {
+  appCredits(
+    first: $first
+    after: $after
+    last: $last
+    before: $before
+    reverse: $reverse
+    sortKey: $sortKey
+  ) {
+    edges {
+      cursor
+      node {
+        amount {
+          amount
+          currencyCode
+          __typename
+        }
+        createdAt
+        description
+        id
+        test
+        __typename
+      }
+      __typename
+    }
+    pageInfo {
+      endCursor
+      hasNextPage
+      hasPreviousPage
+      startCursor
+      __typename
+    }
+    __typename
+  }
+}

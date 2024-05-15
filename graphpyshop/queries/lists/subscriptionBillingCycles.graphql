@@ -1,0 +1,214 @@
+query subscriptionBillingCycles($first: Int = 250, $after: String, $last: Int, $before: String, $reverse: Boolean = false, $billingCycles_first_SubscriptionBillingCycleEditedContract: Int = 250, $billingCycles_after_SubscriptionBillingCycleEditedContract: String, $billingCycles_last_SubscriptionBillingCycleEditedContract: Int, $billingCycles_before_SubscriptionBillingCycleEditedContract: String, $billingCycles_reverse_SubscriptionBillingCycleEditedContract: Boolean = false, $sortKey: SubscriptionBillingCyclesSortKeys = CYCLE_INDEX, $showRevoked: Boolean = false, $discounts_first_SubscriptionBillingCycleEditedContract: Int = 250, $discounts_after_SubscriptionBillingCycleEditedContract: String, $discounts_last_SubscriptionBillingCycleEditedContract: Int, $discounts_before_SubscriptionBillingCycleEditedContract: String, $discounts_reverse_SubscriptionBillingCycleEditedContract: Boolean = false, $lines_first_SubscriptionBillingCycleEditedContract: Int = 250, $lines_after_SubscriptionBillingCycleEditedContract: String, $lines_last_SubscriptionBillingCycleEditedContract: Int, $lines_before_SubscriptionBillingCycleEditedContract: String, $lines_reverse_SubscriptionBillingCycleEditedContract: Boolean = false, $orders_first_SubscriptionBillingCycleEditedContract: Int = 250, $orders_after_SubscriptionBillingCycleEditedContract: String, $orders_last_SubscriptionBillingCycleEditedContract: Int, $orders_before_SubscriptionBillingCycleEditedContract: String, $orders_reverse_SubscriptionBillingCycleEditedContract: Boolean = false, $calculateTaxes: Boolean = true, $contractId: ID!, $billingCyclesDateRangeSelector: SubscriptionBillingCyclesDateRangeSelector, $billingCyclesIndexRangeSelector: SubscriptionBillingCyclesIndexRangeSelector, $subscriptionBillingCycles_first_SubscriptionBillingCycleConnection: Int = 250, $subscriptionBillingCycles_after_SubscriptionBillingCycleConnection: String, $subscriptionBillingCycles_last_SubscriptionBillingCycleConnection: Int, $subscriptionBillingCycles_before_SubscriptionBillingCycleConnection: String, $subscriptionBillingCycles_reverse_SubscriptionBillingCycleConnection: Boolean = false, $subscriptionBillingCycles_sortKey_SubscriptionBillingCycleConnection: SubscriptionBillingCyclesSortKeys = CYCLE_INDEX) {
+  subscriptionBillingCycles(
+    contractId: $contractId
+    billingCyclesDateRangeSelector: $billingCyclesDateRangeSelector
+    billingCyclesIndexRangeSelector: $billingCyclesIndexRangeSelector
+    first: $subscriptionBillingCycles_first_SubscriptionBillingCycleConnection
+    after: $subscriptionBillingCycles_after_SubscriptionBillingCycleConnection
+    last: $subscriptionBillingCycles_last_SubscriptionBillingCycleConnection
+    before: $subscriptionBillingCycles_before_SubscriptionBillingCycleConnection
+    reverse: $subscriptionBillingCycles_reverse_SubscriptionBillingCycleConnection
+    sortKey: $subscriptionBillingCycles_sortKey_SubscriptionBillingCycleConnection
+  ) {
+    edges {
+      cursor
+      node {
+        billingAttemptExpectedDate
+        billingAttempts(
+          first: $first
+          after: $after
+          last: $last
+          before: $before
+          reverse: $reverse
+        ) {
+          edges {
+            cursor
+            node {
+              id
+              __typename
+            }
+            __typename
+          }
+          pageInfo {
+            endCursor
+            hasNextPage
+            hasPreviousPage
+            startCursor
+            __typename
+          }
+          __typename
+        }
+        cycleEndAt
+        cycleIndex
+        cycleStartAt
+        edited
+        editedContract {
+          app {
+            id
+            __typename
+          }
+          appAdminUrl
+          billingCycles(
+            first: $billingCycles_first_SubscriptionBillingCycleEditedContract
+            after: $billingCycles_after_SubscriptionBillingCycleEditedContract
+            last: $billingCycles_last_SubscriptionBillingCycleEditedContract
+            before: $billingCycles_before_SubscriptionBillingCycleEditedContract
+            reverse: $billingCycles_reverse_SubscriptionBillingCycleEditedContract
+            sortKey: $sortKey
+          ) {
+            edges {
+              cursor
+              __typename
+            }
+            pageInfo {
+              endCursor
+              hasNextPage
+              hasPreviousPage
+              startCursor
+              __typename
+            }
+            __typename
+          }
+          createdAt
+          currencyCode
+          customAttributes {
+            key
+            value
+            __typename
+          }
+          customer {
+            id
+            __typename
+          }
+          customerPaymentMethod(showRevoked: $showRevoked) {
+            id
+            revokedAt
+            revokedReason
+            __typename
+          }
+          deliveryPrice {
+            amount
+            currencyCode
+            __typename
+          }
+          discounts(
+            first: $discounts_first_SubscriptionBillingCycleEditedContract
+            after: $discounts_after_SubscriptionBillingCycleEditedContract
+            last: $discounts_last_SubscriptionBillingCycleEditedContract
+            before: $discounts_before_SubscriptionBillingCycleEditedContract
+            reverse: $discounts_reverse_SubscriptionBillingCycleEditedContract
+          ) {
+            edges {
+              cursor
+              node {
+                id
+                recurringCycleLimit
+                rejectionReason
+                targetType
+                title
+                type
+                usageCount
+                __typename
+              }
+              __typename
+            }
+            pageInfo {
+              endCursor
+              hasNextPage
+              hasPreviousPage
+              startCursor
+              __typename
+            }
+            __typename
+          }
+          lines(
+            first: $lines_first_SubscriptionBillingCycleEditedContract
+            after: $lines_after_SubscriptionBillingCycleEditedContract
+            last: $lines_last_SubscriptionBillingCycleEditedContract
+            before: $lines_before_SubscriptionBillingCycleEditedContract
+            reverse: $lines_reverse_SubscriptionBillingCycleEditedContract
+          ) {
+            edges {
+              cursor
+              node {
+                id
+                productId
+                quantity
+                requiresShipping
+                sellingPlanId
+                sellingPlanName
+                sku
+                taxable
+                title
+                variantId
+                variantTitle
+                __typename
+              }
+              __typename
+            }
+            pageInfo {
+              endCursor
+              hasNextPage
+              hasPreviousPage
+              startCursor
+              __typename
+            }
+            __typename
+          }
+          linesCount {
+            count
+            precision
+            __typename
+          }
+          note
+          orders(
+            first: $orders_first_SubscriptionBillingCycleEditedContract
+            after: $orders_after_SubscriptionBillingCycleEditedContract
+            last: $orders_last_SubscriptionBillingCycleEditedContract
+            before: $orders_before_SubscriptionBillingCycleEditedContract
+            reverse: $orders_reverse_SubscriptionBillingCycleEditedContract
+          ) {
+            edges {
+              cursor
+              node {
+                id
+                __typename
+              }
+              __typename
+            }
+            pageInfo {
+              endCursor
+              hasNextPage
+              hasPreviousPage
+              startCursor
+              __typename
+            }
+            __typename
+          }
+          priceBreakdownEstimate(calculateTaxes: $calculateTaxes) {
+            taxesIncluded
+            __typename
+          }
+          updatedAt
+          __typename
+        }
+        skipped
+        sourceContract {
+          id
+          __typename
+        }
+        status
+        __typename
+      }
+      __typename
+    }
+    pageInfo {
+      endCursor
+      hasNextPage
+      hasPreviousPage
+      startCursor
+      __typename
+    }
+    __typename
+  }
+}

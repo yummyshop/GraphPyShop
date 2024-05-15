@@ -1,6 +1,0 @@
-query consentPolicyRegions {
-  consentPolicyRegions {
-    countryCode
-    regionCode
-  }
-}

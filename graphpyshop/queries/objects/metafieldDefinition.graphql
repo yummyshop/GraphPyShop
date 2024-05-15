@@ -1,0 +1,103 @@
+query metafieldDefinition($first: Int = 250, $after: String, $last: Int, $before: String, $validationStatus: MetafieldValidationStatus = ANY, $metafields_first_MetafieldDefinition: Int = 250, $metafields_after_MetafieldDefinition: String, $metafields_last_MetafieldDefinition: Int, $metafields_before_MetafieldDefinition: String, $reverse: Boolean = false, $metafieldsCount_validationStatus_MetafieldDefinition: MetafieldValidationStatus, $id: ID!) {
+  metafieldDefinition(id: $id) {
+    access {
+      admin
+      customerAccount
+      grants {
+        access
+        grantee
+        __typename
+      }
+      storefront
+      __typename
+    }
+    createdAt
+    description
+    id
+    key
+    metafields(
+      validationStatus: $validationStatus
+      first: $metafields_first_MetafieldDefinition
+      after: $metafields_after_MetafieldDefinition
+      last: $metafields_last_MetafieldDefinition
+      before: $metafields_before_MetafieldDefinition
+      reverse: $reverse
+    ) {
+      edges {
+        cursor
+        node {
+          createdAt
+          definition {
+            id
+            __typename
+          }
+          description
+          id
+          key
+          legacyResourceId
+          namespace
+          ownerType
+          references(first: $first, after: $after, last: $last, before: $before) {
+            edges {
+              cursor
+              __typename
+            }
+            pageInfo {
+              endCursor
+              hasNextPage
+              hasPreviousPage
+              startCursor
+              __typename
+            }
+            __typename
+          }
+          type
+          updatedAt
+          value
+          __typename
+        }
+        __typename
+      }
+      pageInfo {
+        endCursor
+        hasNextPage
+        hasPreviousPage
+        startCursor
+        __typename
+      }
+      __typename
+    }
+    metafieldsCount(
+      validationStatus: $metafieldsCount_validationStatus_MetafieldDefinition
+    )
+    name
+    namespace
+    ownerType
+    pinnedPosition
+    standardTemplate {
+      id
+      __typename
+    }
+    type {
+      category
+      name
+      supportedValidations {
+        name
+        type
+        __typename
+      }
+      supportsDefinitionMigrations
+      __typename
+    }
+    updatedAt
+    useAsCollectionCondition
+    validationStatus
+    validations {
+      name
+      type
+      value
+      __typename
+    }
+    __typename
+  }
+}

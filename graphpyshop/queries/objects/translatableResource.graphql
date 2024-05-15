@@ -1,0 +1,39 @@
+query translatableResource($resourceType: TranslatableResourceType, $first: Int = 250, $after: String, $last: Int, $before: String, $reverse: Boolean = false, $resourceId: ID!) {
+  translatableResource(resourceId: $resourceId) {
+    nestedTranslatableResources(
+      resourceType: $resourceType
+      first: $first
+      after: $after
+      last: $last
+      before: $before
+      reverse: $reverse
+    ) {
+      edges {
+        cursor
+        node {
+          resourceId
+          __typename
+        }
+        __typename
+      }
+      pageInfo {
+        endCursor
+        hasNextPage
+        hasPreviousPage
+        startCursor
+        __typename
+      }
+      __typename
+    }
+    resourceId
+    translatableContent {
+      digest
+      key
+      locale
+      type
+      value
+      __typename
+    }
+    __typename
+  }
+}

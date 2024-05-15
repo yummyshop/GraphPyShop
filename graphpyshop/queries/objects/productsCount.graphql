@@ -1,0 +1,7 @@
+query productsCount($query: String, $savedSearchId: ID, $limit: Int) {
+  productsCount(query: $query, savedSearchId: $savedSearchId, limit: $limit) {
+    count
+    precision
+    __typename
+  }
+}

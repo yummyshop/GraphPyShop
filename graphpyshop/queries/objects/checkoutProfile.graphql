@@ -1,0 +1,12 @@
+query checkoutProfile($id: ID!) {
+  checkoutProfile(id: $id) {
+    createdAt
+    editedAt
+    id
+    isPublished
+    name
+    typOspPagesActive
+    updatedAt
+    __typename
+  }
+}

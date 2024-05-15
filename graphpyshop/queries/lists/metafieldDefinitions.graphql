@@ -1,0 +1,75 @@
+query metafieldDefinitions($validationStatus: MetafieldValidationStatus, $key: String, $namespace: String, $ownerType: MetafieldOwnerType!, $pinnedStatus: MetafieldDefinitionPinnedStatus = ANY, $first: Int = 250, $after: String, $last: Int, $before: String, $reverse: Boolean = false, $sortKey: MetafieldDefinitionSortKeys = ID, $query: String) {
+  metafieldDefinitions(
+    key: $key
+    namespace: $namespace
+    ownerType: $ownerType
+    pinnedStatus: $pinnedStatus
+    first: $first
+    after: $after
+    last: $last
+    before: $before
+    reverse: $reverse
+    sortKey: $sortKey
+    query: $query
+  ) {
+    edges {
+      cursor
+      node {
+        access {
+          admin
+          customerAccount
+          grants {
+            access
+            grantee
+            __typename
+          }
+          storefront
+          __typename
+        }
+        createdAt
+        description
+        id
+        key
+        metafieldsCount(validationStatus: $validationStatus)
+        name
+        namespace
+        ownerType
+        pinnedPosition
+        standardTemplate {
+          id
+          __typename
+        }
+        type {
+          category
+          name
+          supportedValidations {
+            name
+            type
+            __typename
+          }
+          supportsDefinitionMigrations
+          __typename
+        }
+        updatedAt
+        useAsCollectionCondition
+        validationStatus
+        validations {
+          name
+          type
+          value
+          __typename
+        }
+        __typename
+      }
+      __typename
+    }
+    pageInfo {
+      endCursor
+      hasNextPage
+      hasPreviousPage
+      startCursor
+      __typename
+    }
+    __typename
+  }
+}

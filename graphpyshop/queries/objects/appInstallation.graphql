@@ -1,0 +1,234 @@
+query appInstallation($first: Int = 250, $after: String, $last: Int, $before: String, $reverse: Boolean = false, $sortKey: AppSubscriptionSortKeys = CREATED_AT, $transform: ImageTransformInput, $url_transform_Image: ImageTransformInput, $credits_first_AppInstallation: Int = 250, $credits_after_AppInstallation: String, $credits_last_AppInstallation: Int, $credits_before_AppInstallation: String, $credits_reverse_AppInstallation: Boolean = false, $credits_sortKey_AppInstallation: AppTransactionSortKeys = CREATED_AT, $references_first_Metafield: Int = 250, $references_after_Metafield: String, $references_last_Metafield: Int, $references_before_Metafield: String, $namespace: String, $keys: [String!], $metafields_first_AppInstallation: Int = 250, $metafields_after_AppInstallation: String, $metafields_last_AppInstallation: Int, $metafields_before_AppInstallation: String, $metafields_reverse_AppInstallation: Boolean = false, $oneTimePurchases_first_AppInstallation: Int = 250, $oneTimePurchases_after_AppInstallation: String, $oneTimePurchases_last_AppInstallation: Int, $oneTimePurchases_before_AppInstallation: String, $oneTimePurchases_reverse_AppInstallation: Boolean = false, $oneTimePurchases_sortKey_AppInstallation: AppTransactionSortKeys = CREATED_AT, $revenueAttributionRecords_first_AppInstallation: Int = 250, $revenueAttributionRecords_after_AppInstallation: String, $revenueAttributionRecords_last_AppInstallation: Int, $revenueAttributionRecords_before_AppInstallation: String, $revenueAttributionRecords_reverse_AppInstallation: Boolean = false, $revenueAttributionRecords_sortKey_AppInstallation: AppRevenueAttributionRecordSortKeys = CREATED_AT, $id: ID) {
+  appInstallation(id: $id) {
+    accessScopes {
+      description
+      handle
+      __typename
+    }
+    activeSubscriptions {
+      app {
+        id
+        __typename
+      }
+      createdAt
+      currentPeriodEnd
+      id
+      lineItems {
+        id
+        __typename
+      }
+      name
+      returnUrl
+      status
+      test
+      trialDays
+      __typename
+    }
+    allSubscriptions(
+      first: $first
+      after: $after
+      last: $last
+      before: $before
+      reverse: $reverse
+      sortKey: $sortKey
+    ) {
+      edges {
+        cursor
+        node {
+          app {
+            id
+            __typename
+          }
+          createdAt
+          currentPeriodEnd
+          id
+          lineItems {
+            id
+            __typename
+          }
+          name
+          returnUrl
+          status
+          test
+          trialDays
+          __typename
+        }
+        __typename
+      }
+      pageInfo {
+        endCursor
+        hasNextPage
+        hasPreviousPage
+        startCursor
+        __typename
+      }
+      __typename
+    }
+    app {
+      id
+      __typename
+    }
+    credits(
+      first: $credits_first_AppInstallation
+      after: $credits_after_AppInstallation
+      last: $credits_last_AppInstallation
+      before: $credits_before_AppInstallation
+      reverse: $credits_reverse_AppInstallation
+      sortKey: $credits_sortKey_AppInstallation
+    ) {
+      edges {
+        cursor
+        node {
+          id
+          __typename
+        }
+        __typename
+      }
+      pageInfo {
+        endCursor
+        hasNextPage
+        hasPreviousPage
+        startCursor
+        __typename
+      }
+      __typename
+    }
+    id
+    launchUrl
+    metafields(
+      namespace: $namespace
+      keys: $keys
+      first: $metafields_first_AppInstallation
+      after: $metafields_after_AppInstallation
+      last: $metafields_last_AppInstallation
+      before: $metafields_before_AppInstallation
+      reverse: $metafields_reverse_AppInstallation
+    ) {
+      edges {
+        cursor
+        node {
+          createdAt
+          definition {
+            id
+            __typename
+          }
+          description
+          id
+          key
+          legacyResourceId
+          namespace
+          ownerType
+          references(
+            first: $references_first_Metafield
+            after: $references_after_Metafield
+            last: $references_last_Metafield
+            before: $references_before_Metafield
+          ) {
+            edges {
+              cursor
+              __typename
+            }
+            pageInfo {
+              endCursor
+              hasNextPage
+              hasPreviousPage
+              startCursor
+              __typename
+            }
+            __typename
+          }
+          type
+          updatedAt
+          value
+          __typename
+        }
+        __typename
+      }
+      pageInfo {
+        endCursor
+        hasNextPage
+        hasPreviousPage
+        startCursor
+        __typename
+      }
+      __typename
+    }
+    oneTimePurchases(
+      first: $oneTimePurchases_first_AppInstallation
+      after: $oneTimePurchases_after_AppInstallation
+      last: $oneTimePurchases_last_AppInstallation
+      before: $oneTimePurchases_before_AppInstallation
+      reverse: $oneTimePurchases_reverse_AppInstallation
+      sortKey: $oneTimePurchases_sortKey_AppInstallation
+    ) {
+      edges {
+        cursor
+        node {
+          createdAt
+          id
+          name
+          price {
+            amount
+            currencyCode
+            __typename
+          }
+          returnUrl
+          status
+          test
+          __typename
+        }
+        __typename
+      }
+      pageInfo {
+        endCursor
+        hasNextPage
+        hasPreviousPage
+        startCursor
+        __typename
+      }
+      __typename
+    }
+    publication {
+      id
+      __typename
+    }
+    revenueAttributionRecords(
+      first: $revenueAttributionRecords_first_AppInstallation
+      after: $revenueAttributionRecords_after_AppInstallation
+      last: $revenueAttributionRecords_last_AppInstallation
+      before: $revenueAttributionRecords_before_AppInstallation
+      reverse: $revenueAttributionRecords_reverse_AppInstallation
+      sortKey: $revenueAttributionRecords_sortKey_AppInstallation
+    ) {
+      edges {
+        cursor
+        node {
+          amount {
+            amount
+            currencyCode
+            __typename
+          }
+          capturedAt
+          createdAt
+          id
+          idempotencyKey
+          test
+          type
+          __typename
+        }
+        __typename
+      }
+      pageInfo {
+        endCursor
+        hasNextPage
+        hasPreviousPage
+        startCursor
+        __typename
+      }
+      __typename
+    }
+    storefrontApiAccessible
+    uninstallUrl
+    __typename
+  }
+}

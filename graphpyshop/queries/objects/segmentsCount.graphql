@@ -1,0 +1,7 @@
+query segmentsCount {
+  segmentsCount {
+    count
+    precision
+    __typename
+  }
+}

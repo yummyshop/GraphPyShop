@@ -1,9 +1,0 @@
-query segment($segment_id: ID!) {
-  segment(id: $segment_id) {
-    creationDate
-    id
-    lastEditDate
-    name
-    query
-  }
-}

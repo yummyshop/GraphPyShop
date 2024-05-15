@@ -1,0 +1,8 @@
+query urlRedirect($id: ID!) {
+  urlRedirect(id: $id) {
+    id
+    path
+    target
+    __typename
+  }
+}

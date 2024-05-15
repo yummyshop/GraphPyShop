@@ -1,6 +1,0 @@
-query segmentsCount {
-  segmentsCount {
-    count
-    precision
-  }
-}

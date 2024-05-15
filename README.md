@@ -45,7 +45,8 @@ asyncio.run(fetch_products())
 - Update remote_schema_url in pyproject.toml
 
 Modify and the required graphql queries under `graphpyshop/queries`
-Run `python -m graphpyshop generate` to generate the code for the client
+Run `python -m graphpyshop generate-queries` to generate graphql queries for the client
+Run `python -m graphpyshop generate-client` to generate the code for the client
 Run `python -m build` to build the client
 
 # Roadmap

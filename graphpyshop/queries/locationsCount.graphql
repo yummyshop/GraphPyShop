@@ -1,6 +1,0 @@
-query locationsCount($locationsCount_query: String) {
-  locationsCount(query: $locationsCount_query) {
-    count
-    precision
-  }
-}

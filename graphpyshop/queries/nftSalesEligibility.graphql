@@ -1,7 +1,0 @@
-query nftSalesEligibility {
-  nftSalesEligibility {
-    giftingApproved
-    reapplyDate
-    sellApproved
-  }
-}

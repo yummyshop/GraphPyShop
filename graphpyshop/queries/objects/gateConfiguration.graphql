@@ -1,0 +1,132 @@
+query gateConfiguration($first: Int = 250, $after: String, $last: Int, $before: String, $namespace: String, $keys: [String!], $metafields_first_GateConfiguration: Int = 250, $metafields_after_GateConfiguration: String, $metafields_last_GateConfiguration: Int, $metafields_before_GateConfiguration: String, $reverse: Boolean = false, $truncateAt: Int, $id: ID!, $context: ContextualPublicationContext!, $publicationId: ID!, $includeInactive: Boolean = false, $subjectBindings_first_GateConfiguration: Int = 250, $subjectBindings_after_GateConfiguration: String, $subjectBindings_last_GateConfiguration: Int, $subjectBindings_before_GateConfiguration: String, $subjectBindings_reverse_GateConfiguration: Boolean = false, $gateConfiguration_id_GateConfiguration: ID!) {
+  gateConfiguration(id: $gateConfiguration_id_GateConfiguration) {
+    createdAt
+    defaultCursor
+    handle
+    id
+    metafields(
+      namespace: $namespace
+      keys: $keys
+      first: $metafields_first_GateConfiguration
+      after: $metafields_after_GateConfiguration
+      last: $metafields_last_GateConfiguration
+      before: $metafields_before_GateConfiguration
+      reverse: $reverse
+    ) {
+      edges {
+        cursor
+        node {
+          createdAt
+          definition {
+            id
+            __typename
+          }
+          description
+          id
+          key
+          legacyResourceId
+          namespace
+          ownerType
+          references(first: $first, after: $after, last: $last, before: $before) {
+            edges {
+              cursor
+              __typename
+            }
+            pageInfo {
+              endCursor
+              hasNextPage
+              hasPreviousPage
+              startCursor
+              __typename
+            }
+            __typename
+          }
+          type
+          updatedAt
+          value
+          __typename
+        }
+        __typename
+      }
+      pageInfo {
+        endCursor
+        hasNextPage
+        hasPreviousPage
+        startCursor
+        __typename
+      }
+      __typename
+    }
+    name
+    subjectBindings(
+      includeInactive: $includeInactive
+      first: $subjectBindings_first_GateConfiguration
+      after: $subjectBindings_after_GateConfiguration
+      last: $subjectBindings_last_GateConfiguration
+      before: $subjectBindings_before_GateConfiguration
+      reverse: $subjectBindings_reverse_GateConfiguration
+    ) {
+      edges {
+        cursor
+        node {
+          active
+          configuration {
+            id
+            __typename
+          }
+          createdAt
+          defaultCursor
+          id
+          subject {
+            ... on Product {
+              combinedListingRole
+              createdAt
+              defaultCursor
+              description(truncateAt: $truncateAt)
+              descriptionHtml
+              giftCardTemplateSuffix
+              handle
+              hasOnlyDefaultVariant
+              hasOutOfStockVariants
+              hasVariantsThatRequiresComponents
+              id
+              inCollection(id: $id)
+              isGiftCard
+              legacyResourceId
+              onlineStorePreviewUrl
+              onlineStoreUrl
+              productType
+              publishedAt
+              publishedInContext(context: $context)
+              publishedOnCurrentPublication
+              publishedOnPublication(publicationId: $publicationId)
+              requiresSellingPlan
+              status
+              tags
+              templateSuffix
+              title
+              totalInventory
+              tracksInventory
+              updatedAt
+              vendor
+              __typename
+            }
+          }
+          updatedAt
+          __typename
+        }
+        __typename
+      }
+      pageInfo {
+        endCursor
+        hasNextPage
+        hasPreviousPage
+        startCursor
+        __typename
+      }
+      __typename
+    }
+    updatedAt
+    __typename
+  }
+}

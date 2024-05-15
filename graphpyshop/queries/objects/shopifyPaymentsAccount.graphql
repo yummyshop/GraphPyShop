@@ -1,0 +1,251 @@
+query shopifyPaymentsAccount($hideTransfers: Boolean = false, $first: Int = 250, $after: String, $last: Int, $before: String, $reverse: Boolean = false, $sortKey: BalanceTransactionSortKeys = PROCESSED_AT, $query: String, $savedSearchId: ID, $transactionType: ShopifyPaymentsPayoutTransactionType, $payouts_first_ShopifyPaymentsBankAccount: Int = 250, $payouts_after_ShopifyPaymentsBankAccount: String, $payouts_last_ShopifyPaymentsBankAccount: Int, $payouts_before_ShopifyPaymentsBankAccount: String, $payouts_reverse_ShopifyPaymentsBankAccount: Boolean = false, $bankAccounts_first_ShopifyPaymentsAccount: Int = 250, $bankAccounts_after_ShopifyPaymentsAccount: String, $bankAccounts_last_ShopifyPaymentsAccount: Int, $bankAccounts_before_ShopifyPaymentsAccount: String, $bankAccounts_reverse_ShopifyPaymentsAccount: Boolean = false, $disputes_first_ShopifyPaymentsAccount: Int = 250, $disputes_after_ShopifyPaymentsAccount: String, $disputes_last_ShopifyPaymentsAccount: Int, $disputes_before_ShopifyPaymentsAccount: String, $disputes_reverse_ShopifyPaymentsAccount: Boolean = false, $disputes_query_ShopifyPaymentsAccount: String, $payouts_transactionType_ShopifyPaymentsAccount: ShopifyPaymentsPayoutTransactionType, $payouts_first_ShopifyPaymentsAccount: Int = 250, $payouts_after_ShopifyPaymentsAccount: String, $payouts_last_ShopifyPaymentsAccount: Int, $payouts_before_ShopifyPaymentsAccount: String, $payouts_reverse_ShopifyPaymentsAccount: Boolean = false) {
+  shopifyPaymentsAccount {
+    activated
+    balance {
+      amount
+      currencyCode
+      __typename
+    }
+    balanceTransactions(
+      hideTransfers: $hideTransfers
+      first: $first
+      after: $after
+      last: $last
+      before: $before
+      reverse: $reverse
+      sortKey: $sortKey
+      query: $query
+      savedSearchId: $savedSearchId
+    ) {
+      edges {
+        cursor
+        node {
+          adjustmentsOrders {
+            link
+            name
+            __typename
+          }
+          amount {
+            amount
+            currencyCode
+            __typename
+          }
+          associatedOrder {
+            id
+            name
+            __typename
+          }
+          associatedPayout {
+            id
+            status
+            __typename
+          }
+          fee {
+            amount
+            currencyCode
+            __typename
+          }
+          id
+          net {
+            amount
+            currencyCode
+            __typename
+          }
+          sourceType
+          test
+          transactionDate
+          type
+          __typename
+        }
+        __typename
+      }
+      pageInfo {
+        endCursor
+        hasNextPage
+        hasPreviousPage
+        startCursor
+        __typename
+      }
+      __typename
+    }
+    bankAccounts(
+      first: $bankAccounts_first_ShopifyPaymentsAccount
+      after: $bankAccounts_after_ShopifyPaymentsAccount
+      last: $bankAccounts_last_ShopifyPaymentsAccount
+      before: $bankAccounts_before_ShopifyPaymentsAccount
+      reverse: $bankAccounts_reverse_ShopifyPaymentsAccount
+    ) {
+      edges {
+        cursor
+        node {
+          accountNumber
+          accountNumberLastDigits
+          bankName
+          country
+          createdAt
+          currency
+          id
+          payouts(
+            transactionType: $transactionType
+            first: $payouts_first_ShopifyPaymentsBankAccount
+            after: $payouts_after_ShopifyPaymentsBankAccount
+            last: $payouts_last_ShopifyPaymentsBankAccount
+            before: $payouts_before_ShopifyPaymentsBankAccount
+            reverse: $payouts_reverse_ShopifyPaymentsBankAccount
+          ) {
+            edges {
+              cursor
+              node {
+                id
+                issuedAt
+                legacyResourceId
+                status
+                transactionType
+                __typename
+              }
+              __typename
+            }
+            pageInfo {
+              endCursor
+              hasNextPage
+              hasPreviousPage
+              startCursor
+              __typename
+            }
+            __typename
+          }
+          routingNumber
+          status
+          __typename
+        }
+        __typename
+      }
+      pageInfo {
+        endCursor
+        hasNextPage
+        hasPreviousPage
+        startCursor
+        __typename
+      }
+      __typename
+    }
+    chargeStatementDescriptors {
+      ... on ShopifyPaymentsDefaultChargeStatementDescriptor {
+        default
+        prefix
+        __typename
+      }
+      ... on ShopifyPaymentsJpChargeStatementDescriptor {
+        default
+        kana
+        kanji
+        prefix
+        __typename
+      }
+    }
+    country
+    defaultCurrency
+    disputes(
+      first: $disputes_first_ShopifyPaymentsAccount
+      after: $disputes_after_ShopifyPaymentsAccount
+      last: $disputes_last_ShopifyPaymentsAccount
+      before: $disputes_before_ShopifyPaymentsAccount
+      reverse: $disputes_reverse_ShopifyPaymentsAccount
+      query: $disputes_query_ShopifyPaymentsAccount
+    ) {
+      edges {
+        cursor
+        node {
+          amount {
+            amount
+            currencyCode
+            __typename
+          }
+          evidenceDueBy
+          evidenceSentOn
+          finalizedOn
+          id
+          initiatedAt
+          legacyResourceId
+          order {
+            id
+            __typename
+          }
+          reasonDetails {
+            networkReasonCode
+            reason
+            __typename
+          }
+          status
+          type
+          __typename
+        }
+        __typename
+      }
+      pageInfo {
+        endCursor
+        hasNextPage
+        hasPreviousPage
+        startCursor
+        __typename
+      }
+      __typename
+    }
+    id
+    onboardable
+    payoutSchedule {
+      interval
+      monthlyAnchor
+      weeklyAnchor
+      __typename
+    }
+    payoutStatementDescriptor
+    payouts(
+      transactionType: $payouts_transactionType_ShopifyPaymentsAccount
+      first: $payouts_first_ShopifyPaymentsAccount
+      after: $payouts_after_ShopifyPaymentsAccount
+      last: $payouts_last_ShopifyPaymentsAccount
+      before: $payouts_before_ShopifyPaymentsAccount
+      reverse: $payouts_reverse_ShopifyPaymentsAccount
+    ) {
+      edges {
+        cursor
+        node {
+          bankAccount {
+            accountNumber
+            accountNumberLastDigits
+            bankName
+            country
+            createdAt
+            currency
+            id
+            routingNumber
+            status
+            __typename
+          }
+          id
+          issuedAt
+          legacyResourceId
+          net {
+            amount
+            currencyCode
+            __typename
+          }
+          status
+          transactionType
+          __typename
+        }
+        __typename
+      }
+      pageInfo {
+        endCursor
+        hasNextPage
+        hasPreviousPage
+        startCursor
+        __typename
+      }
+      __typename
+    }
+    __typename
+  }
+}

@@ -1,9 +1,0 @@
-query deliverySettings {
-  deliverySettings {
-    legacyModeBlocked {
-      blocked
-      reasons
-    }
-    legacyModeProfiles
-  }
-}

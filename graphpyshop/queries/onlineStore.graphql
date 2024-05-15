@@ -1,7 +1,0 @@
-query onlineStore {
-  onlineStore {
-    passwordProtection {
-      enabled
-    }
-  }
-}

@@ -1,0 +1,77 @@
+query orderPaymentStatus($transform: ImageTransformInput, $paymentReferenceId: String!, $orderId: ID!) {
+  orderPaymentStatus(paymentReferenceId: $paymentReferenceId, orderId: $orderId) {
+    errorMessage
+    paymentReferenceId
+    status
+    transactions {
+      accountNumber
+      authorizationCode
+      authorizationExpiresAt
+      createdAt
+      errorCode
+      fees {
+        flatFeeName
+        id
+        rate
+        rateName
+        type
+        __typename
+      }
+      formattedGateway
+      gateway
+      id
+      kind
+      manuallyCapturable
+      maximumRefundableV2 {
+        amount
+        currencyCode
+        __typename
+      }
+      multiCapturable
+      order {
+        id
+        __typename
+      }
+      parentTransaction {
+        accountNumber
+        authorizationCode
+        authorizationExpiresAt
+        createdAt
+        errorCode
+        formattedGateway
+        gateway
+        id
+        kind
+        manuallyCapturable
+        multiCapturable
+        paymentId
+        processedAt
+        receiptJson
+        settlementCurrency
+        settlementCurrencyRate
+        status
+        test
+        __typename
+      }
+      paymentIcon {
+        altText
+        height
+        id
+        thumbhash
+        url(transform: $transform)
+        width
+        __typename
+      }
+      paymentId
+      processedAt
+      receiptJson
+      settlementCurrency
+      settlementCurrencyRate
+      status
+      test
+      __typename
+    }
+    translatedErrorMessage
+    __typename
+  }
+}

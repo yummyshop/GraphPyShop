@@ -1,0 +1,259 @@
+query customerMergePreview($withName: Boolean = false, $withCompany: Boolean = true, $formatted_withName_MailingAddress: Boolean = false, $formatted_withCompany_MailingAddress: Boolean = true, $first: Int = 250, $after: String, $last: Int, $before: String, $reverse: Boolean = false, $discountNodes_first_CustomerMergePreviewDefaultFields: Int = 250, $discountNodes_after_CustomerMergePreviewDefaultFields: String, $discountNodes_last_CustomerMergePreviewDefaultFields: Int, $discountNodes_before_CustomerMergePreviewDefaultFields: String, $discountNodes_reverse_CustomerMergePreviewDefaultFields: Boolean = false, $sortKey: DiscountSortKeys = CREATED_AT, $draftOrders_first_CustomerMergePreviewDefaultFields: Int = 250, $draftOrders_after_CustomerMergePreviewDefaultFields: String, $draftOrders_last_CustomerMergePreviewDefaultFields: Int, $draftOrders_before_CustomerMergePreviewDefaultFields: String, $draftOrders_reverse_CustomerMergePreviewDefaultFields: Boolean = false, $draftOrders_sortKey_CustomerMergePreviewDefaultFields: DraftOrderSortKeys = UPDATED_AT, $giftCards_first_CustomerMergePreviewDefaultFields: Int = 250, $giftCards_after_CustomerMergePreviewDefaultFields: String, $giftCards_last_CustomerMergePreviewDefaultFields: Int, $giftCards_before_CustomerMergePreviewDefaultFields: String, $giftCards_reverse_CustomerMergePreviewDefaultFields: Boolean = false, $giftCards_sortKey_CustomerMergePreviewDefaultFields: GiftCardSortKeys = CREATED_AT, $orders_first_CustomerMergePreviewDefaultFields: Int = 250, $orders_after_CustomerMergePreviewDefaultFields: String, $orders_last_CustomerMergePreviewDefaultFields: Int, $orders_before_CustomerMergePreviewDefaultFields: String, $orders_reverse_CustomerMergePreviewDefaultFields: Boolean = false, $orders_sortKey_CustomerMergePreviewDefaultFields: OrderSortKeys = PROCESSED_AT, $customerOneId: ID!, $customerTwoId: ID!, $overrideFields: CustomerMergeOverrideFields) {
+  customerMergePreview(
+    customerOneId: $customerOneId
+    customerTwoId: $customerTwoId
+    overrideFields: $overrideFields
+  ) {
+    alternateFields {
+      defaultAddress {
+        address1
+        address2
+        city
+        company
+        coordinatesValidated
+        country
+        countryCodeV2
+        firstName
+        formatted(withName: $withName, withCompany: $withCompany)
+        formattedArea
+        id
+        lastName
+        latitude
+        longitude
+        name
+        phone
+        province
+        provinceCode
+        timeZone
+        zip
+        __typename
+      }
+      email {
+        emailAddress
+        marketingState
+        marketingUnsubscribeUrl
+        openTrackingLevel
+        openTrackingUrl
+        __typename
+      }
+      firstName
+      lastName
+      phoneNumber {
+        marketingState
+        phoneNumber
+        __typename
+      }
+      __typename
+    }
+    blockingFields {
+      note
+      tags
+      __typename
+    }
+    customerMergeErrors {
+      errorFields
+      message
+      __typename
+    }
+    defaultFields {
+      addresses(
+        first: $first
+        after: $after
+        last: $last
+        before: $before
+        reverse: $reverse
+      ) {
+        edges {
+          cursor
+          node {
+            address1
+            address2
+            city
+            company
+            coordinatesValidated
+            country
+            countryCodeV2
+            firstName
+            formatted(
+              withName: $formatted_withName_MailingAddress
+              withCompany: $formatted_withCompany_MailingAddress
+            )
+            formattedArea
+            id
+            lastName
+            latitude
+            longitude
+            name
+            phone
+            province
+            provinceCode
+            timeZone
+            zip
+            __typename
+          }
+          __typename
+        }
+        pageInfo {
+          endCursor
+          hasNextPage
+          hasPreviousPage
+          startCursor
+          __typename
+        }
+        __typename
+      }
+      defaultAddress {
+        address1
+        address2
+        city
+        company
+        coordinatesValidated
+        country
+        countryCodeV2
+        firstName
+        formatted(
+          withName: $formatted_withName_MailingAddress
+          withCompany: $formatted_withCompany_MailingAddress
+        )
+        formattedArea
+        id
+        lastName
+        latitude
+        longitude
+        name
+        phone
+        province
+        provinceCode
+        timeZone
+        zip
+        __typename
+      }
+      discountNodeCount
+      discountNodes(
+        first: $discountNodes_first_CustomerMergePreviewDefaultFields
+        after: $discountNodes_after_CustomerMergePreviewDefaultFields
+        last: $discountNodes_last_CustomerMergePreviewDefaultFields
+        before: $discountNodes_before_CustomerMergePreviewDefaultFields
+        reverse: $discountNodes_reverse_CustomerMergePreviewDefaultFields
+        sortKey: $sortKey
+      ) {
+        edges {
+          cursor
+          node {
+            id
+            __typename
+          }
+          __typename
+        }
+        pageInfo {
+          endCursor
+          hasNextPage
+          hasPreviousPage
+          startCursor
+          __typename
+        }
+        __typename
+      }
+      displayName
+      draftOrderCount
+      draftOrders(
+        first: $draftOrders_first_CustomerMergePreviewDefaultFields
+        after: $draftOrders_after_CustomerMergePreviewDefaultFields
+        last: $draftOrders_last_CustomerMergePreviewDefaultFields
+        before: $draftOrders_before_CustomerMergePreviewDefaultFields
+        reverse: $draftOrders_reverse_CustomerMergePreviewDefaultFields
+        sortKey: $draftOrders_sortKey_CustomerMergePreviewDefaultFields
+      ) {
+        edges {
+          cursor
+          node {
+            id
+            __typename
+          }
+          __typename
+        }
+        pageInfo {
+          endCursor
+          hasNextPage
+          hasPreviousPage
+          startCursor
+          __typename
+        }
+        __typename
+      }
+      email {
+        emailAddress
+        marketingState
+        marketingUnsubscribeUrl
+        openTrackingLevel
+        openTrackingUrl
+        __typename
+      }
+      firstName
+      giftCardCount
+      giftCards(
+        first: $giftCards_first_CustomerMergePreviewDefaultFields
+        after: $giftCards_after_CustomerMergePreviewDefaultFields
+        last: $giftCards_last_CustomerMergePreviewDefaultFields
+        before: $giftCards_before_CustomerMergePreviewDefaultFields
+        reverse: $giftCards_reverse_CustomerMergePreviewDefaultFields
+        sortKey: $giftCards_sortKey_CustomerMergePreviewDefaultFields
+      ) {
+        edges {
+          cursor
+          node {
+            id
+            __typename
+          }
+          __typename
+        }
+        pageInfo {
+          endCursor
+          hasNextPage
+          hasPreviousPage
+          startCursor
+          __typename
+        }
+        __typename
+      }
+      lastName
+      metafieldCount
+      note
+      orderCount
+      orders(
+        first: $orders_first_CustomerMergePreviewDefaultFields
+        after: $orders_after_CustomerMergePreviewDefaultFields
+        last: $orders_last_CustomerMergePreviewDefaultFields
+        before: $orders_before_CustomerMergePreviewDefaultFields
+        reverse: $orders_reverse_CustomerMergePreviewDefaultFields
+        sortKey: $orders_sortKey_CustomerMergePreviewDefaultFields
+      ) {
+        edges {
+          cursor
+          node {
+            id
+            __typename
+          }
+          __typename
+        }
+        pageInfo {
+          endCursor
+          hasNextPage
+          hasPreviousPage
+          startCursor
+          __typename
+        }
+        __typename
+      }
+      phoneNumber {
+        marketingState
+        phoneNumber
+        __typename
+      }
+      tags
+      __typename
+    }
+    resultingCustomerId
+    __typename
+  }
+}

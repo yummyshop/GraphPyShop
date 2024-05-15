@@ -1,0 +1,7 @@
+query locationsCount($query: String) {
+  locationsCount(query: $query) {
+    count
+    precision
+    __typename
+  }
+}

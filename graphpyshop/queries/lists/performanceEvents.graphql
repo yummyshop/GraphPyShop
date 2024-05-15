@@ -1,0 +1,8 @@
+query performanceEvents($maxDays: Int = 90) {
+  performanceEvents(maxDays: $maxDays) {
+    metadata
+    occurrence
+    type
+    __typename
+  }
+}

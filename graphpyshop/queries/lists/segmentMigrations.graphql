@@ -1,0 +1,28 @@
+query segmentMigrations($savedSearchId: ID, $first: Int = 250, $after: String, $last: Int, $before: String) {
+  segmentMigrations(
+    savedSearchId: $savedSearchId
+    first: $first
+    after: $after
+    last: $last
+    before: $before
+  ) {
+    edges {
+      cursor
+      node {
+        id
+        savedSearchId
+        segmentId
+        __typename
+      }
+      __typename
+    }
+    pageInfo {
+      endCursor
+      hasNextPage
+      hasPreviousPage
+      startCursor
+      __typename
+    }
+    __typename
+  }
+}

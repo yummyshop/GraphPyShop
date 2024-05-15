@@ -1,3 +1,0 @@
-query checkoutBranding($checkoutBranding_checkoutProfileId: ID!) {
-  checkoutBranding(checkoutProfileId: $checkoutBranding_checkoutProfileId)
-}

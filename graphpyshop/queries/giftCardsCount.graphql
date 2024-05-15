@@ -1,9 +1,0 @@
-query giftCardsCount($giftCardsCount_query: String, $giftCardsCount_savedSearchId: ID) {
-  giftCardsCount(
-    query: $giftCardsCount_query
-    savedSearchId: $giftCardsCount_savedSearchId
-  ) {
-    count
-    precision
-  }
-}

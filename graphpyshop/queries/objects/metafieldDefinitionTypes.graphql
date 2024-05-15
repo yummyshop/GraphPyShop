@@ -1,0 +1,13 @@
+query metafieldDefinitionTypes {
+  metafieldDefinitionTypes {
+    category
+    name
+    supportedValidations {
+      name
+      type
+      __typename
+    }
+    supportsDefinitionMigrations
+    __typename
+  }
+}

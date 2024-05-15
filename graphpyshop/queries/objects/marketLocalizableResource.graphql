@@ -1,0 +1,12 @@
+query marketLocalizableResource($resourceId: ID!) {
+  marketLocalizableResource(resourceId: $resourceId) {
+    marketLocalizableContent {
+      digest
+      key
+      value
+      __typename
+    }
+    resourceId
+    __typename
+  }
+}

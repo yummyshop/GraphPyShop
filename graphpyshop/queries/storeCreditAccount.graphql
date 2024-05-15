@@ -1,3 +1,0 @@
-query storeCreditAccount($storeCreditAccount_id: ID!) {
-  storeCreditAccount(id: $storeCreditAccount_id)
-}

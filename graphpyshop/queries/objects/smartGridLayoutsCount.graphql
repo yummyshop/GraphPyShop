@@ -1,0 +1,7 @@
+query smartGridLayoutsCount($enabled: Boolean = null, $query: String) {
+  smartGridLayoutsCount(enabled: $enabled, query: $query) {
+    count
+    precision
+    __typename
+  }
+}

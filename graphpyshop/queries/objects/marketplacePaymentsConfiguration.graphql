@@ -1,0 +1,14 @@
+query marketplacePaymentsConfiguration {
+  marketplacePaymentsConfiguration {
+    actionUrl
+    requestedFeatures {
+      onboardable
+      ready
+      required
+      subtype
+      type
+      __typename
+    }
+    __typename
+  }
+}

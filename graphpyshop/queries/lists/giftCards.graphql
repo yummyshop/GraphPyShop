@@ -1,0 +1,61 @@
+query giftCards($withName: Boolean = false, $withCompany: Boolean = true, $formatted_withName_MailingAddress: Boolean = false, $formatted_withCompany_MailingAddress: Boolean = true, $transform: ImageTransformInput, $url_transform_Image: ImageTransformInput, $first: Int = 250, $after: String, $last: Int, $before: String, $reverse: Boolean = false, $sortKey: GiftCardSortKeys = ID, $query: String, $savedSearchId: ID) {
+  giftCards(
+    first: $first
+    after: $after
+    last: $last
+    before: $before
+    reverse: $reverse
+    sortKey: $sortKey
+    query: $query
+    savedSearchId: $savedSearchId
+  ) {
+    edges {
+      cursor
+      node {
+        balance {
+          amount
+          currencyCode
+          __typename
+        }
+        createdAt
+        customer {
+          id
+          __typename
+        }
+        disabledAt
+        enabled
+        expiresOn
+        id
+        initialValue {
+          amount
+          currencyCode
+          __typename
+        }
+        lastCharacters
+        maskedCode
+        message
+        note
+        notify
+        order {
+          id
+          __typename
+        }
+        recipient {
+          id
+          __typename
+        }
+        sendOn
+        __typename
+      }
+      __typename
+    }
+    pageInfo {
+      endCursor
+      hasNextPage
+      hasPreviousPage
+      startCursor
+      __typename
+    }
+    __typename
+  }
+}

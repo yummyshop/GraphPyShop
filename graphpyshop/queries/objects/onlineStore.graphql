@@ -1,0 +1,9 @@
+query onlineStore {
+  onlineStore {
+    passwordProtection {
+      enabled
+      __typename
+    }
+    __typename
+  }
+}

@@ -1,7 +1,0 @@
-query companyContactRole($companyContactRole_id: ID!) {
-  companyContactRole(id: $companyContactRole_id) {
-    id
-    name
-    note
-  }
-}

@@ -1,0 +1,20 @@
+query asyncProductMutationJobResult($transform: ImageTransformInput, $url_transform_Image: ImageTransformInput, $id: ID!, $jobId: ID!) {
+  asyncProductMutationJobResult(jobId: $jobId) {
+    job {
+      done
+      id
+      query {
+        bundleCount
+        smartGridLayoutTilesSchema
+        __typename
+      }
+      __typename
+    }
+    jobStatus
+    product {
+      id
+      __typename
+    }
+    __typename
+  }
+}

@@ -1,0 +1,7 @@
+query consentPolicyRegions {
+  consentPolicyRegions {
+    countryCode
+    regionCode
+    __typename
+  }
+}

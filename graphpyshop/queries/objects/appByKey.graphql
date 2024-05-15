@@ -1,0 +1,6 @@
+query appByKey($namespace: String, $keys: [String!], $first: Int = 250, $after: String, $last: Int, $before: String, $reverse: Boolean = false, $transform: ImageTransformInput, $metafields_namespace_Image: String, $metafields_keys_Image: [String!], $metafields_first_Image: Int = 250, $metafields_after_Image: String, $metafields_last_Image: Int, $metafields_before_Image: String, $metafields_reverse_Image: Boolean = false, $url_transform_Image: ImageTransformInput, $apiKey: String!) {
+  appByKey(apiKey: $apiKey) {
+    id
+    __typename
+  }
+}

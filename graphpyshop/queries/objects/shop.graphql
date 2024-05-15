@@ -1,0 +1,426 @@
+query shop($first: Int = 250, $after: String, $last: Int, $before: String, $transform: ImageTransformInput, $url_transform_Image: ImageTransformInput, $availableChannelApps_first_Shop: Int = 250, $availableChannelApps_after_Shop: String, $availableChannelApps_last_Shop: Int, $availableChannelApps_before_Shop: String, $reverse: Boolean = false, $withCompany: Boolean = true, $currencySettings_first_Shop: Int = 250, $currencySettings_after_Shop: String, $currencySettings_last_Shop: Int, $currencySettings_before_Shop: String, $currencySettings_reverse_Shop: Boolean = false, $domainsPaginated_first_Shop: Int = 250, $domainsPaginated_after_Shop: String, $domainsPaginated_last_Shop: Int, $domainsPaginated_before_Shop: String, $domainsPaginated_reverse_Shop: Boolean = false, $query: String, $references_first_Metafield: Int = 250, $references_after_Metafield: String, $references_last_Metafield: Int, $references_before_Metafield: String, $namespace: String, $keys: [String!], $metafields_first_Shop: Int = 250, $metafields_after_Shop: String, $metafields_last_Shop: Int, $metafields_before_Shop: String, $metafields_reverse_Shop: Boolean = false, $storefrontAccessTokens_first_Shop: Int = 250, $storefrontAccessTokens_after_Shop: String, $storefrontAccessTokens_last_Shop: Int, $storefrontAccessTokens_before_Shop: String, $storefrontAccessTokens_reverse_Shop: Boolean = false) {
+  shop {
+    alerts {
+      action {
+        title
+        url
+        __typename
+      }
+      description
+      __typename
+    }
+    allProductCategoriesList {
+      ancestorIds
+      attributes(first: $first, after: $after, last: $last, before: $before) {
+        edges {
+          cursor
+          __typename
+        }
+        pageInfo {
+          endCursor
+          hasNextPage
+          hasPreviousPage
+          startCursor
+          __typename
+        }
+        __typename
+      }
+      childrenIds
+      fullName
+      id
+      isArchived
+      isLeaf
+      isRoot
+      level
+      name
+      parentId
+      __typename
+    }
+    availableChannelApps(
+      first: $availableChannelApps_first_Shop
+      after: $availableChannelApps_after_Shop
+      last: $availableChannelApps_last_Shop
+      before: $availableChannelApps_before_Shop
+      reverse: $reverse
+    ) {
+      edges {
+        cursor
+        node {
+          id
+          __typename
+        }
+        __typename
+      }
+      pageInfo {
+        endCursor
+        hasNextPage
+        hasPreviousPage
+        startCursor
+        __typename
+      }
+      __typename
+    }
+    billingAddress {
+      address1
+      address2
+      city
+      company
+      coordinatesValidated
+      country
+      countryCodeV2
+      formatted(withCompany: $withCompany)
+      formattedArea
+      id
+      latitude
+      longitude
+      phone
+      province
+      provinceCode
+      zip
+      __typename
+    }
+    channelDefinitionsForInstalledChannels {
+      channelDefinitions {
+        channelName
+        handle
+        id
+        isMarketplace
+        subChannelName
+        svgIcon
+        __typename
+      }
+      channelName
+      __typename
+    }
+    checkoutApiSupported
+    contactEmail
+    countriesInShippingZones {
+      countryCodes
+      includeRestOfWorld
+      __typename
+    }
+    createdAt
+    currencyCode
+    currencyFormats {
+      moneyFormat
+      moneyInEmailsFormat
+      moneyWithCurrencyFormat
+      moneyWithCurrencyInEmailsFormat
+      __typename
+    }
+    currencySettings(
+      first: $currencySettings_first_Shop
+      after: $currencySettings_after_Shop
+      last: $currencySettings_last_Shop
+      before: $currencySettings_before_Shop
+      reverse: $currencySettings_reverse_Shop
+    ) {
+      edges {
+        cursor
+        node {
+          currencyCode
+          currencyName
+          enabled
+          rateUpdatedAt
+          __typename
+        }
+        __typename
+      }
+      pageInfo {
+        endCursor
+        hasNextPage
+        hasPreviousPage
+        startCursor
+        __typename
+      }
+      __typename
+    }
+    customerAccounts
+    customerAccountsV2 {
+      customerAccountsVersion
+      loginLinksVisibleOnStorefrontAndCheckout
+      loginRequiredAtCheckout
+      url
+      __typename
+    }
+    description
+    domainsPaginated(
+      first: $domainsPaginated_first_Shop
+      after: $domainsPaginated_after_Shop
+      last: $domainsPaginated_last_Shop
+      before: $domainsPaginated_before_Shop
+      reverse: $domainsPaginated_reverse_Shop
+      query: $query
+    ) {
+      edges {
+        cursor
+        node {
+          host
+          id
+          localization {
+            alternateLocales
+            country
+            defaultLocale
+            __typename
+          }
+          marketWebPresence {
+            id
+            subfolderSuffix
+            __typename
+          }
+          sslEnabled
+          url
+          __typename
+        }
+        __typename
+      }
+      pageInfo {
+        endCursor
+        hasNextPage
+        hasPreviousPage
+        startCursor
+        __typename
+      }
+      __typename
+    }
+    email
+    emailSenderConfiguration {
+      senderDomainDnsRecords {
+        name
+        type
+        value
+        __typename
+      }
+      __typename
+    }
+    enabledPresentmentCurrencies
+    features {
+      avalaraAvatax
+      branding
+      bundles {
+        eligibleForBundles
+        ineligibilityReason
+        sellsBundles
+        __typename
+      }
+      captcha
+      dynamicRemarketing
+      eligibleForLoginWithShop
+      eligibleForSubscriptionMigration
+      eligibleForSubscriptions
+      giftCards
+      harmonizedSystemCode
+      internationalPriceOverrides
+      internationalPriceRules
+      legacySubscriptionGatewayEnabled
+      liveView
+      onboardingVisual
+      paypalExpressSubscriptionGatewayStatus
+      reports
+      sellsSubscriptions
+      showMetrics
+      storefront
+      usingShopifyBalance
+      __typename
+    }
+    fulfillmentServices {
+      callbackUrl
+      handle
+      id
+      inventoryManagement
+      location {
+        id
+        __typename
+      }
+      permitsSkuSharing
+      serviceName
+      trackingSupport
+      type
+      __typename
+    }
+    ianaTimezone
+    id
+    marketingSmsConsentEnabledAtCheckout
+    merchantApprovalSignals {
+      canProcessCheckout
+      identityVerified
+      onTimeDeliveryScores {
+        countryCode
+        score
+        __typename
+      }
+      verifiedByShopify
+      verifiedByShopifyTier
+      __typename
+    }
+    metafields(
+      namespace: $namespace
+      keys: $keys
+      first: $metafields_first_Shop
+      after: $metafields_after_Shop
+      last: $metafields_last_Shop
+      before: $metafields_before_Shop
+      reverse: $metafields_reverse_Shop
+    ) {
+      edges {
+        cursor
+        node {
+          createdAt
+          definition {
+            id
+            __typename
+          }
+          description
+          id
+          key
+          legacyResourceId
+          namespace
+          ownerType
+          references(
+            first: $references_first_Metafield
+            after: $references_after_Metafield
+            last: $references_last_Metafield
+            before: $references_before_Metafield
+          ) {
+            edges {
+              cursor
+              __typename
+            }
+            pageInfo {
+              endCursor
+              hasNextPage
+              hasPreviousPage
+              startCursor
+              __typename
+            }
+            __typename
+          }
+          type
+          updatedAt
+          value
+          __typename
+        }
+        __typename
+      }
+      pageInfo {
+        endCursor
+        hasNextPage
+        hasPreviousPage
+        startCursor
+        __typename
+      }
+      __typename
+    }
+    myshopifyDomain
+    name
+    navigationSettings {
+      id
+      title
+      url
+      __typename
+    }
+    orderNumberFormatPrefix
+    orderNumberFormatSuffix
+    paymentSettings {
+      autoCapture
+      supportedDigitalWallets
+      __typename
+    }
+    plan {
+      displayName
+      partnerDevelopment
+      shopifyPlus
+      __typename
+    }
+    primaryDomain {
+      host
+      id
+      localization {
+        alternateLocales
+        country
+        defaultLocale
+        __typename
+      }
+      marketWebPresence {
+        id
+        subfolderSuffix
+        __typename
+      }
+      sslEnabled
+      url
+      __typename
+    }
+    resourceLimits {
+      locationLimit
+      maxProductOptions
+      maxProductVariants
+      redirectLimitReached
+      __typename
+    }
+    richTextEditorUrl
+    searchFilters {
+      productAvailability {
+        label
+        value
+        __typename
+      }
+      __typename
+    }
+    setupRequired
+    shipsToCountries
+    shopPolicies {
+      body
+      createdAt
+      id
+      title
+      type
+      updatedAt
+      url
+      __typename
+    }
+    storefrontAccessTokens(
+      first: $storefrontAccessTokens_first_Shop
+      after: $storefrontAccessTokens_after_Shop
+      last: $storefrontAccessTokens_last_Shop
+      before: $storefrontAccessTokens_before_Shop
+      reverse: $storefrontAccessTokens_reverse_Shop
+    ) {
+      edges {
+        cursor
+        node {
+          accessScopes {
+            description
+            handle
+            __typename
+          }
+          accessToken
+          createdAt
+          id
+          title
+          updatedAt
+          __typename
+        }
+        __typename
+      }
+      pageInfo {
+        endCursor
+        hasNextPage
+        hasPreviousPage
+        startCursor
+        __typename
+      }
+      __typename
+    }
+    taxShipping
+    taxesIncluded
+    timezoneAbbreviation
+    timezoneOffset
+    timezoneOffsetMinutes
+    transactionalSmsDisabled
+    unitSystem
+    updatedAt
+    url
+    weightUnit
+    __typename
+  }
+}

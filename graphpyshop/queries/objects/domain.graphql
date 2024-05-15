@@ -1,0 +1,46 @@
+query domain($id: ID!) {
+  domain(id: $id) {
+    host
+    id
+    localization {
+      alternateLocales
+      country
+      defaultLocale
+      __typename
+    }
+    marketWebPresence {
+      alternateLocales {
+        locale
+        name
+        primary
+        published
+        __typename
+      }
+      defaultLocale {
+        locale
+        name
+        primary
+        published
+        __typename
+      }
+      domain {
+        host
+        id
+        sslEnabled
+        url
+        __typename
+      }
+      id
+      rootUrls {
+        locale
+        url
+        __typename
+      }
+      subfolderSuffix
+      __typename
+    }
+    sslEnabled
+    url
+    __typename
+  }
+}

@@ -1,0 +1,13 @@
+query availableCarrierServices($transform: ImageTransformInput, $destinationCountryCodes: [CountryCode!]) {
+  availableCarrierServices(destinationCountryCodes: $destinationCountryCodes) {
+    carrierService {
+      id
+      __typename
+    }
+    locations {
+      id
+      __typename
+    }
+    __typename
+  }
+}

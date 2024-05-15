@@ -1,0 +1,104 @@
+query reverseDelivery($first: Int = 250, $after: String, $last: Int, $before: String, $reverse: Boolean = false, $lineItems_first_ReverseFulfillmentOrder: Int = 250, $lineItems_after_ReverseFulfillmentOrder: String, $lineItems_last_ReverseFulfillmentOrder: Int, $lineItems_before_ReverseFulfillmentOrder: String, $lineItems_reverse_ReverseFulfillmentOrder: Boolean = false, $reverseDeliveries_first_ReverseFulfillmentOrder: Int = 250, $reverseDeliveries_after_ReverseFulfillmentOrder: String, $reverseDeliveries_last_ReverseFulfillmentOrder: Int, $reverseDeliveries_before_ReverseFulfillmentOrder: String, $reverseDeliveries_reverse_ReverseFulfillmentOrder: Boolean = false, $id: ID!) {
+  reverseDelivery(id: $id) {
+    id
+    reverseDeliveryLineItems(
+      first: $first
+      after: $after
+      last: $last
+      before: $before
+      reverse: $reverse
+    ) {
+      edges {
+        cursor
+        node {
+          dispositions {
+            id
+            quantity
+            type
+            __typename
+          }
+          id
+          quantity
+          reverseFulfillmentOrderLineItem {
+            id
+            totalQuantity
+            __typename
+          }
+          __typename
+        }
+        __typename
+      }
+      pageInfo {
+        endCursor
+        hasNextPage
+        hasPreviousPage
+        startCursor
+        __typename
+      }
+      __typename
+    }
+    reverseFulfillmentOrder {
+      id
+      lineItems(
+        first: $lineItems_first_ReverseFulfillmentOrder
+        after: $lineItems_after_ReverseFulfillmentOrder
+        last: $lineItems_last_ReverseFulfillmentOrder
+        before: $lineItems_before_ReverseFulfillmentOrder
+        reverse: $lineItems_reverse_ReverseFulfillmentOrder
+      ) {
+        edges {
+          cursor
+          node {
+            id
+            totalQuantity
+            __typename
+          }
+          __typename
+        }
+        pageInfo {
+          endCursor
+          hasNextPage
+          hasPreviousPage
+          startCursor
+          __typename
+        }
+        __typename
+      }
+      order {
+        id
+        __typename
+      }
+      reverseDeliveries(
+        first: $reverseDeliveries_first_ReverseFulfillmentOrder
+        after: $reverseDeliveries_after_ReverseFulfillmentOrder
+        last: $reverseDeliveries_last_ReverseFulfillmentOrder
+        before: $reverseDeliveries_before_ReverseFulfillmentOrder
+        reverse: $reverseDeliveries_reverse_ReverseFulfillmentOrder
+      ) {
+        edges {
+          cursor
+          node {
+            id
+            __typename
+          }
+          __typename
+        }
+        pageInfo {
+          endCursor
+          hasNextPage
+          hasPreviousPage
+          startCursor
+          __typename
+        }
+        __typename
+      }
+      status
+      thirdPartyConfirmation {
+        status
+        __typename
+      }
+      __typename
+    }
+    __typename
+  }
+}

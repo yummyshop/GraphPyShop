@@ -1,0 +1,372 @@
+query refund($withName: Boolean = false, $withCompany: Boolean = true, $formatted_withName_MailingAddress: Boolean = false, $formatted_withCompany_MailingAddress: Boolean = true, $first: Int = 250, $after: String, $last: Int, $before: String, $reverse: Boolean = false, $refundLineItems_first_Refund: Int = 250, $refundLineItems_after_Refund: String, $refundLineItems_last_Refund: Int, $refundLineItems_before_Refund: String, $refundLineItems_reverse_Refund: Boolean = false, $refundShippingLines_first_Refund: Int = 250, $refundShippingLines_after_Refund: String, $refundShippingLines_last_Refund: Int, $refundShippingLines_before_Refund: String, $refundShippingLines_reverse_Refund: Boolean = false, $includeRemovedItems: Boolean = false, $exchangeLineItems_first_Return: Int = 250, $exchangeLineItems_after_Return: String, $exchangeLineItems_last_Return: Int, $exchangeLineItems_before_Return: String, $exchangeLineItems_reverse_Return: Boolean = false, $refunds_first_Return: Int = 250, $refunds_after_Return: String, $refunds_last_Return: Int, $refunds_before_Return: String, $refunds_reverse_Return: Boolean = false, $returnLineItems_first_Return: Int = 250, $returnLineItems_after_Return: String, $returnLineItems_last_Return: Int, $returnLineItems_before_Return: String, $returnLineItems_reverse_Return: Boolean = false, $reverseFulfillmentOrders_first_Return: Int = 250, $reverseFulfillmentOrders_after_Return: String, $reverseFulfillmentOrders_last_Return: Int, $reverseFulfillmentOrders_before_Return: String, $reverseFulfillmentOrders_reverse_Return: Boolean = false, $includeIncompleteTransactions: Boolean = false, $transform: ImageTransformInput, $transactions_first_Refund: Int = 250, $transactions_after_Refund: String, $transactions_last_Refund: Int, $transactions_before_Refund: String, $transactions_reverse_Refund: Boolean = false, $id: ID!) {
+  refund(id: $id) {
+    additionalFees {
+      originalAdditionalFee {
+        id
+        name
+        __typename
+      }
+      __typename
+    }
+    createdAt
+    duties {
+      originalDuty {
+        countryCodeOfOrigin
+        harmonizedSystemCode
+        id
+        __typename
+      }
+      __typename
+    }
+    id
+    legacyResourceId
+    note
+    order {
+      id
+      __typename
+    }
+    orderAdjustments(
+      first: $first
+      after: $after
+      last: $last
+      before: $before
+      reverse: $reverse
+    ) {
+      edges {
+        cursor
+        node {
+          id
+          kind
+          __typename
+        }
+        __typename
+      }
+      pageInfo {
+        endCursor
+        hasNextPage
+        hasPreviousPage
+        startCursor
+        __typename
+      }
+      __typename
+    }
+    refundLineItems(
+      first: $refundLineItems_first_Refund
+      after: $refundLineItems_after_Refund
+      last: $refundLineItems_last_Refund
+      before: $refundLineItems_before_Refund
+      reverse: $refundLineItems_reverse_Refund
+    ) {
+      edges {
+        cursor
+        node {
+          id
+          lineItem {
+            currentQuantity
+            id
+            isGiftCard
+            merchantEditable
+            name
+            nonFulfillableQuantity
+            quantity
+            refundableQuantity
+            requiresShipping
+            restockable
+            sku
+            taxable
+            title
+            unfulfilledQuantity
+            variantTitle
+            vendor
+            __typename
+          }
+          location {
+            id
+            __typename
+          }
+          quantity
+          restockType
+          restocked
+          __typename
+        }
+        __typename
+      }
+      pageInfo {
+        endCursor
+        hasNextPage
+        hasPreviousPage
+        startCursor
+        __typename
+      }
+      __typename
+    }
+    refundShippingLines(
+      first: $refundShippingLines_first_Refund
+      after: $refundShippingLines_after_Refund
+      last: $refundShippingLines_last_Refund
+      before: $refundShippingLines_before_Refund
+      reverse: $refundShippingLines_reverse_Refund
+    ) {
+      edges {
+        cursor
+        node {
+          id
+          shippingLine {
+            carrierIdentifier
+            code
+            custom
+            deliveryCategory
+            id
+            isRemoved
+            phone
+            shippingRateHandle
+            source
+            title
+            __typename
+          }
+          __typename
+        }
+        __typename
+      }
+      pageInfo {
+        endCursor
+        hasNextPage
+        hasPreviousPage
+        startCursor
+        __typename
+      }
+      __typename
+    }
+    return {
+      decline {
+        note
+        reason
+        __typename
+      }
+      exchangeLineItems(
+        includeRemovedItems: $includeRemovedItems
+        first: $exchangeLineItems_first_Return
+        after: $exchangeLineItems_after_Return
+        last: $exchangeLineItems_last_Return
+        before: $exchangeLineItems_before_Return
+        reverse: $exchangeLineItems_reverse_Return
+      ) {
+        edges {
+          cursor
+          node {
+            id
+            __typename
+          }
+          __typename
+        }
+        pageInfo {
+          endCursor
+          hasNextPage
+          hasPreviousPage
+          startCursor
+          __typename
+        }
+        __typename
+      }
+      id
+      name
+      order {
+        id
+        __typename
+      }
+      refunds(
+        first: $refunds_first_Return
+        after: $refunds_after_Return
+        last: $refunds_last_Return
+        before: $refunds_before_Return
+        reverse: $refunds_reverse_Return
+      ) {
+        edges {
+          cursor
+          node {
+            createdAt
+            id
+            legacyResourceId
+            note
+            updatedAt
+            __typename
+          }
+          __typename
+        }
+        pageInfo {
+          endCursor
+          hasNextPage
+          hasPreviousPage
+          startCursor
+          __typename
+        }
+        __typename
+      }
+      returnLineItems(
+        first: $returnLineItems_first_Return
+        after: $returnLineItems_after_Return
+        last: $returnLineItems_last_Return
+        before: $returnLineItems_before_Return
+        reverse: $returnLineItems_reverse_Return
+      ) {
+        edges {
+          cursor
+          node {
+            customerNote
+            id
+            quantity
+            refundableQuantity
+            refundedQuantity
+            returnReason
+            returnReasonNote
+            __typename
+          }
+          __typename
+        }
+        pageInfo {
+          endCursor
+          hasNextPage
+          hasPreviousPage
+          startCursor
+          __typename
+        }
+        __typename
+      }
+      returnShippingFees {
+        id
+        __typename
+      }
+      reverseFulfillmentOrders(
+        first: $reverseFulfillmentOrders_first_Return
+        after: $reverseFulfillmentOrders_after_Return
+        last: $reverseFulfillmentOrders_last_Return
+        before: $reverseFulfillmentOrders_before_Return
+        reverse: $reverseFulfillmentOrders_reverse_Return
+      ) {
+        edges {
+          cursor
+          node {
+            id
+            status
+            __typename
+          }
+          __typename
+        }
+        pageInfo {
+          endCursor
+          hasNextPage
+          hasPreviousPage
+          startCursor
+          __typename
+        }
+        __typename
+      }
+      status
+      totalQuantity
+      __typename
+    }
+    totalRefundedSet(includeIncompleteTransactions: $includeIncompleteTransactions) {
+      presentmentMoney {
+        amount
+        currencyCode
+        __typename
+      }
+      shopMoney {
+        amount
+        currencyCode
+        __typename
+      }
+      __typename
+    }
+    transactions(
+      first: $transactions_first_Refund
+      after: $transactions_after_Refund
+      last: $transactions_last_Refund
+      before: $transactions_before_Refund
+      reverse: $transactions_reverse_Refund
+    ) {
+      edges {
+        cursor
+        node {
+          accountNumber
+          authorizationCode
+          authorizationExpiresAt
+          createdAt
+          errorCode
+          fees {
+            flatFeeName
+            id
+            rate
+            rateName
+            type
+            __typename
+          }
+          formattedGateway
+          gateway
+          id
+          kind
+          manuallyCapturable
+          maximumRefundableV2 {
+            amount
+            currencyCode
+            __typename
+          }
+          multiCapturable
+          order {
+            id
+            __typename
+          }
+          parentTransaction {
+            accountNumber
+            authorizationCode
+            authorizationExpiresAt
+            createdAt
+            errorCode
+            formattedGateway
+            gateway
+            id
+            kind
+            manuallyCapturable
+            multiCapturable
+            paymentId
+            processedAt
+            receiptJson
+            settlementCurrency
+            settlementCurrencyRate
+            status
+            test
+            __typename
+          }
+          paymentIcon {
+            altText
+            height
+            id
+            thumbhash
+            url(transform: $transform)
+            width
+            __typename
+          }
+          paymentId
+          processedAt
+          receiptJson
+          settlementCurrency
+          settlementCurrencyRate
+          status
+          test
+          __typename
+        }
+        __typename
+      }
+      pageInfo {
+        endCursor
+        hasNextPage
+        hasPreviousPage
+        startCursor
+        __typename
+      }
+      __typename
+    }
+    updatedAt
+    __typename
+  }
+}
