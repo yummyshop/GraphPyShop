@@ -105,6 +105,8 @@ def is_core_type(type_name: str) -> bool:
     core_types = {"String", "Int", "Float", "Boolean", "ID", "DateTime", "UnsignedInt64"}
     return type_name in core_types or type_name in scalar_types or type_name in enum_types
 
+# TODO: Avoid putting an array of order id's to customer if it an order has one to many to customer
+
 def generate_query_ast(query_name: str, field: graphql_ast.FieldDefinitionNode, visited_types: dict[str, int], depth: int = 0, max_depth: int = max_depth, parent: Optional[graphql_ast.FieldDefinitionNode] = None, path: str = "") -> graphql_ast.SelectionSetNode:
     current_path = f"{path} > {field.name.value}" if path else field.name.value
     field_type_name = get_field_type_name(field.type)
@@ -123,7 +125,7 @@ def generate_query_ast(query_name: str, field: graphql_ast.FieldDefinitionNode, 
         logging.info(f"[{query_name}][{current_path}][depth: {depth}] Field {field.name.value} is deprecated. Skipping.")
         return graphql_ast.SelectionSetNode(selections=[])
 
-    selections: List[graphql_ast.FieldNode] = []
+    selections: List[Union[graphql_ast.FieldNode, graphql_ast.InlineFragmentNode]] = []
     # Check if the field has children (fields)
     has_children = False
     for definition in ast.definitions:
@@ -148,7 +150,7 @@ def generate_query_ast(query_name: str, field: graphql_ast.FieldDefinitionNode, 
                         continue
                     
                     subfield_type_name = get_field_type_name(sub_field.type)
-                    if field.name.value == "node" and field_type_name in list_returning_queries and depth != 0 and subfield_type_name != "ID":
+                    if field_type_name in list_returning_queries and depth != 0 and subfield_type_name != "ID":
                         logging.info(f"[{query_name}][{current_path}][depth: {depth}] It's a list returning field and type is not id, returning empty set")
                         continue
                     
@@ -159,12 +161,54 @@ def generate_query_ast(query_name: str, field: graphql_ast.FieldDefinitionNode, 
             break
 
     if not has_children:
+        # Check if the field type is an interface and find all implementing types
+        for definition in ast.definitions:
+            if isinstance(definition, graphql_ast.InterfaceTypeDefinitionNode) and definition.name.value == field_type_name:
+                has_children = True
+                logging.info(f"[{query_name}][{current_path}][depth: {depth}] Processing InterfaceTypeDefinitionNode: {definition.name.value}")
+
+                for object_definition in ast.definitions:
+                    if isinstance(object_definition, graphql_ast.ObjectTypeDefinitionNode) and definition.name.value in [interface.name.value for interface in object_definition.interfaces]:
+                        logging.info(f"[{query_name}][{current_path}][depth: {depth}] Found implementing type: {object_definition.name.value}")
+
+                        fragment_selections = []
+                        for sub_field in object_definition.fields:
+                            if not is_deprecated(sub_field):
+                                new_depth = depth if sub_field.name.value in {"edges", "node", "pageInfo"} else depth + 1
+
+                                sub_query = generate_query_ast(query_name, sub_field, visited_types, new_depth, max_depth, field, current_path)
+
+                                if len(sub_query.selections) == 0 and not is_core_type(get_field_type_name(sub_field.type)):
+                                    logging.warning(f"[{query_name}][{current_path}][depth: {depth}] Field {sub_field.name.value} should have children but doesn't. Returning empty selection set.")
+                                    continue
+
+                                if new_depth > max_depth:
+                                    logging.warning(f"[{query_name}][{current_path}][depth: {depth}] Max depth reached for field {sub_field.name.value}. Skipping this field.")
+                                    continue
+
+                                subfield_type_name = get_field_type_name(sub_field.type)
+                                if field_type_name in list_returning_queries and depth != 0 and subfield_type_name != "ID":
+                                    logging.info(f"[{query_name}][{current_path}][depth: {depth}] It's a list returning field and type is not id, returning empty set")
+                                    continue
+
+                                fragment_selections.append(graphql_ast.FieldNode(
+                                    name=graphql_ast.NameNode(value=sub_field.name.value),
+                                    selection_set=sub_query
+                                ))
+
+                        if fragment_selections:
+                            selections.append(graphql_ast.InlineFragmentNode(
+                                type_condition=graphql_ast.NamedTypeNode(name=graphql_ast.NameNode(value=object_definition.name.value)),
+                                selection_set=graphql_ast.SelectionSetNode(selections=fragment_selections)
+                            ))
+
+    if not has_children:
         logging.info(f"[{query_name}][{current_path}][depth: {depth}] Field {field.name.value} has no children. Skipping nested selection.")
         return graphql_ast.SelectionSetNode(selections=[])
 
     # Remove 'node', 'nodes', and 'pageInfo' if 'edges' is present
-    if any(selection.name.value == "edges" for selection in selections):
-        selections = [selection for selection in selections if selection.name.value not in {"nodes"}]
+    if any(isinstance(selection, graphql_ast.FieldNode) and selection.name.value == "edges" for selection in selections):
+        selections = [selection for selection in selections if not (isinstance(selection, graphql_ast.FieldNode) and selection.name.value in {"nodes"})]
 
     logging.info(f"[{query_name}][{current_path}][depth: {depth}] Returning selection set with {len(selections)} selections.")
     return graphql_ast.SelectionSetNode(selections=selections)
