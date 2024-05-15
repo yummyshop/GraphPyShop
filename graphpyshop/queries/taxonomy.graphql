@@ -1,0 +1,36 @@
+query taxonomy($categories_search: String, $categories_childrenOf: ID, $categories_siblingsOf: ID, $categories_descendantsOf: ID, $categories_first: Int = 250, $categories_after: String, $categories_last: Int, $categories_before: String) {
+  taxonomy {
+    categories(
+      search: $categories_search
+      childrenOf: $categories_childrenOf
+      siblingsOf: $categories_siblingsOf
+      descendantsOf: $categories_descendantsOf
+      first: $categories_first
+      after: $categories_after
+      last: $categories_last
+      before: $categories_before
+    ) {
+      edges {
+        cursor
+        node {
+          ancestorIds
+          childrenIds
+          fullName
+          id
+          isArchived
+          isLeaf
+          isRoot
+          level
+          name
+          parentId
+        }
+      }
+      pageInfo {
+        endCursor
+        hasNextPage
+        hasPreviousPage
+        startCursor
+      }
+    }
+  }
+}

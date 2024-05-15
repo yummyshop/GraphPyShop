@@ -1,0 +1,123 @@
+query discountNodes($events_first: Int = 250, $events_after: String, $events_last: Int, $events_before: String, $events_reverse: Boolean = false, $events_sortKey: EventSortKeys = ID, $events_query: String, $metafieldDefinitions_namespace: String, $metafieldDefinitions_pinnedStatus: MetafieldDefinitionPinnedStatus = ANY, $metafieldDefinitions_first: Int = 250, $metafieldDefinitions_after: String, $metafieldDefinitions_last: Int, $metafieldDefinitions_before: String, $metafieldDefinitions_reverse: Boolean = false, $metafieldDefinitions_sortKey: MetafieldDefinitionSortKeys = ID, $metafieldDefinitions_query: String, $metafields_namespace: String, $metafields_keys: [String!], $metafields_first: Int = 250, $metafields_after: String, $metafields_last: Int, $metafields_before: String, $metafields_reverse: Boolean = false, $discountNodes_first: Int = 250, $discountNodes_after: String, $discountNodes_last: Int, $discountNodes_before: String, $discountNodes_reverse: Boolean = false, $discountNodes_sortKey: DiscountSortKeys = CREATED_AT, $discountNodes_query: String, $discountNodes_savedSearchId: ID) {
+  discountNodes(
+    first: $discountNodes_first
+    after: $discountNodes_after
+    last: $discountNodes_last
+    before: $discountNodes_before
+    reverse: $discountNodes_reverse
+    sortKey: $discountNodes_sortKey
+    query: $discountNodes_query
+    savedSearchId: $discountNodes_savedSearchId
+  ) {
+    edges {
+      cursor
+      node {
+        events(
+          first: $events_first
+          after: $events_after
+          last: $events_last
+          before: $events_before
+          reverse: $events_reverse
+          sortKey: $events_sortKey
+          query: $events_query
+        ) {
+          edges {
+            cursor
+            node {
+              ... on BasicEvent {
+                appTitle
+                attributeToApp
+                attributeToUser
+                createdAt
+                criticalAlert
+                id
+                message
+              }
+              ... on CommentEvent {
+                appTitle
+                attributeToApp
+                attributeToUser
+                canDelete
+                canEdit
+                createdAt
+                criticalAlert
+                edited
+                id
+                message
+                rawMessage
+              }
+            }
+          }
+          pageInfo {
+            endCursor
+            hasNextPage
+            hasPreviousPage
+            startCursor
+          }
+        }
+        id
+        metafieldDefinitions(
+          namespace: $metafieldDefinitions_namespace
+          pinnedStatus: $metafieldDefinitions_pinnedStatus
+          first: $metafieldDefinitions_first
+          after: $metafieldDefinitions_after
+          last: $metafieldDefinitions_last
+          before: $metafieldDefinitions_before
+          reverse: $metafieldDefinitions_reverse
+          sortKey: $metafieldDefinitions_sortKey
+          query: $metafieldDefinitions_query
+        ) {
+          edges {
+            cursor
+            node {
+              id
+            }
+          }
+          pageInfo {
+            endCursor
+            hasNextPage
+            hasPreviousPage
+            startCursor
+          }
+        }
+        metafields(
+          namespace: $metafields_namespace
+          keys: $metafields_keys
+          first: $metafields_first
+          after: $metafields_after
+          last: $metafields_last
+          before: $metafields_before
+          reverse: $metafields_reverse
+        ) {
+          edges {
+            cursor
+            node {
+              createdAt
+              description
+              id
+              key
+              legacyResourceId
+              namespace
+              ownerType
+              type
+              updatedAt
+              value
+            }
+          }
+          pageInfo {
+            endCursor
+            hasNextPage
+            hasPreviousPage
+            startCursor
+          }
+        }
+      }
+    }
+    pageInfo {
+      endCursor
+      hasNextPage
+      hasPreviousPage
+      startCursor
+    }
+  }
+}

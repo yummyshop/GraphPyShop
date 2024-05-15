@@ -1,0 +1,139 @@
+query locationsAvailableForDeliveryProfilesConnection($inventoryLevel_inventoryItemId: ID!, $inventoryLevels_first: Int = 250, $inventoryLevels_after: String, $inventoryLevels_last: Int, $inventoryLevels_before: String, $inventoryLevels_reverse: Boolean = false, $inventoryLevels_query: String, $metafields_namespace: String, $metafields_keys: [String!], $metafields_first: Int = 250, $metafields_after: String, $metafields_last: Int, $metafields_before: String, $metafields_reverse: Boolean = false, $locationsAvailableForDeliveryProfilesConnection_first: Int = 250, $locationsAvailableForDeliveryProfilesConnection_after: String, $locationsAvailableForDeliveryProfilesConnection_last: Int, $locationsAvailableForDeliveryProfilesConnection_before: String, $locationsAvailableForDeliveryProfilesConnection_reverse: Boolean = false) {
+  locationsAvailableForDeliveryProfilesConnection(
+    first: $locationsAvailableForDeliveryProfilesConnection_first
+    after: $locationsAvailableForDeliveryProfilesConnection_after
+    last: $locationsAvailableForDeliveryProfilesConnection_last
+    before: $locationsAvailableForDeliveryProfilesConnection_before
+    reverse: $locationsAvailableForDeliveryProfilesConnection_reverse
+  ) {
+    edges {
+      cursor
+      node {
+        activatable
+        address {
+          address1
+          address2
+          city
+          country
+          countryCode
+          formatted
+          latitude
+          longitude
+          phone
+          province
+          provinceCode
+          zip
+        }
+        addressVerified
+        createdAt
+        deactivatable
+        deactivatedAt
+        deletable
+        fulfillmentService {
+          callbackUrl
+          handle
+          id
+          inventoryManagement
+          permitsSkuSharing
+          serviceName
+          trackingSupport
+          type
+        }
+        fulfillsOnlineOrders
+        hasActiveInventory
+        hasUnfulfilledOrders
+        id
+        inventoryLevel(inventoryItemId: $inventoryLevel_inventoryItemId) {
+          canDeactivate
+          createdAt
+          deactivationAlert
+          id
+          updatedAt
+        }
+        inventoryLevels(
+          first: $inventoryLevels_first
+          after: $inventoryLevels_after
+          last: $inventoryLevels_last
+          before: $inventoryLevels_before
+          reverse: $inventoryLevels_reverse
+          query: $inventoryLevels_query
+        ) {
+          edges {
+            cursor
+            node {
+              canDeactivate
+              createdAt
+              deactivationAlert
+              id
+              updatedAt
+            }
+          }
+          pageInfo {
+            endCursor
+            hasNextPage
+            hasPreviousPage
+            startCursor
+          }
+        }
+        isActive
+        isFulfillmentService
+        legacyResourceId
+        localPickupSettingsV2 {
+          instructions
+          pickupTime
+        }
+        metafields(
+          namespace: $metafields_namespace
+          keys: $metafields_keys
+          first: $metafields_first
+          after: $metafields_after
+          last: $metafields_last
+          before: $metafields_before
+          reverse: $metafields_reverse
+        ) {
+          edges {
+            cursor
+            node {
+              createdAt
+              description
+              id
+              key
+              legacyResourceId
+              namespace
+              ownerType
+              type
+              updatedAt
+              value
+            }
+          }
+          pageInfo {
+            endCursor
+            hasNextPage
+            hasPreviousPage
+            startCursor
+          }
+        }
+        name
+        shipsInventory
+        suggestedAddresses {
+          address1
+          address2
+          city
+          country
+          countryCode
+          formatted
+          province
+          provinceCode
+          zip
+        }
+        updatedAt
+      }
+    }
+    pageInfo {
+      endCursor
+      hasNextPage
+      hasPreviousPage
+      startCursor
+    }
+  }
+}

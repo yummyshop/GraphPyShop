@@ -1,0 +1,6 @@
+query pendingOrdersCount {
+  pendingOrdersCount {
+    count
+    precision
+  }
+}

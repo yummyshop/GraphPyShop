@@ -1,0 +1,38 @@
+query subscriptionBillingAttempts($subscriptionBillingAttempts_first: Int = 250, $subscriptionBillingAttempts_after: String, $subscriptionBillingAttempts_last: Int, $subscriptionBillingAttempts_before: String, $subscriptionBillingAttempts_reverse: Boolean = false, $subscriptionBillingAttempts_sortKey: SubscriptionBillingAttemptsSortKeys = CREATED_AT, $subscriptionBillingAttempts_query: String) {
+  subscriptionBillingAttempts(
+    first: $subscriptionBillingAttempts_first
+    after: $subscriptionBillingAttempts_after
+    last: $subscriptionBillingAttempts_last
+    before: $subscriptionBillingAttempts_before
+    reverse: $subscriptionBillingAttempts_reverse
+    sortKey: $subscriptionBillingAttempts_sortKey
+    query: $subscriptionBillingAttempts_query
+  ) {
+    edges {
+      cursor
+      node {
+        completedAt
+        createdAt
+        errorCode
+        errorMessage
+        id
+        idempotencyKey
+        nextActionUrl
+        order {
+          id
+        }
+        originTime
+        ready
+        subscriptionContract {
+          id
+        }
+      }
+    }
+    pageInfo {
+      endCursor
+      hasNextPage
+      hasPreviousPage
+      startCursor
+    }
+  }
+}

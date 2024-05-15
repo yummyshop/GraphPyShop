@@ -1,0 +1,12 @@
+query availableCarrierServices($availableCarrierServices_destinationCountryCodes: [CountryCode!]) {
+  availableCarrierServices(
+    destinationCountryCodes: $availableCarrierServices_destinationCountryCodes
+  ) {
+    carrierService {
+      id
+    }
+    locations {
+      id
+    }
+  }
+}

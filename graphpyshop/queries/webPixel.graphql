@@ -1,0 +1,6 @@
+query webPixel($webPixel_id: ID) {
+  webPixel(id: $webPixel_id) {
+    id
+    settings
+  }
+}

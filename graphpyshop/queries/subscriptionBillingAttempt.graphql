@@ -1,0 +1,19 @@
+query subscriptionBillingAttempt($subscriptionBillingAttempt_id: ID!) {
+  subscriptionBillingAttempt(id: $subscriptionBillingAttempt_id) {
+    completedAt
+    createdAt
+    errorCode
+    errorMessage
+    id
+    idempotencyKey
+    nextActionUrl
+    order {
+      id
+    }
+    originTime
+    ready
+    subscriptionContract {
+      id
+    }
+  }
+}

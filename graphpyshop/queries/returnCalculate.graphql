@@ -1,0 +1,16 @@
+query returnCalculate($returnCalculate_input: CalculateReturnInput!) {
+  returnCalculate(input: $returnCalculate_input) {
+    exchangeLineItems {
+      id
+      quantity
+    }
+    id
+    returnLineItems {
+      id
+      quantity
+    }
+    returnShippingFee {
+      id
+    }
+  }
+}

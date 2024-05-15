@@ -1,0 +1,100 @@
+query sellingPlanGroup($appliesToProduct_productId: ID!, $appliesToProductVariant_productVariantId: ID!, $appliesToProductVariants_productId: ID!, $productVariants_productId: ID, $productVariants_first: Int = 250, $productVariants_after: String, $productVariants_last: Int, $productVariants_before: String, $productVariants_reverse: Boolean = false, $productVariantsCount_productId: ID, $products_first: Int = 250, $products_after: String, $products_last: Int, $products_before: String, $products_reverse: Boolean = false, $sellingPlans_first: Int = 250, $sellingPlans_after: String, $sellingPlans_last: Int, $sellingPlans_before: String, $sellingPlans_reverse: Boolean = false, $translations_locale: String!, $translations_marketId: ID, $sellingPlanGroup_id: ID!) {
+  sellingPlanGroup(id: $sellingPlanGroup_id) {
+    appId
+    appliesToProduct(productId: $appliesToProduct_productId)
+    appliesToProductVariant(
+      productVariantId: $appliesToProductVariant_productVariantId
+    )
+    appliesToProductVariants(productId: $appliesToProductVariants_productId)
+    createdAt
+    description
+    id
+    merchantCode
+    name
+    options
+    position
+    productVariants(
+      productId: $productVariants_productId
+      first: $productVariants_first
+      after: $productVariants_after
+      last: $productVariants_last
+      before: $productVariants_before
+      reverse: $productVariants_reverse
+    ) {
+      edges {
+        cursor
+        node {
+          id
+        }
+      }
+      pageInfo {
+        endCursor
+        hasNextPage
+        hasPreviousPage
+        startCursor
+      }
+    }
+    productVariantsCount(productId: $productVariantsCount_productId) {
+      count
+      precision
+    }
+    products(
+      first: $products_first
+      after: $products_after
+      last: $products_last
+      before: $products_before
+      reverse: $products_reverse
+    ) {
+      edges {
+        cursor
+        node {
+          id
+        }
+      }
+      pageInfo {
+        endCursor
+        hasNextPage
+        hasPreviousPage
+        startCursor
+      }
+    }
+    productsCount {
+      count
+      precision
+    }
+    sellingPlans(
+      first: $sellingPlans_first
+      after: $sellingPlans_after
+      last: $sellingPlans_last
+      before: $sellingPlans_before
+      reverse: $sellingPlans_reverse
+    ) {
+      edges {
+        cursor
+        node {
+          category
+          createdAt
+          description
+          id
+          name
+          options
+          position
+        }
+      }
+      pageInfo {
+        endCursor
+        hasNextPage
+        hasPreviousPage
+        startCursor
+      }
+    }
+    summary
+    translations(locale: $translations_locale, marketId: $translations_marketId) {
+      key
+      locale
+      outdated
+      updatedAt
+      value
+    }
+  }
+}

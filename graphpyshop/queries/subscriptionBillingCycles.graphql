@@ -1,164 +1,48 @@
-query subscriptionBillingCycles(
-  $first: Int!
-  $reverse: Boolean!
-  $contractId: ID!
-  $startDate: DateTime!
-  $endDate: DateTime!
-) {
+query subscriptionBillingCycles($billingAttempts_first: Int = 250, $billingAttempts_after: String, $billingAttempts_last: Int, $billingAttempts_before: String, $billingAttempts_reverse: Boolean = false, $subscriptionBillingCycles_contractId: ID!, $subscriptionBillingCycles_billingCyclesDateRangeSelector: SubscriptionBillingCyclesDateRangeSelector, $subscriptionBillingCycles_billingCyclesIndexRangeSelector: SubscriptionBillingCyclesIndexRangeSelector, $subscriptionBillingCycles_first: Int = 250, $subscriptionBillingCycles_after: String, $subscriptionBillingCycles_last: Int, $subscriptionBillingCycles_before: String, $subscriptionBillingCycles_reverse: Boolean = false, $subscriptionBillingCycles_sortKey: SubscriptionBillingCyclesSortKeys = CYCLE_INDEX) {
   subscriptionBillingCycles(
-    first: $first
-    reverse: $reverse
-    contractId: $contractId
-    billingCyclesDateRangeSelector: { startDate: $startDate, endDate: $endDate }
+    contractId: $subscriptionBillingCycles_contractId
+    billingCyclesDateRangeSelector: $subscriptionBillingCycles_billingCyclesDateRangeSelector
+    billingCyclesIndexRangeSelector: $subscriptionBillingCycles_billingCyclesIndexRangeSelector
+    first: $subscriptionBillingCycles_first
+    after: $subscriptionBillingCycles_after
+    last: $subscriptionBillingCycles_last
+    before: $subscriptionBillingCycles_before
+    reverse: $subscriptionBillingCycles_reverse
+    sortKey: $subscriptionBillingCycles_sortKey
   ) {
     edges {
+      cursor
       node {
-        __typename
         billingAttemptExpectedDate
+        billingAttempts(
+          first: $billingAttempts_first
+          after: $billingAttempts_after
+          last: $billingAttempts_last
+          before: $billingAttempts_before
+          reverse: $billingAttempts_reverse
+        ) {
+          edges {
+            cursor
+            node {
+              id
+            }
+          }
+          pageInfo {
+            endCursor
+            hasNextPage
+            hasPreviousPage
+            startCursor
+          }
+        }
         cycleEndAt
         cycleIndex
         cycleStartAt
         edited
         editedContract {
-          __typename
-          app {
-            id
-          }
           appAdminUrl
           createdAt
           currencyCode
-          customAttributes {
-            key
-            value
-          }
-          customer {
-            id
-          }
-          customerPaymentMethod {
-            id
-          }
-          deliveryPrice {
-            amount
-            currencyCode
-          }
-          linesCount {
-            count
-            precision
-          }
           note
-          price: priceBreakdownEstimate {
-            subtotalPrice {
-              amount
-              currencyCode
-            }
-            taxesIncluded
-            totalDiscounts {
-              amount
-              currencyCode
-            }
-            totalPrice {
-              amount
-              currencyCode
-            }
-            totalShippingPrice {
-              amount
-              currencyCode
-            }
-            totalTax {
-              amount
-              currencyCode
-            }
-          }
-          lines(first: 20) {
-            edges {
-              node {
-                __typename
-                id
-                currentPrice {
-                  amount
-                  currencyCode
-                }
-                customAttributes {
-                  key
-                  value
-                }
-                discountAllocations {
-                  amount {
-                    amount
-                    currencyCode
-                  }
-                  discount {
-                    ... on SubscriptionAppliedCodeDiscount {
-                      id
-                      redeemCode
-                      rejectionReason
-                    }
-                    ... on SubscriptionManualDiscount {
-                      entitledLines {
-                        all
-                      }
-                      id
-                      recurringCycleLimit
-                      rejectionReason
-                      targetType
-                      title
-                      type
-                      usageCount
-                      value {
-                        ... on SubscriptionDiscountFixedAmountValue {
-                          amount {
-                            amount
-                            currencyCode
-                          }
-                          appliesOnEachItem
-                        }
-                        ... on SubscriptionDiscountPercentageValue {
-                          percentage
-                        }
-                      }
-                    }
-                  }
-                }
-                lineDiscountedPrice {
-                  amount
-                  currencyCode
-                }
-                pricingPolicy {
-                  basePrice {
-                    amount
-                    currencyCode
-                  }
-                  cycleDiscounts {
-                    adjustmentType
-                    adjustmentValue {
-                      ... on MoneyV2 {
-                        amount
-                        currencyCode
-                      }
-                      ... on SellingPlanPricingPolicyPercentageValue {
-                        percentage
-                      }
-                    }
-                    afterCycle
-                    computedPrice {
-                      amount
-                      currencyCode
-                    }
-                  }
-                }
-                productId
-                quantity
-                requiresShipping
-                sellingPlanId
-                sellingPlanName
-                sku
-                taxable
-                title
-                variantId
-                variantTitle
-              }
-            }
-          }
           updatedAt
         }
         skipped
@@ -167,6 +51,12 @@ query subscriptionBillingCycles(
         }
         status
       }
+    }
+    pageInfo {
+      endCursor
+      hasNextPage
+      hasPreviousPage
+      startCursor
     }
   }
 }

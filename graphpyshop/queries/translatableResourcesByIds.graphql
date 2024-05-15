@@ -1,0 +1,62 @@
+query translatableResourcesByIds($nestedTranslatableResources_resourceType: TranslatableResourceType, $nestedTranslatableResources_first: Int = 250, $nestedTranslatableResources_after: String, $nestedTranslatableResources_last: Int, $nestedTranslatableResources_before: String, $nestedTranslatableResources_reverse: Boolean = false, $translations_locale: String!, $translations_outdated: Boolean, $translations_marketId: ID, $translatableResourcesByIds_resourceIds: [ID!]!, $translatableResourcesByIds_first: Int = 250, $translatableResourcesByIds_after: String, $translatableResourcesByIds_last: Int, $translatableResourcesByIds_before: String, $translatableResourcesByIds_reverse: Boolean = false) {
+  translatableResourcesByIds(
+    resourceIds: $translatableResourcesByIds_resourceIds
+    first: $translatableResourcesByIds_first
+    after: $translatableResourcesByIds_after
+    last: $translatableResourcesByIds_last
+    before: $translatableResourcesByIds_before
+    reverse: $translatableResourcesByIds_reverse
+  ) {
+    edges {
+      cursor
+      node {
+        nestedTranslatableResources(
+          resourceType: $nestedTranslatableResources_resourceType
+          first: $nestedTranslatableResources_first
+          after: $nestedTranslatableResources_after
+          last: $nestedTranslatableResources_last
+          before: $nestedTranslatableResources_before
+          reverse: $nestedTranslatableResources_reverse
+        ) {
+          edges {
+            cursor
+            node {
+              resourceId
+            }
+          }
+          pageInfo {
+            endCursor
+            hasNextPage
+            hasPreviousPage
+            startCursor
+          }
+        }
+        resourceId
+        translatableContent {
+          digest
+          key
+          locale
+          type
+          value
+        }
+        translations(
+          locale: $translations_locale
+          outdated: $translations_outdated
+          marketId: $translations_marketId
+        ) {
+          key
+          locale
+          outdated
+          updatedAt
+          value
+        }
+      }
+    }
+    pageInfo {
+      endCursor
+      hasNextPage
+      hasPreviousPage
+      startCursor
+    }
+  }
+}

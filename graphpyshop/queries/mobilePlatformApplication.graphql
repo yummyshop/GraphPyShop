@@ -1,0 +1,3 @@
+query mobilePlatformApplication($mobilePlatformApplication_id: ID!) {
+  mobilePlatformApplication(id: $mobilePlatformApplication_id)
+}

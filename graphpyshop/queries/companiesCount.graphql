@@ -1,0 +1,6 @@
+query companiesCount {
+  companiesCount {
+    count
+    precision
+  }
+}

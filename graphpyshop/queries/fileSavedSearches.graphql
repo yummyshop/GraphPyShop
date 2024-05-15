@@ -1,0 +1,31 @@
+query fileSavedSearches($fileSavedSearches_first: Int = 250, $fileSavedSearches_after: String, $fileSavedSearches_last: Int, $fileSavedSearches_before: String, $fileSavedSearches_reverse: Boolean = false) {
+  fileSavedSearches(
+    first: $fileSavedSearches_first
+    after: $fileSavedSearches_after
+    last: $fileSavedSearches_last
+    before: $fileSavedSearches_before
+    reverse: $fileSavedSearches_reverse
+  ) {
+    edges {
+      cursor
+      node {
+        filters {
+          key
+          value
+        }
+        id
+        legacyResourceId
+        name
+        query
+        resourceType
+        searchTerms
+      }
+    }
+    pageInfo {
+      endCursor
+      hasNextPage
+      hasPreviousPage
+      startCursor
+    }
+  }
+}

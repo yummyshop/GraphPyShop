@@ -1,0 +1,90 @@
+query metaobjectDefinitionByType($metaobjects_first: Int = 250, $metaobjects_after: String, $metaobjects_last: Int, $metaobjects_before: String, $metaobjects_reverse: Boolean = false, $metaobjectDefinitionByType_type: String!) {
+  metaobjectDefinitionByType(type: $metaobjectDefinitionByType_type) {
+    access {
+      admin
+      storefront
+    }
+    createdAt
+    createdByApp {
+      apiKey
+      appStoreAppUrl
+      appStoreDeveloperUrl
+      description
+      developerName
+      developerType
+      embedded
+      features
+      handle
+      id
+      installUrl
+      isPostPurchaseAppInUse
+      previouslyInstalled
+      pricingDetails
+      pricingDetailsSummary
+      privacyPolicyUrl
+      publicCategory
+      published
+      shopifyDeveloped
+      starRating
+      storefrontApiAvailable
+      title
+      uninstallMessage
+      webhookApiVersion
+    }
+    createdByStaff {
+      active
+      email
+      exists
+      firstName
+      id
+      initials
+      isShopOwner
+      lastName
+      locale
+      name
+      phone
+    }
+    description
+    displayNameKey
+    fieldDefinitions {
+      description
+      key
+      name
+      required
+      visibleToStorefrontApi
+    }
+    hasThumbnailField
+    id
+    metaobjects(
+      first: $metaobjects_first
+      after: $metaobjects_after
+      last: $metaobjects_last
+      before: $metaobjects_before
+      reverse: $metaobjects_reverse
+    ) {
+      edges {
+        cursor
+        node {
+          id
+        }
+      }
+      pageInfo {
+        endCursor
+        hasNextPage
+        hasPreviousPage
+        startCursor
+      }
+    }
+    metaobjectsCount
+    name
+    standardTemplate {
+      description
+      displayNameKey
+      name
+      type
+    }
+    type
+    updatedAt
+    visibleToStorefrontApi
+  }
+}

@@ -1,0 +1,25 @@
+query segmentValueSuggestions($segmentValueSuggestions_search: String!, $segmentValueSuggestions_filterQueryName: String, $segmentValueSuggestions_functionParameterQueryName: String, $segmentValueSuggestions_first: Int = 250, $segmentValueSuggestions_after: String, $segmentValueSuggestions_last: Int, $segmentValueSuggestions_before: String) {
+  segmentValueSuggestions(
+    search: $segmentValueSuggestions_search
+    filterQueryName: $segmentValueSuggestions_filterQueryName
+    functionParameterQueryName: $segmentValueSuggestions_functionParameterQueryName
+    first: $segmentValueSuggestions_first
+    after: $segmentValueSuggestions_after
+    last: $segmentValueSuggestions_last
+    before: $segmentValueSuggestions_before
+  ) {
+    edges {
+      cursor
+      node {
+        localizedValue
+        queryName
+      }
+    }
+    pageInfo {
+      endCursor
+      hasNextPage
+      hasPreviousPage
+      startCursor
+    }
+  }
+}

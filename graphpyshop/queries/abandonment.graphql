@@ -1,0 +1,100 @@
+query abandonment($productsAddedToCart_first: Int = 250, $productsAddedToCart_after: String, $productsAddedToCart_last: Int, $productsAddedToCart_before: String, $productsAddedToCart_reverse: Boolean = false, $productsViewed_first: Int = 250, $productsViewed_after: String, $productsViewed_last: Int, $productsViewed_before: String, $productsViewed_reverse: Boolean = false, $abandonment_id: ID!) {
+  abandonment(id: $abandonment_id) {
+    abandonedCheckoutPayload {
+      abandonedCheckoutUrl
+      defaultCursor
+      id
+      lineItemsQuantity
+    }
+    abandonmentType
+    app {
+      apiKey
+      appStoreAppUrl
+      appStoreDeveloperUrl
+      description
+      developerName
+      developerType
+      embedded
+      features
+      handle
+      id
+      installUrl
+      isPostPurchaseAppInUse
+      previouslyInstalled
+      pricingDetails
+      pricingDetailsSummary
+      privacyPolicyUrl
+      publicCategory
+      published
+      shopifyDeveloped
+      starRating
+      storefrontApiAvailable
+      title
+      uninstallMessage
+      webhookApiVersion
+    }
+    cartUrl
+    createdAt
+    customer {
+      id
+    }
+    customerHasNoDraftOrderSinceAbandonment
+    customerHasNoOrderSinceAbandonment
+    daysSinceLastAbandonmentEmail
+    emailSentAt
+    emailState
+    hoursSinceLastAbandonedCheckout
+    id
+    inventoryAvailable
+    isFromCustomStorefront
+    isFromOnlineStore
+    isFromShopApp
+    isFromShopPay
+    isMostSignificantAbandonment
+    lastBrowseAbandonmentDate
+    lastCartAbandonmentDate
+    lastCheckoutAbandonmentDate
+    mostRecentStep
+    productsAddedToCart(
+      first: $productsAddedToCart_first
+      after: $productsAddedToCart_after
+      last: $productsAddedToCart_last
+      before: $productsAddedToCart_before
+      reverse: $productsAddedToCart_reverse
+    ) {
+      edges {
+        cursor
+        node {
+          quantity
+        }
+      }
+      pageInfo {
+        endCursor
+        hasNextPage
+        hasPreviousPage
+        startCursor
+      }
+    }
+    productsViewed(
+      first: $productsViewed_first
+      after: $productsViewed_after
+      last: $productsViewed_last
+      before: $productsViewed_before
+      reverse: $productsViewed_reverse
+    ) {
+      edges {
+        cursor
+        node {
+          quantity
+        }
+      }
+      pageInfo {
+        endCursor
+        hasNextPage
+        hasPreviousPage
+        startCursor
+      }
+    }
+    visitStartedAt
+  }
+}

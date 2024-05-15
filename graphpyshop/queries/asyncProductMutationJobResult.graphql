@@ -1,0 +1,12 @@
+query asyncProductMutationJobResult($asyncProductMutationJobResult_jobId: ID!) {
+  asyncProductMutationJobResult(jobId: $asyncProductMutationJobResult_jobId) {
+    job {
+      done
+      id
+    }
+    jobStatus
+    product {
+      id
+    }
+  }
+}

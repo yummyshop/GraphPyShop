@@ -1,0 +1,85 @@
+query gateConfigurations($metafields_namespace: String, $metafields_keys: [String!], $metafields_first: Int = 250, $metafields_after: String, $metafields_last: Int, $metafields_before: String, $metafields_reverse: Boolean = false, $subjectBindings_includeInactive: Boolean = false, $subjectBindings_first: Int = 250, $subjectBindings_after: String, $subjectBindings_last: Int, $subjectBindings_before: String, $subjectBindings_reverse: Boolean = false, $gateConfigurations_first: Int = 250, $gateConfigurations_after: String, $gateConfigurations_last: Int, $gateConfigurations_before: String, $gateConfigurations_reverse: Boolean = false, $gateConfigurations_sortKey: GateConfigurationsSortKeys = ID, $gateConfigurations_query: String) {
+  gateConfigurations(
+    first: $gateConfigurations_first
+    after: $gateConfigurations_after
+    last: $gateConfigurations_last
+    before: $gateConfigurations_before
+    reverse: $gateConfigurations_reverse
+    sortKey: $gateConfigurations_sortKey
+    query: $gateConfigurations_query
+  ) {
+    edges {
+      cursor
+      node {
+        createdAt
+        defaultCursor
+        handle
+        id
+        metafields(
+          namespace: $metafields_namespace
+          keys: $metafields_keys
+          first: $metafields_first
+          after: $metafields_after
+          last: $metafields_last
+          before: $metafields_before
+          reverse: $metafields_reverse
+        ) {
+          edges {
+            cursor
+            node {
+              createdAt
+              description
+              id
+              key
+              legacyResourceId
+              namespace
+              ownerType
+              type
+              updatedAt
+              value
+            }
+          }
+          pageInfo {
+            endCursor
+            hasNextPage
+            hasPreviousPage
+            startCursor
+          }
+        }
+        name
+        subjectBindings(
+          includeInactive: $subjectBindings_includeInactive
+          first: $subjectBindings_first
+          after: $subjectBindings_after
+          last: $subjectBindings_last
+          before: $subjectBindings_before
+          reverse: $subjectBindings_reverse
+        ) {
+          edges {
+            cursor
+            node {
+              active
+              createdAt
+              defaultCursor
+              id
+              updatedAt
+            }
+          }
+          pageInfo {
+            endCursor
+            hasNextPage
+            hasPreviousPage
+            startCursor
+          }
+        }
+        updatedAt
+      }
+    }
+    pageInfo {
+      endCursor
+      hasNextPage
+      hasPreviousPage
+      startCursor
+    }
+  }
+}

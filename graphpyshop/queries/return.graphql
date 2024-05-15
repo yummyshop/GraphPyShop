@@ -1,0 +1,110 @@
+query return($exchangeLineItems_includeRemovedItems: Boolean = false, $exchangeLineItems_first: Int = 250, $exchangeLineItems_after: String, $exchangeLineItems_last: Int, $exchangeLineItems_before: String, $exchangeLineItems_reverse: Boolean = false, $refunds_first: Int = 250, $refunds_after: String, $refunds_last: Int, $refunds_before: String, $refunds_reverse: Boolean = false, $returnLineItems_first: Int = 250, $returnLineItems_after: String, $returnLineItems_last: Int, $returnLineItems_before: String, $returnLineItems_reverse: Boolean = false, $reverseFulfillmentOrders_first: Int = 250, $reverseFulfillmentOrders_after: String, $reverseFulfillmentOrders_last: Int, $reverseFulfillmentOrders_before: String, $reverseFulfillmentOrders_reverse: Boolean = false, $return_id: ID!) {
+  return(id: $return_id) {
+    decline {
+      note
+      reason
+    }
+    exchangeLineItems(
+      includeRemovedItems: $exchangeLineItems_includeRemovedItems
+      first: $exchangeLineItems_first
+      after: $exchangeLineItems_after
+      last: $exchangeLineItems_last
+      before: $exchangeLineItems_before
+      reverse: $exchangeLineItems_reverse
+    ) {
+      edges {
+        cursor
+        node {
+          id
+        }
+      }
+      pageInfo {
+        endCursor
+        hasNextPage
+        hasPreviousPage
+        startCursor
+      }
+    }
+    id
+    name
+    order {
+      id
+    }
+    refunds(
+      first: $refunds_first
+      after: $refunds_after
+      last: $refunds_last
+      before: $refunds_before
+      reverse: $refunds_reverse
+    ) {
+      edges {
+        cursor
+        node {
+          createdAt
+          id
+          legacyResourceId
+          note
+          updatedAt
+        }
+      }
+      pageInfo {
+        endCursor
+        hasNextPage
+        hasPreviousPage
+        startCursor
+      }
+    }
+    returnLineItems(
+      first: $returnLineItems_first
+      after: $returnLineItems_after
+      last: $returnLineItems_last
+      before: $returnLineItems_before
+      reverse: $returnLineItems_reverse
+    ) {
+      edges {
+        cursor
+        node {
+          customerNote
+          id
+          quantity
+          refundableQuantity
+          refundedQuantity
+          returnReason
+          returnReasonNote
+        }
+      }
+      pageInfo {
+        endCursor
+        hasNextPage
+        hasPreviousPage
+        startCursor
+      }
+    }
+    returnShippingFees {
+      id
+    }
+    reverseFulfillmentOrders(
+      first: $reverseFulfillmentOrders_first
+      after: $reverseFulfillmentOrders_after
+      last: $reverseFulfillmentOrders_last
+      before: $reverseFulfillmentOrders_before
+      reverse: $reverseFulfillmentOrders_reverse
+    ) {
+      edges {
+        cursor
+        node {
+          id
+          status
+        }
+      }
+      pageInfo {
+        endCursor
+        hasNextPage
+        hasPreviousPage
+        startCursor
+      }
+    }
+    status
+    totalQuantity
+  }
+}

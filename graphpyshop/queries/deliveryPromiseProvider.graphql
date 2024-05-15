@@ -1,0 +1,11 @@
+query deliveryPromiseProvider($deliveryPromiseProvider_locationId: ID!) {
+  deliveryPromiseProvider(locationId: $deliveryPromiseProvider_locationId) {
+    active
+    fulfillmentDelay
+    id
+    location {
+      id
+    }
+    timeZone
+  }
+}

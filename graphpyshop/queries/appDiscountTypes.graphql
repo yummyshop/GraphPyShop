@@ -1,0 +1,40 @@
+query appDiscountTypes {
+  appDiscountTypes {
+    app {
+      apiKey
+      appStoreAppUrl
+      appStoreDeveloperUrl
+      description
+      developerName
+      developerType
+      embedded
+      features
+      handle
+      id
+      installUrl
+      isPostPurchaseAppInUse
+      previouslyInstalled
+      pricingDetails
+      pricingDetailsSummary
+      privacyPolicyUrl
+      publicCategory
+      published
+      shopifyDeveloped
+      starRating
+      storefrontApiAvailable
+      title
+      uninstallMessage
+      webhookApiVersion
+    }
+    appBridge {
+      createPath
+      detailsPath
+    }
+    appKey
+    description
+    discountClass
+    functionId
+    targetType
+    title
+  }
+}

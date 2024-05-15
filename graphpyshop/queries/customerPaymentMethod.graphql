@@ -1,0 +1,33 @@
+query customerPaymentMethod($subscriptionContracts_first: Int = 250, $subscriptionContracts_after: String, $subscriptionContracts_last: Int, $subscriptionContracts_before: String, $subscriptionContracts_reverse: Boolean = false, $customerPaymentMethod_id: ID!, $customerPaymentMethod_showRevoked: Boolean = false) {
+  customerPaymentMethod(
+    id: $customerPaymentMethod_id
+    showRevoked: $customerPaymentMethod_showRevoked
+  ) {
+    customer {
+      id
+    }
+    id
+    revokedAt
+    revokedReason
+    subscriptionContracts(
+      first: $subscriptionContracts_first
+      after: $subscriptionContracts_after
+      last: $subscriptionContracts_last
+      before: $subscriptionContracts_before
+      reverse: $subscriptionContracts_reverse
+    ) {
+      edges {
+        cursor
+        node {
+          id
+        }
+      }
+      pageInfo {
+        endCursor
+        hasNextPage
+        hasPreviousPage
+        startCursor
+      }
+    }
+  }
+}

@@ -1,0 +1,135 @@
+query metaobjects($field_key: String!, $referencedBy_first: Int = 250, $referencedBy_after: String, $referencedBy_last: Int, $referencedBy_before: String, $referencedBy_reverse: Boolean = false, $metaobjects_type: String!, $metaobjects_sortKey: String, $metaobjects_first: Int = 250, $metaobjects_after: String, $metaobjects_last: Int, $metaobjects_before: String, $metaobjects_reverse: Boolean = false, $metaobjects_query: String) {
+  metaobjects(
+    type: $metaobjects_type
+    sortKey: $metaobjects_sortKey
+    first: $metaobjects_first
+    after: $metaobjects_after
+    last: $metaobjects_last
+    before: $metaobjects_before
+    reverse: $metaobjects_reverse
+    query: $metaobjects_query
+  ) {
+    edges {
+      cursor
+      node {
+        createdAt
+        createdBy {
+          apiKey
+          appStoreAppUrl
+          appStoreDeveloperUrl
+          description
+          developerName
+          developerType
+          embedded
+          features
+          handle
+          id
+          installUrl
+          isPostPurchaseAppInUse
+          previouslyInstalled
+          pricingDetails
+          pricingDetailsSummary
+          privacyPolicyUrl
+          publicCategory
+          published
+          shopifyDeveloped
+          starRating
+          storefrontApiAvailable
+          title
+          uninstallMessage
+          webhookApiVersion
+        }
+        createdByApp {
+          apiKey
+          appStoreAppUrl
+          appStoreDeveloperUrl
+          description
+          developerName
+          developerType
+          embedded
+          features
+          handle
+          id
+          installUrl
+          isPostPurchaseAppInUse
+          previouslyInstalled
+          pricingDetails
+          pricingDetailsSummary
+          privacyPolicyUrl
+          publicCategory
+          published
+          shopifyDeveloped
+          starRating
+          storefrontApiAvailable
+          title
+          uninstallMessage
+          webhookApiVersion
+        }
+        createdByStaff {
+          active
+          email
+          exists
+          firstName
+          id
+          initials
+          isShopOwner
+          lastName
+          locale
+          name
+          phone
+        }
+        definition {
+          id
+        }
+        displayName
+        field(key: $field_key) {
+          key
+          type
+          value
+        }
+        fields {
+          key
+          type
+          value
+        }
+        handle
+        id
+        referencedBy(
+          first: $referencedBy_first
+          after: $referencedBy_after
+          last: $referencedBy_last
+          before: $referencedBy_before
+          reverse: $referencedBy_reverse
+        ) {
+          edges {
+            cursor
+            node {
+              key
+              name
+              namespace
+            }
+          }
+          pageInfo {
+            endCursor
+            hasNextPage
+            hasPreviousPage
+            startCursor
+          }
+        }
+        thumbnailField {
+          key
+          type
+          value
+        }
+        type
+        updatedAt
+      }
+    }
+    pageInfo {
+      endCursor
+      hasNextPage
+      hasPreviousPage
+      startCursor
+    }
+  }
+}

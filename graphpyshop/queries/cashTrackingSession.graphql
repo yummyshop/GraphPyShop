@@ -1,0 +1,142 @@
+query cashTrackingSession($adjustments_first: Int = 250, $adjustments_after: String, $adjustments_last: Int, $adjustments_before: String, $adjustments_reverse: Boolean = false, $adjustments_sortKey: AdjustmentsSortKeys = TIME, $cashTransactions_first: Int = 250, $cashTransactions_after: String, $cashTransactions_last: Int, $cashTransactions_before: String, $cashTransactions_reverse: Boolean = false, $cashTransactions_sortKey: CashTrackingSessionTransactionsSortKeys = PROCESSED_AT, $cashTransactions_query: String, $cashTrackingSession_id: ID!) {
+  cashTrackingSession(id: $cashTrackingSession_id) {
+    adjustments(
+      first: $adjustments_first
+      after: $adjustments_after
+      last: $adjustments_last
+      before: $adjustments_before
+      reverse: $adjustments_reverse
+      sortKey: $adjustments_sortKey
+    ) {
+      edges {
+        cursor
+        node {
+          id
+          note
+          time
+        }
+      }
+      pageInfo {
+        endCursor
+        hasNextPage
+        hasPreviousPage
+        startCursor
+      }
+    }
+    cashTrackingEnabled
+    cashTransactions(
+      first: $cashTransactions_first
+      after: $cashTransactions_after
+      last: $cashTransactions_last
+      before: $cashTransactions_before
+      reverse: $cashTransactions_reverse
+      sortKey: $cashTransactions_sortKey
+      query: $cashTransactions_query
+    ) {
+      edges {
+        cursor
+        node {
+          accountNumber
+          authorizationCode
+          authorizationExpiresAt
+          createdAt
+          errorCode
+          formattedGateway
+          gateway
+          id
+          kind
+          manuallyCapturable
+          multiCapturable
+          paymentId
+          processedAt
+          receiptJson
+          settlementCurrency
+          settlementCurrencyRate
+          status
+          test
+        }
+      }
+      pageInfo {
+        endCursor
+        hasNextPage
+        hasPreviousPage
+        startCursor
+      }
+    }
+    closingBalance {
+      amount
+      currencyCode
+    }
+    closingNote
+    closingStaffMember {
+      active
+      email
+      exists
+      firstName
+      id
+      initials
+      isShopOwner
+      lastName
+      locale
+      name
+      phone
+    }
+    closingTime
+    expectedBalance {
+      amount
+      currencyCode
+    }
+    expectedClosingBalance {
+      amount
+      currencyCode
+    }
+    expectedOpeningBalance {
+      amount
+      currencyCode
+    }
+    id
+    location {
+      id
+    }
+    netCashSales {
+      amount
+      currencyCode
+    }
+    openingBalance {
+      amount
+      currencyCode
+    }
+    openingNote
+    openingStaffMember {
+      active
+      email
+      exists
+      firstName
+      id
+      initials
+      isShopOwner
+      lastName
+      locale
+      name
+      phone
+    }
+    openingTime
+    registerName
+    totalAdjustments {
+      amount
+      currencyCode
+    }
+    totalCashRefunds {
+      amount
+      currencyCode
+    }
+    totalCashSales {
+      amount
+      currencyCode
+    }
+    totalDiscrepancy {
+      amount
+      currencyCode
+    }
+  }
+}

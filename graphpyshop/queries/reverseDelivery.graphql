@@ -1,0 +1,30 @@
+query reverseDelivery($reverseDeliveryLineItems_first: Int = 250, $reverseDeliveryLineItems_after: String, $reverseDeliveryLineItems_last: Int, $reverseDeliveryLineItems_before: String, $reverseDeliveryLineItems_reverse: Boolean = false, $reverseDelivery_id: ID!) {
+  reverseDelivery(id: $reverseDelivery_id) {
+    id
+    reverseDeliveryLineItems(
+      first: $reverseDeliveryLineItems_first
+      after: $reverseDeliveryLineItems_after
+      last: $reverseDeliveryLineItems_last
+      before: $reverseDeliveryLineItems_before
+      reverse: $reverseDeliveryLineItems_reverse
+    ) {
+      edges {
+        cursor
+        node {
+          id
+          quantity
+        }
+      }
+      pageInfo {
+        endCursor
+        hasNextPage
+        hasPreviousPage
+        startCursor
+      }
+    }
+    reverseFulfillmentOrder {
+      id
+      status
+    }
+  }
+}

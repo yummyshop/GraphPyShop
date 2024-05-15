@@ -1,16 +1,16 @@
-query CurrentBulkOperation($type: BulkOperationType = QUERY) {
-  currentBulkOperation(type: $type) {
-    id
-    type
-    status
+query currentBulkOperation($currentBulkOperation_type: BulkOperationType = QUERY) {
+  currentBulkOperation(type: $currentBulkOperation_type) {
     completedAt
     createdAt
     errorCode
     fileSize
+    id
     objectCount
     partialDataUrl
     query
     rootObjectCount
+    status
+    type
     url
   }
 }

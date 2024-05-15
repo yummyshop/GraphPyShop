@@ -1,0 +1,6 @@
+query publishedProductsCount($publishedProductsCount_publicationId: ID!) {
+  publishedProductsCount(publicationId: $publishedProductsCount_publicationId) {
+    count
+    precision
+  }
+}

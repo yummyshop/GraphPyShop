@@ -1,0 +1,3 @@
+query market($market_id: ID!) {
+  market(id: $market_id)
+}

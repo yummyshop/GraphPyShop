@@ -1,23 +1,46 @@
-query subscriptionContracts($query: String!) {
-  subscriptionContracts(query: $query) {
+query subscriptionContracts($customerPaymentMethod_showRevoked: Boolean = false, $discounts_first: Int = 250, $discounts_after: String, $discounts_last: Int, $discounts_before: String, $discounts_reverse: Boolean = false, $lines_first: Int = 250, $lines_after: String, $lines_last: Int, $lines_before: String, $lines_reverse: Boolean = false, $orders_first: Int = 250, $orders_after: String, $orders_last: Int, $orders_before: String, $orders_reverse: Boolean = false, $priceBreakdownEstimate_calculateTaxes: Boolean = true, $subscriptionContracts_first: Int = 250, $subscriptionContracts_after: String, $subscriptionContracts_last: Int, $subscriptionContracts_before: String, $subscriptionContracts_reverse: Boolean = false, $subscriptionContracts_sortKey: SubscriptionContractsSortKeys = CREATED_AT, $subscriptionContracts_query: String) {
+  subscriptionContracts(
+    first: $subscriptionContracts_first
+    after: $subscriptionContracts_after
+    last: $subscriptionContracts_last
+    before: $subscriptionContracts_before
+    reverse: $subscriptionContracts_reverse
+    sortKey: $subscriptionContracts_sortKey
+    query: $subscriptionContracts_query
+  ) {
     edges {
+      cursor
       node {
-        __typename
-        id
         app {
-          id
+          apiKey
+          appStoreAppUrl
+          appStoreDeveloperUrl
+          description
+          developerName
+          developerType
+          embedded
+          features
           handle
+          id
+          installUrl
+          isPostPurchaseAppInUse
+          previouslyInstalled
+          pricingDetails
+          pricingDetailsSummary
+          privacyPolicyUrl
+          publicCategory
+          published
+          shopifyDeveloped
+          starRating
+          storefrontApiAvailable
+          title
+          uninstallMessage
+          webhookApiVersion
         }
         appAdminUrl
         billingPolicy {
           interval
           intervalCount
-          anchors {
-            day
-            month
-            type
-            cutoffDay
-          }
           maxCycles
           minCycles
         }
@@ -29,71 +52,30 @@ query subscriptionContracts($query: String!) {
         }
         customer {
           id
-          displayName
-          email
         }
-        customerPaymentMethod {
+        customerPaymentMethod(showRevoked: $customerPaymentMethod_showRevoked) {
           id
+          revokedAt
+          revokedReason
         }
         deliveryPolicy {
           interval
           intervalCount
-          anchors {
-            day
-            month
-            type
-            cutoffDay
-          }
         }
         deliveryPrice {
           amount
           currencyCode
         }
-        id
-        lastPaymentStatus
-        linesCount {
-          count
-          precision
-        }
-        nextBillingDate
-        note
-        originOrder {
-          id
-          name
-        }
-        priceBreakdownEstimate {
-          subtotalPrice {
-            amount
-            currencyCode
-          }
-          taxesIncluded
-          totalDiscounts {
-            amount
-            currencyCode
-          }
-          totalPrice {
-            amount
-            currencyCode
-          }
-          totalShippingPrice {
-            amount
-            currencyCode
-          }
-          totalTax {
-            amount
-            currencyCode
-          }
-        }
-        revisionId
-        status
-        updatedAt
-        discounts(first: 10) {
+        discounts(
+          first: $discounts_first
+          after: $discounts_after
+          last: $discounts_last
+          before: $discounts_before
+          reverse: $discounts_reverse
+        ) {
           edges {
+            cursor
             node {
-              __typename
-              entitledLines {
-                all
-              }
               id
               recurringCycleLimit
               rejectionReason
@@ -101,98 +83,28 @@ query subscriptionContracts($query: String!) {
               title
               type
               usageCount
-              value {
-                ... on SubscriptionDiscountFixedAmountValue {
-                  amount {
-                    amount
-                    currencyCode
-                  }
-                  appliesOnEachItem
-                }
-                ... on SubscriptionDiscountPercentageValue {
-                  percentage
-                }
-              }
             }
           }
+          pageInfo {
+            endCursor
+            hasNextPage
+            hasPreviousPage
+            startCursor
+          }
         }
-        lines(first: 10) {
+        id
+        lastPaymentStatus
+        lines(
+          first: $lines_first
+          after: $lines_after
+          last: $lines_last
+          before: $lines_before
+          reverse: $lines_reverse
+        ) {
           edges {
+            cursor
             node {
-              __typename
               id
-              currentPrice {
-                amount
-                currencyCode
-              }
-              customAttributes {
-                key
-                value
-              }
-              discountAllocations {
-                amount {
-                  amount
-                  currencyCode
-                }
-                discount {
-                  ... on SubscriptionAppliedCodeDiscount {
-                    id
-                    redeemCode
-                    rejectionReason
-                  }
-                  ... on SubscriptionManualDiscount {
-                    entitledLines {
-                      all
-                    }
-                    id
-                    recurringCycleLimit
-                    rejectionReason
-                    targetType
-                    title
-                    type
-                    usageCount
-                    value {
-                      ... on SubscriptionDiscountFixedAmountValue {
-                        amount {
-                          amount
-                          currencyCode
-                        }
-                        appliesOnEachItem
-                      }
-                      ... on SubscriptionDiscountPercentageValue {
-                        percentage
-                      }
-                    }
-                  }
-                }
-              }
-              lineDiscountedPrice {
-                amount
-                currencyCode
-              }
-              pricingPolicy {
-                basePrice {
-                  amount
-                  currencyCode
-                }
-                cycleDiscounts {
-                  adjustmentType
-                  adjustmentValue {
-                    ... on MoneyV2 {
-                      amount
-                      currencyCode
-                    }
-                    ... on SellingPlanPricingPolicyPercentageValue {
-                      percentage
-                    }
-                  }
-                  afterCycle
-                  computedPrice {
-                    amount
-                    currencyCode
-                  }
-                }
-              }
               productId
               quantity
               requiresShipping
@@ -205,8 +117,55 @@ query subscriptionContracts($query: String!) {
               variantTitle
             }
           }
+          pageInfo {
+            endCursor
+            hasNextPage
+            hasPreviousPage
+            startCursor
+          }
         }
+        linesCount {
+          count
+          precision
+        }
+        nextBillingDate
+        note
+        orders(
+          first: $orders_first
+          after: $orders_after
+          last: $orders_last
+          before: $orders_before
+          reverse: $orders_reverse
+        ) {
+          edges {
+            cursor
+            node {
+              id
+            }
+          }
+          pageInfo {
+            endCursor
+            hasNextPage
+            hasPreviousPage
+            startCursor
+          }
+        }
+        originOrder {
+          id
+        }
+        priceBreakdownEstimate(calculateTaxes: $priceBreakdownEstimate_calculateTaxes) {
+          taxesIncluded
+        }
+        revisionId
+        status
+        updatedAt
       }
+    }
+    pageInfo {
+      endCursor
+      hasNextPage
+      hasPreviousPage
+      startCursor
     }
   }
 }

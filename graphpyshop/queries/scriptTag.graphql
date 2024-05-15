@@ -1,0 +1,11 @@
+query scriptTag($scriptTag_id: ID!) {
+  scriptTag(id: $scriptTag_id) {
+    cache
+    createdAt
+    displayScope
+    id
+    legacyResourceId
+    src
+    updatedAt
+  }
+}

@@ -1,0 +1,69 @@
+query deliveryCustomization($metafieldDefinitions_namespace: String, $metafieldDefinitions_pinnedStatus: MetafieldDefinitionPinnedStatus = ANY, $metafieldDefinitions_first: Int = 250, $metafieldDefinitions_after: String, $metafieldDefinitions_last: Int, $metafieldDefinitions_before: String, $metafieldDefinitions_reverse: Boolean = false, $metafieldDefinitions_sortKey: MetafieldDefinitionSortKeys = ID, $metafieldDefinitions_query: String, $metafields_namespace: String, $metafields_keys: [String!], $metafields_first: Int = 250, $metafields_after: String, $metafields_last: Int, $metafields_before: String, $metafields_reverse: Boolean = false, $deliveryCustomization_id: ID!) {
+  deliveryCustomization(id: $deliveryCustomization_id) {
+    enabled
+    errorHistory {
+      errorsFirstOccurredAt
+      firstOccurredAt
+      hasBeenSharedSinceLastError
+      hasSharedRecentErrors
+    }
+    functionId
+    id
+    metafieldDefinitions(
+      namespace: $metafieldDefinitions_namespace
+      pinnedStatus: $metafieldDefinitions_pinnedStatus
+      first: $metafieldDefinitions_first
+      after: $metafieldDefinitions_after
+      last: $metafieldDefinitions_last
+      before: $metafieldDefinitions_before
+      reverse: $metafieldDefinitions_reverse
+      sortKey: $metafieldDefinitions_sortKey
+      query: $metafieldDefinitions_query
+    ) {
+      edges {
+        cursor
+        node {
+          id
+        }
+      }
+      pageInfo {
+        endCursor
+        hasNextPage
+        hasPreviousPage
+        startCursor
+      }
+    }
+    metafields(
+      namespace: $metafields_namespace
+      keys: $metafields_keys
+      first: $metafields_first
+      after: $metafields_after
+      last: $metafields_last
+      before: $metafields_before
+      reverse: $metafields_reverse
+    ) {
+      edges {
+        cursor
+        node {
+          createdAt
+          description
+          id
+          key
+          legacyResourceId
+          namespace
+          ownerType
+          type
+          updatedAt
+          value
+        }
+      }
+      pageInfo {
+        endCursor
+        hasNextPage
+        hasPreviousPage
+        startCursor
+      }
+    }
+    title
+  }
+}

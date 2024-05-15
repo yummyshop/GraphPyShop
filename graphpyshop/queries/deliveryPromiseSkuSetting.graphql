@@ -1,0 +1,15 @@
+query deliveryPromiseSkuSetting($deliveryPromiseSkuSetting_sku: String!, $deliveryPromiseSkuSetting_deliveryPromiseProviderId: ID!) {
+  deliveryPromiseSkuSetting(
+    sku: $deliveryPromiseSkuSetting_sku
+    deliveryPromiseProviderId: $deliveryPromiseSkuSetting_deliveryPromiseProviderId
+  ) {
+    deliveryPromiseProvider {
+      active
+      fulfillmentDelay
+      id
+      timeZone
+    }
+    scheduleHandle
+    sku
+  }
+}

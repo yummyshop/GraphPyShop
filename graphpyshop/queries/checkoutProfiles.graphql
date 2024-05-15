@@ -1,0 +1,30 @@
+query checkoutProfiles($checkoutProfiles_first: Int = 250, $checkoutProfiles_after: String, $checkoutProfiles_last: Int, $checkoutProfiles_before: String, $checkoutProfiles_reverse: Boolean = false, $checkoutProfiles_sortKey: CheckoutProfileSortKeys = UPDATED_AT, $checkoutProfiles_query: String) {
+  checkoutProfiles(
+    first: $checkoutProfiles_first
+    after: $checkoutProfiles_after
+    last: $checkoutProfiles_last
+    before: $checkoutProfiles_before
+    reverse: $checkoutProfiles_reverse
+    sortKey: $checkoutProfiles_sortKey
+    query: $checkoutProfiles_query
+  ) {
+    edges {
+      cursor
+      node {
+        createdAt
+        editedAt
+        id
+        isPublished
+        name
+        typOspPagesActive
+        updatedAt
+      }
+    }
+    pageInfo {
+      endCursor
+      hasNextPage
+      hasPreviousPage
+      startCursor
+    }
+  }
+}

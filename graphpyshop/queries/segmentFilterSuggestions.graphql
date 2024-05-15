@@ -1,0 +1,68 @@
+query segmentFilterSuggestions($segmentFilterSuggestions_search: String!, $segmentFilterSuggestions_first: Int! = 250, $segmentFilterSuggestions_after: String) {
+  segmentFilterSuggestions(
+    search: $segmentFilterSuggestions_search
+    first: $segmentFilterSuggestions_first
+    after: $segmentFilterSuggestions_after
+  ) {
+    edges {
+      cursor
+      node {
+        ... on SegmentAssociationFilter {
+          localizedName
+          multiValue
+          queryName
+        }
+        ... on SegmentBooleanFilter {
+          localizedName
+          multiValue
+          queryName
+        }
+        ... on SegmentDateFilter {
+          localizedName
+          multiValue
+          queryName
+        }
+        ... on SegmentEnumFilter {
+          localizedName
+          multiValue
+          queryName
+        }
+        ... on SegmentEventFilter {
+          localizedName
+          multiValue
+          parameters {
+            acceptsMultipleValues
+            localizedDescription
+            localizedName
+            optional
+            parameterType
+            queryName
+          }
+          queryName
+          returnValueType
+        }
+        ... on SegmentFloatFilter {
+          localizedName
+          multiValue
+          queryName
+        }
+        ... on SegmentIntegerFilter {
+          localizedName
+          multiValue
+          queryName
+        }
+        ... on SegmentStringFilter {
+          localizedName
+          multiValue
+          queryName
+        }
+      }
+    }
+    pageInfo {
+      endCursor
+      hasNextPage
+      hasPreviousPage
+      startCursor
+    }
+  }
+}

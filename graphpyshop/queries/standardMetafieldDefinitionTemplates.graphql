@@ -1,0 +1,38 @@
+query standardMetafieldDefinitionTemplates($standardMetafieldDefinitionTemplates_first: Int = 250, $standardMetafieldDefinitionTemplates_after: String, $standardMetafieldDefinitionTemplates_last: Int, $standardMetafieldDefinitionTemplates_before: String, $standardMetafieldDefinitionTemplates_reverse: Boolean = false) {
+  standardMetafieldDefinitionTemplates(
+    first: $standardMetafieldDefinitionTemplates_first
+    after: $standardMetafieldDefinitionTemplates_after
+    last: $standardMetafieldDefinitionTemplates_last
+    before: $standardMetafieldDefinitionTemplates_before
+    reverse: $standardMetafieldDefinitionTemplates_reverse
+  ) {
+    edges {
+      cursor
+      node {
+        description
+        id
+        key
+        name
+        namespace
+        ownerTypes
+        type {
+          category
+          name
+          supportsDefinitionMigrations
+        }
+        validations {
+          name
+          type
+          value
+        }
+        visibleToStorefrontApi
+      }
+    }
+    pageInfo {
+      endCursor
+      hasNextPage
+      hasPreviousPage
+      startCursor
+    }
+  }
+}

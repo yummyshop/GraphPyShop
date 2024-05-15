@@ -1,0 +1,31 @@
+query codeDiscountSavedSearches($codeDiscountSavedSearches_first: Int = 250, $codeDiscountSavedSearches_after: String, $codeDiscountSavedSearches_last: Int, $codeDiscountSavedSearches_before: String, $codeDiscountSavedSearches_reverse: Boolean = false) {
+  codeDiscountSavedSearches(
+    first: $codeDiscountSavedSearches_first
+    after: $codeDiscountSavedSearches_after
+    last: $codeDiscountSavedSearches_last
+    before: $codeDiscountSavedSearches_before
+    reverse: $codeDiscountSavedSearches_reverse
+  ) {
+    edges {
+      cursor
+      node {
+        filters {
+          key
+          value
+        }
+        id
+        legacyResourceId
+        name
+        query
+        resourceType
+        searchTerms
+      }
+    }
+    pageInfo {
+      endCursor
+      hasNextPage
+      hasPreviousPage
+      startCursor
+    }
+  }
+}

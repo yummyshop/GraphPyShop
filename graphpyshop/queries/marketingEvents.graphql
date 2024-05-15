@@ -1,0 +1,65 @@
+query marketingEvents($marketingEvents_first: Int = 250, $marketingEvents_after: String, $marketingEvents_last: Int, $marketingEvents_before: String, $marketingEvents_reverse: Boolean = false, $marketingEvents_sortKey: MarketingEventSortKeys = ID, $marketingEvents_query: String) {
+  marketingEvents(
+    first: $marketingEvents_first
+    after: $marketingEvents_after
+    last: $marketingEvents_last
+    before: $marketingEvents_before
+    reverse: $marketingEvents_reverse
+    sortKey: $marketingEvents_sortKey
+    query: $marketingEvents_query
+  ) {
+    edges {
+      cursor
+      node {
+        app {
+          apiKey
+          appStoreAppUrl
+          appStoreDeveloperUrl
+          description
+          developerName
+          developerType
+          embedded
+          features
+          handle
+          id
+          installUrl
+          isPostPurchaseAppInUse
+          previouslyInstalled
+          pricingDetails
+          pricingDetailsSummary
+          privacyPolicyUrl
+          publicCategory
+          published
+          shopifyDeveloped
+          starRating
+          storefrontApiAvailable
+          title
+          uninstallMessage
+          webhookApiVersion
+        }
+        channelHandle
+        description
+        endedAt
+        id
+        legacyResourceId
+        manageUrl
+        marketingChannelType
+        previewUrl
+        remoteId
+        scheduledToEndAt
+        sourceAndMedium
+        startedAt
+        type
+        utmCampaign
+        utmMedium
+        utmSource
+      }
+    }
+    pageInfo {
+      endCursor
+      hasNextPage
+      hasPreviousPage
+      startCursor
+    }
+  }
+}

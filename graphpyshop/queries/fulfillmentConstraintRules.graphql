@@ -1,0 +1,36 @@
+query fulfillmentConstraintRules($metafields_namespace: String, $metafields_keys: [String!], $metafields_first: Int = 250, $metafields_after: String, $metafields_last: Int, $metafields_before: String, $metafields_reverse: Boolean = false) {
+  fulfillmentConstraintRules {
+    id
+    metafields(
+      namespace: $metafields_namespace
+      keys: $metafields_keys
+      first: $metafields_first
+      after: $metafields_after
+      last: $metafields_last
+      before: $metafields_before
+      reverse: $metafields_reverse
+    ) {
+      edges {
+        cursor
+        node {
+          createdAt
+          description
+          id
+          key
+          legacyResourceId
+          namespace
+          ownerType
+          type
+          updatedAt
+          value
+        }
+      }
+      pageInfo {
+        endCursor
+        hasNextPage
+        hasPreviousPage
+        startCursor
+      }
+    }
+  }
+}

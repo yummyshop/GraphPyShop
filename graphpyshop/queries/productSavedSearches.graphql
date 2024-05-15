@@ -1,0 +1,31 @@
+query productSavedSearches($productSavedSearches_first: Int = 250, $productSavedSearches_after: String, $productSavedSearches_last: Int, $productSavedSearches_before: String, $productSavedSearches_reverse: Boolean = false) {
+  productSavedSearches(
+    first: $productSavedSearches_first
+    after: $productSavedSearches_after
+    last: $productSavedSearches_last
+    before: $productSavedSearches_before
+    reverse: $productSavedSearches_reverse
+  ) {
+    edges {
+      cursor
+      node {
+        filters {
+          key
+          value
+        }
+        id
+        legacyResourceId
+        name
+        query
+        resourceType
+        searchTerms
+      }
+    }
+    pageInfo {
+      endCursor
+      hasNextPage
+      hasPreviousPage
+      startCursor
+    }
+  }
+}

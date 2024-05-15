@@ -1,0 +1,15 @@
+query urlRedirectImport($urlRedirectImport_id: ID!) {
+  urlRedirectImport(id: $urlRedirectImport_id) {
+    count
+    createdCount
+    failedCount
+    finished
+    finishedAt
+    id
+    previewRedirects {
+      path
+      target
+    }
+    updatedCount
+  }
+}

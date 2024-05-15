@@ -1,0 +1,61 @@
+query shopifyFunctions($shopifyFunctions_apiType: String, $shopifyFunctions_useCreationUi: Boolean, $shopifyFunctions_first: Int = 250, $shopifyFunctions_after: String, $shopifyFunctions_last: Int, $shopifyFunctions_before: String, $shopifyFunctions_reverse: Boolean = false) {
+  shopifyFunctions(
+    apiType: $shopifyFunctions_apiType
+    useCreationUi: $shopifyFunctions_useCreationUi
+    first: $shopifyFunctions_first
+    after: $shopifyFunctions_after
+    last: $shopifyFunctions_last
+    before: $shopifyFunctions_before
+    reverse: $shopifyFunctions_reverse
+  ) {
+    edges {
+      cursor
+      node {
+        apiType
+        apiVersion
+        app {
+          apiKey
+          appStoreAppUrl
+          appStoreDeveloperUrl
+          description
+          developerName
+          developerType
+          embedded
+          features
+          handle
+          id
+          installUrl
+          isPostPurchaseAppInUse
+          previouslyInstalled
+          pricingDetails
+          pricingDetailsSummary
+          privacyPolicyUrl
+          publicCategory
+          published
+          shopifyDeveloped
+          starRating
+          storefrontApiAvailable
+          title
+          uninstallMessage
+          webhookApiVersion
+        }
+        appBridge {
+          createPath
+          detailsPath
+        }
+        appKey
+        description
+        id
+        inputQuery
+        title
+        useCreationUi
+      }
+    }
+    pageInfo {
+      endCursor
+      hasNextPage
+      hasPreviousPage
+      startCursor
+    }
+  }
+}

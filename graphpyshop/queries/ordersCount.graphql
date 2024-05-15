@@ -1,0 +1,10 @@
+query ordersCount($ordersCount_query: String, $ordersCount_savedSearchId: ID, $ordersCount_limit: Int) {
+  ordersCount(
+    query: $ordersCount_query
+    savedSearchId: $ordersCount_savedSearchId
+    limit: $ordersCount_limit
+  ) {
+    count
+    precision
+  }
+}

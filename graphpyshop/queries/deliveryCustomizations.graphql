@@ -1,0 +1,63 @@
+query deliveryCustomizations($metafields_namespace: String, $metafields_keys: [String!], $metafields_first: Int = 250, $metafields_after: String, $metafields_last: Int, $metafields_before: String, $metafields_reverse: Boolean = false, $deliveryCustomizations_first: Int = 250, $deliveryCustomizations_after: String, $deliveryCustomizations_last: Int, $deliveryCustomizations_before: String, $deliveryCustomizations_reverse: Boolean = false, $deliveryCustomizations_query: String) {
+  deliveryCustomizations(
+    first: $deliveryCustomizations_first
+    after: $deliveryCustomizations_after
+    last: $deliveryCustomizations_last
+    before: $deliveryCustomizations_before
+    reverse: $deliveryCustomizations_reverse
+    query: $deliveryCustomizations_query
+  ) {
+    edges {
+      cursor
+      node {
+        enabled
+        errorHistory {
+          errorsFirstOccurredAt
+          firstOccurredAt
+          hasBeenSharedSinceLastError
+          hasSharedRecentErrors
+        }
+        functionId
+        id
+        metafields(
+          namespace: $metafields_namespace
+          keys: $metafields_keys
+          first: $metafields_first
+          after: $metafields_after
+          last: $metafields_last
+          before: $metafields_before
+          reverse: $metafields_reverse
+        ) {
+          edges {
+            cursor
+            node {
+              createdAt
+              description
+              id
+              key
+              legacyResourceId
+              namespace
+              ownerType
+              type
+              updatedAt
+              value
+            }
+          }
+          pageInfo {
+            endCursor
+            hasNextPage
+            hasPreviousPage
+            startCursor
+          }
+        }
+        title
+      }
+    }
+    pageInfo {
+      endCursor
+      hasNextPage
+      hasPreviousPage
+      startCursor
+    }
+  }
+}

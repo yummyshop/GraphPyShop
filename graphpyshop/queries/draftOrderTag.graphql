@@ -1,0 +1,7 @@
+query draftOrderTag($draftOrderTag_id: ID!) {
+  draftOrderTag(id: $draftOrderTag_id) {
+    handle
+    id
+    title
+  }
+}

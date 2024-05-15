@@ -1,0 +1,43 @@
+query subscriptionBillingCycle($billingAttempts_first: Int = 250, $billingAttempts_after: String, $billingAttempts_last: Int, $billingAttempts_before: String, $billingAttempts_reverse: Boolean = false, $subscriptionBillingCycle_billingCycleInput: SubscriptionBillingCycleInput!) {
+  subscriptionBillingCycle(
+    billingCycleInput: $subscriptionBillingCycle_billingCycleInput
+  ) {
+    billingAttemptExpectedDate
+    billingAttempts(
+      first: $billingAttempts_first
+      after: $billingAttempts_after
+      last: $billingAttempts_last
+      before: $billingAttempts_before
+      reverse: $billingAttempts_reverse
+    ) {
+      edges {
+        cursor
+        node {
+          id
+        }
+      }
+      pageInfo {
+        endCursor
+        hasNextPage
+        hasPreviousPage
+        startCursor
+      }
+    }
+    cycleEndAt
+    cycleIndex
+    cycleStartAt
+    edited
+    editedContract {
+      appAdminUrl
+      createdAt
+      currencyCode
+      note
+      updatedAt
+    }
+    skipped
+    sourceContract {
+      id
+    }
+    status
+  }
+}

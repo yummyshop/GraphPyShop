@@ -1,0 +1,172 @@
+query subscriptionContract($billingAttempts_first: Int = 250, $billingAttempts_after: String, $billingAttempts_last: Int, $billingAttempts_before: String, $billingAttempts_reverse: Boolean = false, $customerPaymentMethod_showRevoked: Boolean = false, $discounts_first: Int = 250, $discounts_after: String, $discounts_last: Int, $discounts_before: String, $discounts_reverse: Boolean = false, $lines_first: Int = 250, $lines_after: String, $lines_last: Int, $lines_before: String, $lines_reverse: Boolean = false, $orders_first: Int = 250, $orders_after: String, $orders_last: Int, $orders_before: String, $orders_reverse: Boolean = false, $priceBreakdownEstimate_calculateTaxes: Boolean = true, $subscriptionContract_id: ID!) {
+  subscriptionContract(id: $subscriptionContract_id) {
+    app {
+      apiKey
+      appStoreAppUrl
+      appStoreDeveloperUrl
+      description
+      developerName
+      developerType
+      embedded
+      features
+      handle
+      id
+      installUrl
+      isPostPurchaseAppInUse
+      previouslyInstalled
+      pricingDetails
+      pricingDetailsSummary
+      privacyPolicyUrl
+      publicCategory
+      published
+      shopifyDeveloped
+      starRating
+      storefrontApiAvailable
+      title
+      uninstallMessage
+      webhookApiVersion
+    }
+    appAdminUrl
+    billingAttempts(
+      first: $billingAttempts_first
+      after: $billingAttempts_after
+      last: $billingAttempts_last
+      before: $billingAttempts_before
+      reverse: $billingAttempts_reverse
+    ) {
+      edges {
+        cursor
+        node {
+          id
+        }
+      }
+      pageInfo {
+        endCursor
+        hasNextPage
+        hasPreviousPage
+        startCursor
+      }
+    }
+    billingPolicy {
+      interval
+      intervalCount
+      maxCycles
+      minCycles
+    }
+    createdAt
+    currencyCode
+    customAttributes {
+      key
+      value
+    }
+    customer {
+      id
+    }
+    customerPaymentMethod(showRevoked: $customerPaymentMethod_showRevoked) {
+      id
+      revokedAt
+      revokedReason
+    }
+    deliveryPolicy {
+      interval
+      intervalCount
+    }
+    deliveryPrice {
+      amount
+      currencyCode
+    }
+    discounts(
+      first: $discounts_first
+      after: $discounts_after
+      last: $discounts_last
+      before: $discounts_before
+      reverse: $discounts_reverse
+    ) {
+      edges {
+        cursor
+        node {
+          id
+          recurringCycleLimit
+          rejectionReason
+          targetType
+          title
+          type
+          usageCount
+        }
+      }
+      pageInfo {
+        endCursor
+        hasNextPage
+        hasPreviousPage
+        startCursor
+      }
+    }
+    id
+    lastPaymentStatus
+    lines(
+      first: $lines_first
+      after: $lines_after
+      last: $lines_last
+      before: $lines_before
+      reverse: $lines_reverse
+    ) {
+      edges {
+        cursor
+        node {
+          id
+          productId
+          quantity
+          requiresShipping
+          sellingPlanId
+          sellingPlanName
+          sku
+          taxable
+          title
+          variantId
+          variantTitle
+        }
+      }
+      pageInfo {
+        endCursor
+        hasNextPage
+        hasPreviousPage
+        startCursor
+      }
+    }
+    linesCount {
+      count
+      precision
+    }
+    nextBillingDate
+    note
+    orders(
+      first: $orders_first
+      after: $orders_after
+      last: $orders_last
+      before: $orders_before
+      reverse: $orders_reverse
+    ) {
+      edges {
+        cursor
+        node {
+          id
+        }
+      }
+      pageInfo {
+        endCursor
+        hasNextPage
+        hasPreviousPage
+        startCursor
+      }
+    }
+    originOrder {
+      id
+    }
+    priceBreakdownEstimate(calculateTaxes: $priceBreakdownEstimate_calculateTaxes) {
+      taxesIncluded
+    }
+    revisionId
+    status
+    updatedAt
+  }
+}

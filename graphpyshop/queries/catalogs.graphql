@@ -1,0 +1,159 @@
+query catalogs($apps_first: Int = 250, $apps_after: String, $apps_last: Int, $apps_before: String, $apps_reverse: Boolean = false, $companyLocations_first: Int = 250, $companyLocations_after: String, $companyLocations_last: Int, $companyLocations_before: String, $companyLocations_reverse: Boolean = false, $companyLocations_sortKey: CompanyLocationSortKeys = ID, $companyLocations_query: String, $catalogs_type: CatalogType = null, $catalogs_first: Int = 250, $catalogs_after: String, $catalogs_last: Int, $catalogs_before: String, $catalogs_reverse: Boolean = false, $catalogs_sortKey: CatalogSortKeys = ID, $catalogs_query: String) {
+  catalogs(
+    type: $catalogs_type
+    first: $catalogs_first
+    after: $catalogs_after
+    last: $catalogs_last
+    before: $catalogs_before
+    reverse: $catalogs_reverse
+    sortKey: $catalogs_sortKey
+    query: $catalogs_query
+  ) {
+    edges {
+      cursor
+      node {
+        ... on AppCatalog {
+          apps(
+            first: $apps_first
+            after: $apps_after
+            last: $apps_last
+            before: $apps_before
+            reverse: $apps_reverse
+          ) {
+            edges {
+              cursor
+              node {
+                apiKey
+                appStoreAppUrl
+                appStoreDeveloperUrl
+                description
+                developerName
+                developerType
+                embedded
+                features
+                handle
+                id
+                installUrl
+                isPostPurchaseAppInUse
+                previouslyInstalled
+                pricingDetails
+                pricingDetailsSummary
+                privacyPolicyUrl
+                publicCategory
+                published
+                shopifyDeveloped
+                starRating
+                storefrontApiAvailable
+                title
+                uninstallMessage
+                webhookApiVersion
+              }
+            }
+            pageInfo {
+              endCursor
+              hasNextPage
+              hasPreviousPage
+              startCursor
+            }
+          }
+          id
+          operations {
+            ... on AddAllProductsOperation {
+              id
+              processedRowCount
+              status
+            }
+            ... on CatalogCsvOperation {
+              id
+              processedRowCount
+              status
+            }
+            ... on PublicationResourceOperation {
+              id
+              processedRowCount
+              status
+            }
+          }
+          status
+          title
+        }
+        ... on CompanyLocationCatalog {
+          companyLocations(
+            first: $companyLocations_first
+            after: $companyLocations_after
+            last: $companyLocations_last
+            before: $companyLocations_before
+            reverse: $companyLocations_reverse
+            sortKey: $companyLocations_sortKey
+            query: $companyLocations_query
+          ) {
+            edges {
+              cursor
+              node {
+                id
+              }
+            }
+            pageInfo {
+              endCursor
+              hasNextPage
+              hasPreviousPage
+              startCursor
+            }
+          }
+          companyLocationsCount {
+            count
+            precision
+          }
+          id
+          operations {
+            ... on AddAllProductsOperation {
+              id
+              processedRowCount
+              status
+            }
+            ... on CatalogCsvOperation {
+              id
+              processedRowCount
+              status
+            }
+            ... on PublicationResourceOperation {
+              id
+              processedRowCount
+              status
+            }
+          }
+          status
+          title
+        }
+        ... on MarketCatalog {
+          id
+          operations {
+            ... on AddAllProductsOperation {
+              id
+              processedRowCount
+              status
+            }
+            ... on CatalogCsvOperation {
+              id
+              processedRowCount
+              status
+            }
+            ... on PublicationResourceOperation {
+              id
+              processedRowCount
+              status
+            }
+          }
+          status
+          title
+        }
+      }
+    }
+    pageInfo {
+      endCursor
+      hasNextPage
+      hasPreviousPage
+      startCursor
+    }
+  }
+}

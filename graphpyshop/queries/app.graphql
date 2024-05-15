@@ -1,0 +1,70 @@
+query app($url_transform: ImageTransformInput, $app_id: ID) {
+  app(id: $app_id) {
+    apiKey
+    appStoreAppUrl
+    appStoreDeveloperUrl
+    availableAccessScopes {
+      description
+      handle
+    }
+    banner {
+      altText
+      height
+      id
+      thumbhash
+      url(transform: $url_transform)
+      width
+    }
+    description
+    developerName
+    developerType
+    embedded
+    failedRequirements {
+      message
+    }
+    features
+    feedback {
+      feedbackGeneratedAt
+      state
+    }
+    handle
+    icon {
+      altText
+      height
+      id
+      thumbhash
+      url(transform: $url_transform)
+      width
+    }
+    id
+    installUrl
+    installation {
+      id
+    }
+    isPostPurchaseAppInUse
+    previouslyInstalled
+    pricingDetails
+    pricingDetailsSummary
+    privacyPolicyUrl
+    publicCategory
+    published
+    requestedAccessScopes {
+      description
+      handle
+    }
+    screenshots {
+      altText
+      height
+      id
+      thumbhash
+      url(transform: $url_transform)
+      width
+    }
+    shopifyDeveloped
+    starRating
+    storefrontApiAvailable
+    title
+    uninstallMessage
+    webhookApiVersion
+  }
+}

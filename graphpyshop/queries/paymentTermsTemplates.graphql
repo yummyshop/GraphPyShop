@@ -1,0 +1,10 @@
+query paymentTermsTemplates($paymentTermsTemplates_paymentTermsType: PaymentTermsType) {
+  paymentTermsTemplates(paymentTermsType: $paymentTermsTemplates_paymentTermsType) {
+    description
+    dueInDays
+    id
+    name
+    paymentTermsType
+    translatedName
+  }
+}

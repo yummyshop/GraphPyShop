@@ -1,37 +1,147 @@
-query collections($first: Int!, $query: String!) {
-  collections(first: $first, query: $query) {
+query collections($description_truncateAt: Int, $hasProduct_id: ID!, $url_transform: ImageTransformInput, $metafields_namespace: String, $metafields_keys: [String!], $metafields_first: Int = 250, $metafields_after: String, $metafields_last: Int, $metafields_before: String, $metafields_reverse: Boolean = false, $products_first: Int = 250, $products_after: String, $products_last: Int, $products_before: String, $products_reverse: Boolean = false, $products_sortKey: ProductCollectionSortKeys = COLLECTION_DEFAULT, $publishedOnPublication_publicationId: ID!, $resourcePublications_onlyPublished: Boolean = true, $resourcePublications_first: Int = 250, $resourcePublications_after: String, $resourcePublications_last: Int, $resourcePublications_before: String, $resourcePublications_reverse: Boolean = false, $resourcePublicationsCount_onlyPublished: Boolean = true, $resourcePublicationsV2_onlyPublished: Boolean = true, $resourcePublicationsV2_catalogType: CatalogType, $resourcePublicationsV2_first: Int = 250, $resourcePublicationsV2_after: String, $resourcePublicationsV2_last: Int, $resourcePublicationsV2_before: String, $resourcePublicationsV2_reverse: Boolean = false, $translations_locale: String!, $translations_marketId: ID, $unpublishedPublications_first: Int = 250, $unpublishedPublications_after: String, $unpublishedPublications_last: Int, $unpublishedPublications_before: String, $unpublishedPublications_reverse: Boolean = false, $collections_first: Int = 250, $collections_after: String, $collections_last: Int, $collections_before: String, $collections_reverse: Boolean = false, $collections_sortKey: CollectionSortKeys = ID, $collections_query: String, $collections_savedSearchId: ID) {
+  collections(
+    first: $collections_first
+    after: $collections_after
+    last: $collections_last
+    before: $collections_before
+    reverse: $collections_reverse
+    sortKey: $collections_sortKey
+    query: $collections_query
+    savedSearchId: $collections_savedSearchId
+  ) {
     edges {
+      cursor
       node {
-        id
-        description
         availablePublicationsCount {
           count
           precision
         }
+        description(truncateAt: $description_truncateAt)
         descriptionHtml
         feedback {
           summary
         }
         handle
+        hasProduct(id: $hasProduct_id)
+        id
         image {
-          id
           altText
           height
-          url
+          id
+          thumbhash
+          url(transform: $url_transform)
           width
         }
+        legacyResourceId
+        metafields(
+          namespace: $metafields_namespace
+          keys: $metafields_keys
+          first: $metafields_first
+          after: $metafields_after
+          last: $metafields_last
+          before: $metafields_before
+          reverse: $metafields_reverse
+        ) {
+          edges {
+            cursor
+            node {
+              createdAt
+              description
+              id
+              key
+              legacyResourceId
+              namespace
+              ownerType
+              type
+              updatedAt
+              value
+            }
+          }
+          pageInfo {
+            endCursor
+            hasNextPage
+            hasPreviousPage
+            startCursor
+          }
+        }
+        products(
+          first: $products_first
+          after: $products_after
+          last: $products_last
+          before: $products_before
+          reverse: $products_reverse
+          sortKey: $products_sortKey
+        ) {
+          edges {
+            cursor
+            node {
+              id
+            }
+          }
+          pageInfo {
+            endCursor
+            hasNextPage
+            hasPreviousPage
+            startCursor
+          }
+        }
         publishedOnCurrentPublication
-        resourcePublicationsCount {
+        publishedOnPublication(publicationId: $publishedOnPublication_publicationId)
+        resourcePublications(
+          onlyPublished: $resourcePublications_onlyPublished
+          first: $resourcePublications_first
+          after: $resourcePublications_after
+          last: $resourcePublications_last
+          before: $resourcePublications_before
+          reverse: $resourcePublications_reverse
+        ) {
+          edges {
+            cursor
+            node {
+              isPublished
+              publicationStatusOnChannel
+              publishDate
+            }
+          }
+          pageInfo {
+            endCursor
+            hasNextPage
+            hasPreviousPage
+            startCursor
+          }
+        }
+        resourcePublicationsCount(
+          onlyPublished: $resourcePublicationsCount_onlyPublished
+        ) {
           count
           precision
         }
+        resourcePublicationsV2(
+          onlyPublished: $resourcePublicationsV2_onlyPublished
+          catalogType: $resourcePublicationsV2_catalogType
+          first: $resourcePublicationsV2_first
+          after: $resourcePublicationsV2_after
+          last: $resourcePublicationsV2_last
+          before: $resourcePublicationsV2_before
+          reverse: $resourcePublicationsV2_reverse
+        ) {
+          edges {
+            cursor
+            node {
+              isPublished
+              publicationStatusOnChannel
+              publishDate
+            }
+          }
+          pageInfo {
+            endCursor
+            hasNextPage
+            hasPreviousPage
+            startCursor
+          }
+        }
         ruleSet {
           appliedDisjunctively
-          rules {
-            column
-            condition
-            relation
-          }
         }
         seo {
           description
@@ -40,8 +150,41 @@ query collections($first: Int!, $query: String!) {
         sortOrder
         templateSuffix
         title
+        translations(locale: $translations_locale, marketId: $translations_marketId) {
+          key
+          locale
+          outdated
+          updatedAt
+          value
+        }
+        unpublishedPublications(
+          first: $unpublishedPublications_first
+          after: $unpublishedPublications_after
+          last: $unpublishedPublications_last
+          before: $unpublishedPublications_before
+          reverse: $unpublishedPublications_reverse
+        ) {
+          edges {
+            cursor
+            node {
+              id
+            }
+          }
+          pageInfo {
+            endCursor
+            hasNextPage
+            hasPreviousPage
+            startCursor
+          }
+        }
         updatedAt
       }
+    }
+    pageInfo {
+      endCursor
+      hasNextPage
+      hasPreviousPage
+      startCursor
     }
   }
 }

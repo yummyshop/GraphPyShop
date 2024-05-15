@@ -1,0 +1,212 @@
+query subscriptionContracts($query: String!) {
+  subscriptionContracts(query: $query) {
+    edges {
+      node {
+        __typename
+        id
+        app {
+          id
+          handle
+        }
+        appAdminUrl
+        billingPolicy {
+          interval
+          intervalCount
+          anchors {
+            day
+            month
+            type
+            cutoffDay
+          }
+          maxCycles
+          minCycles
+        }
+        createdAt
+        currencyCode
+        customAttributes {
+          key
+          value
+        }
+        customer {
+          id
+          displayName
+          email
+        }
+        customerPaymentMethod {
+          id
+        }
+        deliveryPolicy {
+          interval
+          intervalCount
+          anchors {
+            day
+            month
+            type
+            cutoffDay
+          }
+        }
+        deliveryPrice {
+          amount
+          currencyCode
+        }
+        id
+        lastPaymentStatus
+        linesCount {
+          count
+          precision
+        }
+        nextBillingDate
+        note
+        originOrder {
+          id
+          name
+        }
+        priceBreakdownEstimate {
+          subtotalPrice {
+            amount
+            currencyCode
+          }
+          taxesIncluded
+          totalDiscounts {
+            amount
+            currencyCode
+          }
+          totalPrice {
+            amount
+            currencyCode
+          }
+          totalShippingPrice {
+            amount
+            currencyCode
+          }
+          totalTax {
+            amount
+            currencyCode
+          }
+        }
+        revisionId
+        status
+        updatedAt
+        discounts(first: 10) {
+          edges {
+            node {
+              __typename
+              entitledLines {
+                all
+              }
+              id
+              recurringCycleLimit
+              rejectionReason
+              targetType
+              title
+              type
+              usageCount
+              value {
+                ... on SubscriptionDiscountFixedAmountValue {
+                  amount {
+                    amount
+                    currencyCode
+                  }
+                  appliesOnEachItem
+                }
+                ... on SubscriptionDiscountPercentageValue {
+                  percentage
+                }
+              }
+            }
+          }
+        }
+        lines(first: 10) {
+          edges {
+            node {
+              __typename
+              id
+              currentPrice {
+                amount
+                currencyCode
+              }
+              customAttributes {
+                key
+                value
+              }
+              discountAllocations {
+                amount {
+                  amount
+                  currencyCode
+                }
+                discount {
+                  ... on SubscriptionAppliedCodeDiscount {
+                    id
+                    redeemCode
+                    rejectionReason
+                  }
+                  ... on SubscriptionManualDiscount {
+                    entitledLines {
+                      all
+                    }
+                    id
+                    recurringCycleLimit
+                    rejectionReason
+                    targetType
+                    title
+                    type
+                    usageCount
+                    value {
+                      ... on SubscriptionDiscountFixedAmountValue {
+                        amount {
+                          amount
+                          currencyCode
+                        }
+                        appliesOnEachItem
+                      }
+                      ... on SubscriptionDiscountPercentageValue {
+                        percentage
+                      }
+                    }
+                  }
+                }
+              }
+              lineDiscountedPrice {
+                amount
+                currencyCode
+              }
+              pricingPolicy {
+                basePrice {
+                  amount
+                  currencyCode
+                }
+                cycleDiscounts {
+                  adjustmentType
+                  adjustmentValue {
+                    ... on MoneyV2 {
+                      amount
+                      currencyCode
+                    }
+                    ... on SellingPlanPricingPolicyPercentageValue {
+                      percentage
+                    }
+                  }
+                  afterCycle
+                  computedPrice {
+                    amount
+                    currencyCode
+                  }
+                }
+              }
+              productId
+              quantity
+              requiresShipping
+              sellingPlanId
+              sellingPlanName
+              sku
+              taxable
+              title
+              variantId
+              variantTitle
+            }
+          }
+        }
+      }
+    }
+  }
+}

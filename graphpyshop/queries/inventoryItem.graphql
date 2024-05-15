@@ -1,0 +1,83 @@
+query inventoryItem($countryHarmonizedSystemCodes_first: Int = 250, $countryHarmonizedSystemCodes_after: String, $countryHarmonizedSystemCodes_last: Int, $countryHarmonizedSystemCodes_before: String, $countryHarmonizedSystemCodes_reverse: Boolean = false, $inventoryLevel_locationId: ID!, $inventoryLevels_first: Int = 250, $inventoryLevels_after: String, $inventoryLevels_last: Int, $inventoryLevels_before: String, $inventoryLevels_reverse: Boolean = false, $inventoryLevels_query: String, $inventoryItem_id: ID!) {
+  inventoryItem(id: $inventoryItem_id) {
+    countryCodeOfOrigin
+    countryHarmonizedSystemCodes(
+      first: $countryHarmonizedSystemCodes_first
+      after: $countryHarmonizedSystemCodes_after
+      last: $countryHarmonizedSystemCodes_last
+      before: $countryHarmonizedSystemCodes_before
+      reverse: $countryHarmonizedSystemCodes_reverse
+    ) {
+      edges {
+        cursor
+        node {
+          countryCode
+          harmonizedSystemCode
+        }
+      }
+      pageInfo {
+        endCursor
+        hasNextPage
+        hasPreviousPage
+        startCursor
+      }
+    }
+    createdAt
+    duplicateSkuCount
+    harmonizedSystemCode
+    id
+    inventoryHistoryUrl
+    inventoryLevel(locationId: $inventoryLevel_locationId) {
+      canDeactivate
+      createdAt
+      deactivationAlert
+      id
+      updatedAt
+    }
+    inventoryLevels(
+      first: $inventoryLevels_first
+      after: $inventoryLevels_after
+      last: $inventoryLevels_last
+      before: $inventoryLevels_before
+      reverse: $inventoryLevels_reverse
+      query: $inventoryLevels_query
+    ) {
+      edges {
+        cursor
+        node {
+          canDeactivate
+          createdAt
+          deactivationAlert
+          id
+          updatedAt
+        }
+      }
+      pageInfo {
+        endCursor
+        hasNextPage
+        hasPreviousPage
+        startCursor
+      }
+    }
+    legacyResourceId
+    measurement {
+      id
+    }
+    provinceCodeOfOrigin
+    requiresShipping
+    sku
+    tracked
+    trackedEditable {
+      locked
+      reason
+    }
+    unitCost {
+      amount
+      currencyCode
+    }
+    updatedAt
+    variant {
+      id
+    }
+  }
+}

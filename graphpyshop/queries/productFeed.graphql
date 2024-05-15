@@ -1,0 +1,8 @@
+query productFeed($productFeed_id: ID!) {
+  productFeed(id: $productFeed_id) {
+    country
+    id
+    language
+    status
+  }
+}

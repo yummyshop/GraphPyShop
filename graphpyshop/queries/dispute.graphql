@@ -1,0 +1,23 @@
+query dispute($dispute_id: ID!) {
+  dispute(id: $dispute_id) {
+    amount {
+      amount
+      currencyCode
+    }
+    evidenceDueBy
+    evidenceSentOn
+    finalizedOn
+    id
+    initiatedAt
+    legacyResourceId
+    order {
+      id
+    }
+    reasonDetails {
+      networkReasonCode
+      reason
+    }
+    status
+    type
+  }
+}

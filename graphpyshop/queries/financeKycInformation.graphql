@@ -1,0 +1,32 @@
+query financeKycInformation {
+  financeKycInformation {
+    businessAddress {
+      addressLine1
+      addressLine2
+      city
+      country
+      postalCode
+      zone
+    }
+    businessType
+    industry {
+      category
+      categoryLabel
+      code
+      id
+      subcategoryLabel
+    }
+    legalName
+    shopOwner {
+      email
+      firstName
+      id
+      lastName
+      phone
+    }
+    taxIdentification {
+      taxIdentificationType
+      value
+    }
+  }
+}

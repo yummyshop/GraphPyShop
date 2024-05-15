@@ -1,0 +1,63 @@
+query validations($metafields_namespace: String, $metafields_keys: [String!], $metafields_first: Int = 250, $metafields_after: String, $metafields_last: Int, $metafields_before: String, $metafields_reverse: Boolean = false, $validations_first: Int = 250, $validations_after: String, $validations_last: Int, $validations_before: String, $validations_reverse: Boolean = false, $validations_sortKey: ValidationSortKeys = ID) {
+  validations(
+    first: $validations_first
+    after: $validations_after
+    last: $validations_last
+    before: $validations_before
+    reverse: $validations_reverse
+    sortKey: $validations_sortKey
+  ) {
+    edges {
+      cursor
+      node {
+        blockOnFailure
+        enabled
+        errorHistory {
+          errorsFirstOccurredAt
+          firstOccurredAt
+          hasBeenSharedSinceLastError
+          hasSharedRecentErrors
+        }
+        id
+        metafields(
+          namespace: $metafields_namespace
+          keys: $metafields_keys
+          first: $metafields_first
+          after: $metafields_after
+          last: $metafields_last
+          before: $metafields_before
+          reverse: $metafields_reverse
+        ) {
+          edges {
+            cursor
+            node {
+              createdAt
+              description
+              id
+              key
+              legacyResourceId
+              namespace
+              ownerType
+              type
+              updatedAt
+              value
+            }
+          }
+          pageInfo {
+            endCursor
+            hasNextPage
+            hasPreviousPage
+            startCursor
+          }
+        }
+        title
+      }
+    }
+    pageInfo {
+      endCursor
+      hasNextPage
+      hasPreviousPage
+      startCursor
+    }
+  }
+}

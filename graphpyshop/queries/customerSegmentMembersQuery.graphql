@@ -1,0 +1,7 @@
+query customerSegmentMembersQuery($customerSegmentMembersQuery_id: ID!) {
+  customerSegmentMembersQuery(id: $customerSegmentMembersQuery_id) {
+    currentCount
+    done
+    id
+  }
+}

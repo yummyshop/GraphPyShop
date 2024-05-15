@@ -1,0 +1,31 @@
+query collectionSavedSearches($collectionSavedSearches_first: Int = 250, $collectionSavedSearches_after: String, $collectionSavedSearches_last: Int, $collectionSavedSearches_before: String, $collectionSavedSearches_reverse: Boolean = false) {
+  collectionSavedSearches(
+    first: $collectionSavedSearches_first
+    after: $collectionSavedSearches_after
+    last: $collectionSavedSearches_last
+    before: $collectionSavedSearches_before
+    reverse: $collectionSavedSearches_reverse
+  ) {
+    edges {
+      cursor
+      node {
+        filters {
+          key
+          value
+        }
+        id
+        legacyResourceId
+        name
+        query
+        resourceType
+        searchTerms
+      }
+    }
+    pageInfo {
+      endCursor
+      hasNextPage
+      hasPreviousPage
+      startCursor
+    }
+  }
+}

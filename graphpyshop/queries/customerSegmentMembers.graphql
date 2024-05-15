@@ -1,0 +1,107 @@
+query customerSegmentMembers($formatted_withName: Boolean = false, $formatted_withCompany: Boolean = true, $metafields_namespace: String, $metafields_keys: [String!], $metafields_first: Int = 250, $metafields_after: String, $metafields_last: Int, $metafields_before: String, $metafields_reverse: Boolean = false, $customerSegmentMembers_segmentId: ID, $customerSegmentMembers_query: String, $customerSegmentMembers_queryId: ID, $customerSegmentMembers_timezone: String, $customerSegmentMembers_reverse: Boolean = false, $customerSegmentMembers_sortKey: String, $customerSegmentMembers_first: Int = 250, $customerSegmentMembers_after: String, $customerSegmentMembers_last: Int, $customerSegmentMembers_before: String) {
+  customerSegmentMembers(
+    segmentId: $customerSegmentMembers_segmentId
+    query: $customerSegmentMembers_query
+    queryId: $customerSegmentMembers_queryId
+    timezone: $customerSegmentMembers_timezone
+    reverse: $customerSegmentMembers_reverse
+    sortKey: $customerSegmentMembers_sortKey
+    first: $customerSegmentMembers_first
+    after: $customerSegmentMembers_after
+    last: $customerSegmentMembers_last
+    before: $customerSegmentMembers_before
+  ) {
+    edges {
+      cursor
+      node {
+        amountSpent {
+          amount
+          currencyCode
+        }
+        defaultAddress {
+          address1
+          address2
+          city
+          company
+          coordinatesValidated
+          country
+          countryCodeV2
+          firstName
+          formatted(withName: $formatted_withName, withCompany: $formatted_withCompany)
+          formattedArea
+          id
+          lastName
+          latitude
+          longitude
+          name
+          phone
+          province
+          provinceCode
+          timeZone
+          zip
+        }
+        defaultEmailAddress {
+          emailAddress
+          marketingState
+          marketingUnsubscribeUrl
+          openTrackingLevel
+          openTrackingUrl
+        }
+        defaultPhoneNumber {
+          marketingState
+          phoneNumber
+        }
+        displayName
+        firstName
+        id
+        lastName
+        lastOrderId
+        mergeable {
+          errorFields
+          isMergeable
+          reason
+        }
+        metafields(
+          namespace: $metafields_namespace
+          keys: $metafields_keys
+          first: $metafields_first
+          after: $metafields_after
+          last: $metafields_last
+          before: $metafields_before
+          reverse: $metafields_reverse
+        ) {
+          edges {
+            cursor
+            node {
+              createdAt
+              description
+              id
+              key
+              legacyResourceId
+              namespace
+              ownerType
+              type
+              updatedAt
+              value
+            }
+          }
+          pageInfo {
+            endCursor
+            hasNextPage
+            hasPreviousPage
+            startCursor
+          }
+        }
+        note
+        numberOfOrders
+      }
+    }
+    pageInfo {
+      endCursor
+      hasNextPage
+      hasPreviousPage
+      startCursor
+    }
+    totalCount
+  }
+}

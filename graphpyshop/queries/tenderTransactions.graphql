@@ -1,0 +1,47 @@
+query tenderTransactions($tenderTransactions_first: Int = 250, $tenderTransactions_after: String, $tenderTransactions_last: Int, $tenderTransactions_before: String, $tenderTransactions_reverse: Boolean = false, $tenderTransactions_query: String) {
+  tenderTransactions(
+    first: $tenderTransactions_first
+    after: $tenderTransactions_after
+    last: $tenderTransactions_last
+    before: $tenderTransactions_before
+    reverse: $tenderTransactions_reverse
+    query: $tenderTransactions_query
+  ) {
+    edges {
+      cursor
+      node {
+        amount {
+          amount
+          currencyCode
+        }
+        id
+        order {
+          id
+        }
+        paymentMethod
+        processedAt
+        remoteReference
+        test
+        user {
+          active
+          email
+          exists
+          firstName
+          id
+          initials
+          isShopOwner
+          lastName
+          locale
+          name
+          phone
+        }
+      }
+    }
+    pageInfo {
+      endCursor
+      hasNextPage
+      hasPreviousPage
+      startCursor
+    }
+  }
+}

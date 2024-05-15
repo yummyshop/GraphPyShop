@@ -1,0 +1,31 @@
+query automaticDiscountSavedSearches($automaticDiscountSavedSearches_first: Int = 250, $automaticDiscountSavedSearches_after: String, $automaticDiscountSavedSearches_last: Int, $automaticDiscountSavedSearches_before: String, $automaticDiscountSavedSearches_reverse: Boolean = false) {
+  automaticDiscountSavedSearches(
+    first: $automaticDiscountSavedSearches_first
+    after: $automaticDiscountSavedSearches_after
+    last: $automaticDiscountSavedSearches_last
+    before: $automaticDiscountSavedSearches_before
+    reverse: $automaticDiscountSavedSearches_reverse
+  ) {
+    edges {
+      cursor
+      node {
+        filters {
+          key
+          value
+        }
+        id
+        legacyResourceId
+        name
+        query
+        resourceType
+        searchTerms
+      }
+    }
+    pageInfo {
+      endCursor
+      hasNextPage
+      hasPreviousPage
+      startCursor
+    }
+  }
+}

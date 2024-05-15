@@ -1,0 +1,33 @@
+query customerMergePreview($customerMergePreview_customerOneId: ID!, $customerMergePreview_customerTwoId: ID!, $customerMergePreview_overrideFields: CustomerMergeOverrideFields) {
+  customerMergePreview(
+    customerOneId: $customerMergePreview_customerOneId
+    customerTwoId: $customerMergePreview_customerTwoId
+    overrideFields: $customerMergePreview_overrideFields
+  ) {
+    alternateFields {
+      firstName
+      lastName
+    }
+    blockingFields {
+      note
+      tags
+    }
+    customerMergeErrors {
+      errorFields
+      message
+    }
+    defaultFields {
+      discountNodeCount
+      displayName
+      draftOrderCount
+      firstName
+      giftCardCount
+      lastName
+      metafieldCount
+      note
+      orderCount
+      tags
+    }
+    resultingCustomerId
+  }
+}

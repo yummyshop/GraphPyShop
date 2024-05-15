@@ -1,0 +1,57 @@
+query metafieldDefinitions($metafieldsCount_validationStatus: MetafieldValidationStatus, $metafieldDefinitions_key: String, $metafieldDefinitions_namespace: String, $metafieldDefinitions_ownerType: MetafieldOwnerType!, $metafieldDefinitions_pinnedStatus: MetafieldDefinitionPinnedStatus = ANY, $metafieldDefinitions_first: Int = 250, $metafieldDefinitions_after: String, $metafieldDefinitions_last: Int, $metafieldDefinitions_before: String, $metafieldDefinitions_reverse: Boolean = false, $metafieldDefinitions_sortKey: MetafieldDefinitionSortKeys = ID, $metafieldDefinitions_query: String) {
+  metafieldDefinitions(
+    key: $metafieldDefinitions_key
+    namespace: $metafieldDefinitions_namespace
+    ownerType: $metafieldDefinitions_ownerType
+    pinnedStatus: $metafieldDefinitions_pinnedStatus
+    first: $metafieldDefinitions_first
+    after: $metafieldDefinitions_after
+    last: $metafieldDefinitions_last
+    before: $metafieldDefinitions_before
+    reverse: $metafieldDefinitions_reverse
+    sortKey: $metafieldDefinitions_sortKey
+    query: $metafieldDefinitions_query
+  ) {
+    edges {
+      cursor
+      node {
+        access {
+          admin
+          customerAccount
+          storefront
+        }
+        createdAt
+        description
+        id
+        key
+        metafieldsCount(validationStatus: $metafieldsCount_validationStatus)
+        name
+        namespace
+        ownerType
+        pinnedPosition
+        standardTemplate {
+          id
+        }
+        type {
+          category
+          name
+          supportsDefinitionMigrations
+        }
+        updatedAt
+        useAsCollectionCondition
+        validationStatus
+        validations {
+          name
+          type
+          value
+        }
+      }
+    }
+    pageInfo {
+      endCursor
+      hasNextPage
+      hasPreviousPage
+      startCursor
+    }
+  }
+}

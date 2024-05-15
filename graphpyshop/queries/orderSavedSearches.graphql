@@ -1,0 +1,31 @@
+query orderSavedSearches($orderSavedSearches_first: Int = 250, $orderSavedSearches_after: String, $orderSavedSearches_last: Int, $orderSavedSearches_before: String, $orderSavedSearches_reverse: Boolean = false) {
+  orderSavedSearches(
+    first: $orderSavedSearches_first
+    after: $orderSavedSearches_after
+    last: $orderSavedSearches_last
+    before: $orderSavedSearches_before
+    reverse: $orderSavedSearches_reverse
+  ) {
+    edges {
+      cursor
+      node {
+        filters {
+          key
+          value
+        }
+        id
+        legacyResourceId
+        name
+        query
+        resourceType
+        searchTerms
+      }
+    }
+    pageInfo {
+      endCursor
+      hasNextPage
+      hasPreviousPage
+      startCursor
+    }
+  }
+}

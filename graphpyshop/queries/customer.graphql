@@ -1,0 +1,278 @@
+query customer($formatted_withName: Boolean = false, $formatted_withCompany: Boolean = true, $addresses_first: Int = 250, $events_first: Int = 250, $events_after: String, $events_last: Int, $events_before: String, $events_reverse: Boolean = false, $events_sortKey: EventSortKeys = ID, $events_query: String, $url_transform: ImageTransformInput, $metafieldDefinitions_namespace: String, $metafieldDefinitions_pinnedStatus: MetafieldDefinitionPinnedStatus = ANY, $metafieldDefinitions_first: Int = 250, $metafieldDefinitions_after: String, $metafieldDefinitions_last: Int, $metafieldDefinitions_before: String, $metafieldDefinitions_reverse: Boolean = false, $metafieldDefinitions_sortKey: MetafieldDefinitionSortKeys = ID, $metafieldDefinitions_query: String, $metafields_namespace: String, $metafields_keys: [String!], $metafields_first: Int = 250, $metafields_after: String, $metafields_last: Int, $metafields_before: String, $metafields_reverse: Boolean = false, $orders_first: Int = 250, $orders_after: String, $orders_last: Int, $orders_before: String, $orders_reverse: Boolean = false, $orders_sortKey: OrderSortKeys = ID, $orders_query: String, $paymentMethods_showRevoked: Boolean = false, $paymentMethods_showWithPreauthorizedPayments: Boolean = false, $paymentMethods_first: Int = 250, $paymentMethods_after: String, $paymentMethods_last: Int, $paymentMethods_before: String, $paymentMethods_reverse: Boolean = false, $subscriptionContracts_first: Int = 250, $subscriptionContracts_after: String, $subscriptionContracts_last: Int, $subscriptionContracts_before: String, $subscriptionContracts_reverse: Boolean = false, $customer_id: ID!) {
+  customer(id: $customer_id) {
+    addresses(first: $addresses_first) {
+      address1
+      address2
+      city
+      company
+      coordinatesValidated
+      country
+      countryCodeV2
+      firstName
+      formatted(withName: $formatted_withName, withCompany: $formatted_withCompany)
+      formattedArea
+      id
+      lastName
+      latitude
+      longitude
+      name
+      phone
+      province
+      provinceCode
+      timeZone
+      zip
+    }
+    amountSpent {
+      amount
+      currencyCode
+    }
+    canDelete
+    companyContactProfiles {
+      createdAt
+      id
+      isMainContact
+      lifetimeDuration
+      locale
+      title
+      updatedAt
+    }
+    createdAt
+    defaultAddress {
+      address1
+      address2
+      city
+      company
+      coordinatesValidated
+      country
+      countryCodeV2
+      firstName
+      formatted(withName: $formatted_withName, withCompany: $formatted_withCompany)
+      formattedArea
+      id
+      lastName
+      latitude
+      longitude
+      name
+      phone
+      province
+      provinceCode
+      timeZone
+      zip
+    }
+    displayName
+    email
+    emailMarketingConsent {
+      consentUpdatedAt
+      marketingOptInLevel
+      marketingState
+    }
+    events(
+      first: $events_first
+      after: $events_after
+      last: $events_last
+      before: $events_before
+      reverse: $events_reverse
+      sortKey: $events_sortKey
+      query: $events_query
+    ) {
+      edges {
+        cursor
+        node {
+          ... on BasicEvent {
+            appTitle
+            attributeToApp
+            attributeToUser
+            createdAt
+            criticalAlert
+            id
+            message
+          }
+          ... on CommentEvent {
+            appTitle
+            attributeToApp
+            attributeToUser
+            canDelete
+            canEdit
+            createdAt
+            criticalAlert
+            edited
+            id
+            message
+            rawMessage
+          }
+        }
+      }
+      pageInfo {
+        endCursor
+        hasNextPage
+        hasPreviousPage
+        startCursor
+      }
+    }
+    firstName
+    id
+    image {
+      altText
+      height
+      id
+      thumbhash
+      url(transform: $url_transform)
+      width
+    }
+    lastName
+    lastOrder {
+      id
+    }
+    legacyResourceId
+    lifetimeDuration
+    locale
+    mergeable {
+      errorFields
+      isMergeable
+      reason
+    }
+    metafieldDefinitions(
+      namespace: $metafieldDefinitions_namespace
+      pinnedStatus: $metafieldDefinitions_pinnedStatus
+      first: $metafieldDefinitions_first
+      after: $metafieldDefinitions_after
+      last: $metafieldDefinitions_last
+      before: $metafieldDefinitions_before
+      reverse: $metafieldDefinitions_reverse
+      sortKey: $metafieldDefinitions_sortKey
+      query: $metafieldDefinitions_query
+    ) {
+      edges {
+        cursor
+        node {
+          id
+        }
+      }
+      pageInfo {
+        endCursor
+        hasNextPage
+        hasPreviousPage
+        startCursor
+      }
+    }
+    metafields(
+      namespace: $metafields_namespace
+      keys: $metafields_keys
+      first: $metafields_first
+      after: $metafields_after
+      last: $metafields_last
+      before: $metafields_before
+      reverse: $metafields_reverse
+    ) {
+      edges {
+        cursor
+        node {
+          createdAt
+          description
+          id
+          key
+          legacyResourceId
+          namespace
+          ownerType
+          type
+          updatedAt
+          value
+        }
+      }
+      pageInfo {
+        endCursor
+        hasNextPage
+        hasPreviousPage
+        startCursor
+      }
+    }
+    multipassIdentifier
+    note
+    numberOfOrders
+    orders(
+      first: $orders_first
+      after: $orders_after
+      last: $orders_last
+      before: $orders_before
+      reverse: $orders_reverse
+      sortKey: $orders_sortKey
+      query: $orders_query
+    ) {
+      edges {
+        cursor
+        node {
+          id
+        }
+      }
+      pageInfo {
+        endCursor
+        hasNextPage
+        hasPreviousPage
+        startCursor
+      }
+    }
+    paymentMethods(
+      showRevoked: $paymentMethods_showRevoked
+      showWithPreauthorizedPayments: $paymentMethods_showWithPreauthorizedPayments
+      first: $paymentMethods_first
+      after: $paymentMethods_after
+      last: $paymentMethods_last
+      before: $paymentMethods_before
+      reverse: $paymentMethods_reverse
+    ) {
+      edges {
+        cursor
+        node {
+          id
+          revokedAt
+          revokedReason
+        }
+      }
+      pageInfo {
+        endCursor
+        hasNextPage
+        hasPreviousPage
+        startCursor
+      }
+    }
+    phone
+    productSubscriberStatus
+    smsMarketingConsent {
+      consentCollectedFrom
+      consentUpdatedAt
+      marketingOptInLevel
+      marketingState
+    }
+    state
+    statistics {
+      predictedSpendTier
+    }
+    subscriptionContracts(
+      first: $subscriptionContracts_first
+      after: $subscriptionContracts_after
+      last: $subscriptionContracts_last
+      before: $subscriptionContracts_before
+      reverse: $subscriptionContracts_reverse
+    ) {
+      edges {
+        cursor
+        node {
+          id
+        }
+      }
+      pageInfo {
+        endCursor
+        hasNextPage
+        hasPreviousPage
+        startCursor
+      }
+    }
+    tags
+    taxExempt
+    taxExemptions
+    unsubscribeUrl
+    updatedAt
+    validEmailAddress
+    verifiedEmail
+  }
+}

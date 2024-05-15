@@ -1,0 +1,19 @@
+query mobilePlatformApplications($mobilePlatformApplications_first: Int = 250, $mobilePlatformApplications_after: String, $mobilePlatformApplications_last: Int, $mobilePlatformApplications_before: String, $mobilePlatformApplications_reverse: Boolean = false) {
+  mobilePlatformApplications(
+    first: $mobilePlatformApplications_first
+    after: $mobilePlatformApplications_after
+    last: $mobilePlatformApplications_last
+    before: $mobilePlatformApplications_before
+    reverse: $mobilePlatformApplications_reverse
+  ) {
+    edges {
+      cursor
+    }
+    pageInfo {
+      endCursor
+      hasNextPage
+      hasPreviousPage
+      startCursor
+    }
+  }
+}

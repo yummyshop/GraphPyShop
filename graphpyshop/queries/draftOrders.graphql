@@ -1,0 +1,300 @@
+query draftOrders($formatted_withName: Boolean = false, $formatted_withCompany: Boolean = true, $events_first: Int = 250, $events_after: String, $events_last: Int, $events_before: String, $events_reverse: Boolean = false, $events_sortKey: EventSortKeys = ID, $events_query: String, $lineItems_first: Int = 250, $lineItems_after: String, $lineItems_last: Int, $lineItems_before: String, $lineItems_reverse: Boolean = false, $localizationExtensions_countryCodes: [CountryCode!], $localizationExtensions_purposes: [LocalizationExtensionPurpose!], $localizationExtensions_first: Int = 250, $localizationExtensions_after: String, $localizationExtensions_last: Int, $localizationExtensions_before: String, $localizationExtensions_reverse: Boolean = false, $metafields_namespace: String, $metafields_keys: [String!], $metafields_first: Int = 250, $metafields_after: String, $metafields_last: Int, $metafields_before: String, $metafields_reverse: Boolean = false, $draftOrders_first: Int = 250, $draftOrders_after: String, $draftOrders_last: Int, $draftOrders_before: String, $draftOrders_reverse: Boolean = false, $draftOrders_sortKey: DraftOrderSortKeys = ID, $draftOrders_query: String, $draftOrders_savedSearchId: ID) {
+  draftOrders(
+    first: $draftOrders_first
+    after: $draftOrders_after
+    last: $draftOrders_last
+    before: $draftOrders_before
+    reverse: $draftOrders_reverse
+    sortKey: $draftOrders_sortKey
+    query: $draftOrders_query
+    savedSearchId: $draftOrders_savedSearchId
+  ) {
+    edges {
+      cursor
+      node {
+        acceptAutomaticDiscounts
+        allowDiscountCodesInCheckout
+        appliedDiscount {
+          description
+          title
+          value
+          valueType
+        }
+        billingAddress {
+          address1
+          address2
+          city
+          company
+          coordinatesValidated
+          country
+          countryCodeV2
+          firstName
+          formatted(withName: $formatted_withName, withCompany: $formatted_withCompany)
+          formattedArea
+          id
+          lastName
+          latitude
+          longitude
+          name
+          phone
+          province
+          provinceCode
+          timeZone
+          zip
+        }
+        billingAddressMatchesShippingAddress
+        completedAt
+        createdAt
+        currencyCode
+        customAttributes {
+          key
+          value
+        }
+        customer {
+          id
+        }
+        defaultCursor
+        discountCodes
+        email
+        events(
+          first: $events_first
+          after: $events_after
+          last: $events_last
+          before: $events_before
+          reverse: $events_reverse
+          sortKey: $events_sortKey
+          query: $events_query
+        ) {
+          edges {
+            cursor
+            node {
+              ... on BasicEvent {
+                appTitle
+                attributeToApp
+                attributeToUser
+                createdAt
+                criticalAlert
+                id
+                message
+              }
+              ... on CommentEvent {
+                appTitle
+                attributeToApp
+                attributeToUser
+                canDelete
+                canEdit
+                createdAt
+                criticalAlert
+                edited
+                id
+                message
+                rawMessage
+              }
+            }
+          }
+          pageInfo {
+            endCursor
+            hasNextPage
+            hasPreviousPage
+            startCursor
+          }
+        }
+        hasTimelineComment
+        id
+        invoiceEmailTemplateSubject
+        invoiceSentAt
+        invoiceUrl
+        legacyResourceId
+        lineItems(
+          first: $lineItems_first
+          after: $lineItems_after
+          last: $lineItems_last
+          before: $lineItems_before
+          reverse: $lineItems_reverse
+        ) {
+          edges {
+            cursor
+            node {
+              custom
+              discountedTotal
+              id
+              isGiftCard
+              name
+              originalTotal
+              originalUnitPrice
+              quantity
+              requiresShipping
+              sku
+              taxable
+              title
+              totalDiscount
+              uuid
+              variantTitle
+              vendor
+            }
+          }
+          pageInfo {
+            endCursor
+            hasNextPage
+            hasPreviousPage
+            startCursor
+          }
+        }
+        localizationExtensions(
+          countryCodes: $localizationExtensions_countryCodes
+          purposes: $localizationExtensions_purposes
+          first: $localizationExtensions_first
+          after: $localizationExtensions_after
+          last: $localizationExtensions_last
+          before: $localizationExtensions_before
+          reverse: $localizationExtensions_reverse
+        ) {
+          edges {
+            cursor
+            node {
+              countryCode
+              key
+              purpose
+              title
+              value
+            }
+          }
+          pageInfo {
+            endCursor
+            hasNextPage
+            hasPreviousPage
+            startCursor
+          }
+        }
+        marketName
+        marketRegionCountryCode
+        metafields(
+          namespace: $metafields_namespace
+          keys: $metafields_keys
+          first: $metafields_first
+          after: $metafields_after
+          last: $metafields_last
+          before: $metafields_before
+          reverse: $metafields_reverse
+        ) {
+          edges {
+            cursor
+            node {
+              createdAt
+              description
+              id
+              key
+              legacyResourceId
+              namespace
+              ownerType
+              type
+              updatedAt
+              value
+            }
+          }
+          pageInfo {
+            endCursor
+            hasNextPage
+            hasPreviousPage
+            startCursor
+          }
+        }
+        name
+        note2
+        order {
+          id
+        }
+        paymentTerms {
+          dueInDays
+          id
+          overdue
+          paymentTermsName
+          paymentTermsType
+          translatedName
+        }
+        phone
+        platformDiscounts {
+          automaticDiscount
+          bxgyDiscount
+          code
+          discountClass
+          id
+          presentationLevel
+          shortSummary
+          summary
+          title
+        }
+        poNumber
+        presentmentCurrencyCode
+        ready
+        reserveInventoryUntil
+        shippingAddress {
+          address1
+          address2
+          city
+          company
+          coordinatesValidated
+          country
+          countryCodeV2
+          firstName
+          formatted(withName: $formatted_withName, withCompany: $formatted_withCompany)
+          formattedArea
+          id
+          lastName
+          latitude
+          longitude
+          name
+          phone
+          province
+          provinceCode
+          timeZone
+          zip
+        }
+        shippingLine {
+          carrierIdentifier
+          code
+          custom
+          deliveryCategory
+          id
+          isRemoved
+          phone
+          shippingRateHandle
+          source
+          title
+        }
+        status
+        subtotalPrice
+        tags
+        taxExempt
+        taxLines {
+          channelLiable
+          rate
+          ratePercentage
+          title
+        }
+        taxesIncluded
+        totalPrice
+        totalShippingPrice
+        totalTax
+        totalWeight
+        updatedAt
+        visibleToCustomer
+        warnings {
+          ... on DraftOrderDiscountNotAppliedWarning {
+            discountCode
+            discountTitle
+            errorCode
+            field
+            message
+          }
+        }
+      }
+    }
+    pageInfo {
+      endCursor
+      hasNextPage
+      hasPreviousPage
+      startCursor
+    }
+  }
+}

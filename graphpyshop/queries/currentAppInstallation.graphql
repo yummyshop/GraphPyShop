@@ -1,0 +1,186 @@
+query currentAppInstallation($allSubscriptions_first: Int = 250, $allSubscriptions_after: String, $allSubscriptions_last: Int, $allSubscriptions_before: String, $allSubscriptions_reverse: Boolean = false, $allSubscriptions_sortKey: AppSubscriptionSortKeys = CREATED_AT, $credits_first: Int = 250, $credits_after: String, $credits_last: Int, $credits_before: String, $credits_reverse: Boolean = false, $credits_sortKey: AppTransactionSortKeys = CREATED_AT, $metafields_namespace: String, $metafields_keys: [String!], $metafields_first: Int = 250, $metafields_after: String, $metafields_last: Int, $metafields_before: String, $metafields_reverse: Boolean = false, $oneTimePurchases_first: Int = 250, $oneTimePurchases_after: String, $oneTimePurchases_last: Int, $oneTimePurchases_before: String, $oneTimePurchases_reverse: Boolean = false, $oneTimePurchases_sortKey: AppTransactionSortKeys = CREATED_AT, $purchaseConfirmation_id: ID!, $revenueAttributionRecords_first: Int = 250, $revenueAttributionRecords_after: String, $revenueAttributionRecords_last: Int, $revenueAttributionRecords_before: String, $revenueAttributionRecords_reverse: Boolean = false, $revenueAttributionRecords_sortKey: AppRevenueAttributionRecordSortKeys = CREATED_AT) {
+  currentAppInstallation {
+    accessScopes {
+      description
+      handle
+    }
+    activeSubscriptions {
+      createdAt
+      currentPeriodEnd
+      id
+      name
+      returnUrl
+      status
+      test
+      trialDays
+    }
+    allSubscriptions(
+      first: $allSubscriptions_first
+      after: $allSubscriptions_after
+      last: $allSubscriptions_last
+      before: $allSubscriptions_before
+      reverse: $allSubscriptions_reverse
+      sortKey: $allSubscriptions_sortKey
+    ) {
+      edges {
+        cursor
+        node {
+          createdAt
+          currentPeriodEnd
+          id
+          name
+          returnUrl
+          status
+          test
+          trialDays
+        }
+      }
+      pageInfo {
+        endCursor
+        hasNextPage
+        hasPreviousPage
+        startCursor
+      }
+    }
+    app {
+      apiKey
+      appStoreAppUrl
+      appStoreDeveloperUrl
+      description
+      developerName
+      developerType
+      embedded
+      features
+      handle
+      id
+      installUrl
+      isPostPurchaseAppInUse
+      previouslyInstalled
+      pricingDetails
+      pricingDetailsSummary
+      privacyPolicyUrl
+      publicCategory
+      published
+      shopifyDeveloped
+      starRating
+      storefrontApiAvailable
+      title
+      uninstallMessage
+      webhookApiVersion
+    }
+    credits(
+      first: $credits_first
+      after: $credits_after
+      last: $credits_last
+      before: $credits_before
+      reverse: $credits_reverse
+      sortKey: $credits_sortKey
+    ) {
+      edges {
+        cursor
+        node {
+          id
+        }
+      }
+      pageInfo {
+        endCursor
+        hasNextPage
+        hasPreviousPage
+        startCursor
+      }
+    }
+    id
+    launchUrl
+    metafields(
+      namespace: $metafields_namespace
+      keys: $metafields_keys
+      first: $metafields_first
+      after: $metafields_after
+      last: $metafields_last
+      before: $metafields_before
+      reverse: $metafields_reverse
+    ) {
+      edges {
+        cursor
+        node {
+          createdAt
+          description
+          id
+          key
+          legacyResourceId
+          namespace
+          ownerType
+          type
+          updatedAt
+          value
+        }
+      }
+      pageInfo {
+        endCursor
+        hasNextPage
+        hasPreviousPage
+        startCursor
+      }
+    }
+    oneTimePurchases(
+      first: $oneTimePurchases_first
+      after: $oneTimePurchases_after
+      last: $oneTimePurchases_last
+      before: $oneTimePurchases_before
+      reverse: $oneTimePurchases_reverse
+      sortKey: $oneTimePurchases_sortKey
+    ) {
+      edges {
+        cursor
+        node {
+          createdAt
+          id
+          name
+          returnUrl
+          status
+          test
+        }
+      }
+      pageInfo {
+        endCursor
+        hasNextPage
+        hasPreviousPage
+        startCursor
+      }
+    }
+    publication {
+      id
+    }
+    purchaseConfirmation(id: $purchaseConfirmation_id) {
+      url
+    }
+    revenueAttributionRecords(
+      first: $revenueAttributionRecords_first
+      after: $revenueAttributionRecords_after
+      last: $revenueAttributionRecords_last
+      before: $revenueAttributionRecords_before
+      reverse: $revenueAttributionRecords_reverse
+      sortKey: $revenueAttributionRecords_sortKey
+    ) {
+      edges {
+        cursor
+        node {
+          capturedAt
+          createdAt
+          id
+          idempotencyKey
+          test
+          type
+        }
+      }
+      pageInfo {
+        endCursor
+        hasNextPage
+        hasPreviousPage
+        startCursor
+      }
+    }
+    storefrontApiAccessible
+    uninstallUrl
+  }
+}

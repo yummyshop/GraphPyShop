@@ -1,0 +1,16 @@
+query productOperation($productOperation_id: ID!) {
+  productOperation(id: $productOperation_id) {
+    ... on ProductSetOperation {
+      id
+      product {
+        id
+      }
+      status
+      userErrors {
+        code
+        field
+        message
+      }
+    }
+  }
+}

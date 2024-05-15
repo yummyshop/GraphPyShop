@@ -1,0 +1,31 @@
+query priceRuleSavedSearches($priceRuleSavedSearches_first: Int = 250, $priceRuleSavedSearches_after: String, $priceRuleSavedSearches_last: Int, $priceRuleSavedSearches_before: String, $priceRuleSavedSearches_reverse: Boolean = false) {
+  priceRuleSavedSearches(
+    first: $priceRuleSavedSearches_first
+    after: $priceRuleSavedSearches_after
+    last: $priceRuleSavedSearches_last
+    before: $priceRuleSavedSearches_before
+    reverse: $priceRuleSavedSearches_reverse
+  ) {
+    edges {
+      cursor
+      node {
+        filters {
+          key
+          value
+        }
+        id
+        legacyResourceId
+        name
+        query
+        resourceType
+        searchTerms
+      }
+    }
+    pageInfo {
+      endCursor
+      hasNextPage
+      hasPreviousPage
+      startCursor
+    }
+  }
+}

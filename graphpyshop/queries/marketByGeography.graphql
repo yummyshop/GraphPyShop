@@ -1,0 +1,3 @@
+query marketByGeography($marketByGeography_countryCode: CountryCode!) {
+  marketByGeography(countryCode: $marketByGeography_countryCode)
+}

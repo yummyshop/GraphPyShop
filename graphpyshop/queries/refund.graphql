@@ -1,0 +1,132 @@
+query refund($orderAdjustments_first: Int = 250, $orderAdjustments_after: String, $orderAdjustments_last: Int, $orderAdjustments_before: String, $orderAdjustments_reverse: Boolean = false, $refundLineItems_first: Int = 250, $refundLineItems_after: String, $refundLineItems_last: Int, $refundLineItems_before: String, $refundLineItems_reverse: Boolean = false, $refundShippingLines_first: Int = 250, $refundShippingLines_after: String, $refundShippingLines_last: Int, $refundShippingLines_before: String, $refundShippingLines_reverse: Boolean = false, $transactions_first: Int = 250, $transactions_after: String, $transactions_last: Int, $transactions_before: String, $transactions_reverse: Boolean = false, $refund_id: ID!) {
+  refund(id: $refund_id) {
+    createdAt
+    id
+    legacyResourceId
+    note
+    order {
+      id
+    }
+    orderAdjustments(
+      first: $orderAdjustments_first
+      after: $orderAdjustments_after
+      last: $orderAdjustments_last
+      before: $orderAdjustments_before
+      reverse: $orderAdjustments_reverse
+    ) {
+      edges {
+        cursor
+        node {
+          id
+          kind
+        }
+      }
+      pageInfo {
+        endCursor
+        hasNextPage
+        hasPreviousPage
+        startCursor
+      }
+    }
+    refundLineItems(
+      first: $refundLineItems_first
+      after: $refundLineItems_after
+      last: $refundLineItems_last
+      before: $refundLineItems_before
+      reverse: $refundLineItems_reverse
+    ) {
+      edges {
+        cursor
+        node {
+          id
+          quantity
+          restockType
+          restocked
+        }
+      }
+      pageInfo {
+        endCursor
+        hasNextPage
+        hasPreviousPage
+        startCursor
+      }
+    }
+    refundShippingLines(
+      first: $refundShippingLines_first
+      after: $refundShippingLines_after
+      last: $refundShippingLines_last
+      before: $refundShippingLines_before
+      reverse: $refundShippingLines_reverse
+    ) {
+      edges {
+        cursor
+        node {
+          id
+        }
+      }
+      pageInfo {
+        endCursor
+        hasNextPage
+        hasPreviousPage
+        startCursor
+      }
+    }
+    return {
+      id
+      name
+      status
+      totalQuantity
+    }
+    staffMember {
+      active
+      email
+      exists
+      firstName
+      id
+      initials
+      isShopOwner
+      lastName
+      locale
+      name
+      phone
+    }
+    transactions(
+      first: $transactions_first
+      after: $transactions_after
+      last: $transactions_last
+      before: $transactions_before
+      reverse: $transactions_reverse
+    ) {
+      edges {
+        cursor
+        node {
+          accountNumber
+          authorizationCode
+          authorizationExpiresAt
+          createdAt
+          errorCode
+          formattedGateway
+          gateway
+          id
+          kind
+          manuallyCapturable
+          multiCapturable
+          paymentId
+          processedAt
+          receiptJson
+          settlementCurrency
+          settlementCurrencyRate
+          status
+          test
+        }
+      }
+      pageInfo {
+        endCursor
+        hasNextPage
+        hasPreviousPage
+        startCursor
+      }
+    }
+    updatedAt
+  }
+}

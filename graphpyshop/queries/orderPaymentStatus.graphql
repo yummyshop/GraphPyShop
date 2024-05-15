@@ -1,0 +1,31 @@
+query orderPaymentStatus($orderPaymentStatus_paymentReferenceId: String!, $orderPaymentStatus_orderId: ID!) {
+  orderPaymentStatus(
+    paymentReferenceId: $orderPaymentStatus_paymentReferenceId
+    orderId: $orderPaymentStatus_orderId
+  ) {
+    errorMessage
+    paymentReferenceId
+    status
+    transactions {
+      accountNumber
+      authorizationCode
+      authorizationExpiresAt
+      createdAt
+      errorCode
+      formattedGateway
+      gateway
+      id
+      kind
+      manuallyCapturable
+      multiCapturable
+      paymentId
+      processedAt
+      receiptJson
+      settlementCurrency
+      settlementCurrencyRate
+      status
+      test
+    }
+    translatedErrorMessage
+  }
+}

@@ -1,0 +1,6 @@
+query discountCodesCount($discountCodesCount_query: String) {
+  discountCodesCount(query: $discountCodesCount_query) {
+    count
+    precision
+  }
+}

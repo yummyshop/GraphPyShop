@@ -1,0 +1,31 @@
+query urlRedirectSavedSearches($urlRedirectSavedSearches_first: Int = 250, $urlRedirectSavedSearches_after: String, $urlRedirectSavedSearches_last: Int, $urlRedirectSavedSearches_before: String, $urlRedirectSavedSearches_reverse: Boolean = false) {
+  urlRedirectSavedSearches(
+    first: $urlRedirectSavedSearches_first
+    after: $urlRedirectSavedSearches_after
+    last: $urlRedirectSavedSearches_last
+    before: $urlRedirectSavedSearches_before
+    reverse: $urlRedirectSavedSearches_reverse
+  ) {
+    edges {
+      cursor
+      node {
+        filters {
+          key
+          value
+        }
+        id
+        legacyResourceId
+        name
+        query
+        resourceType
+        searchTerms
+      }
+    }
+    pageInfo {
+      endCursor
+      hasNextPage
+      hasPreviousPage
+      startCursor
+    }
+  }
+}

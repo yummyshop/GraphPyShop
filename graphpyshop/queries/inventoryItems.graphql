@@ -1,0 +1,98 @@
+query inventoryItems($countryHarmonizedSystemCodes_first: Int = 250, $countryHarmonizedSystemCodes_after: String, $countryHarmonizedSystemCodes_last: Int, $countryHarmonizedSystemCodes_before: String, $countryHarmonizedSystemCodes_reverse: Boolean = false, $inventoryLevel_locationId: ID!, $inventoryLevels_first: Int = 250, $inventoryLevels_after: String, $inventoryLevels_last: Int, $inventoryLevels_before: String, $inventoryLevels_reverse: Boolean = false, $inventoryLevels_query: String, $inventoryItems_first: Int = 250, $inventoryItems_after: String, $inventoryItems_last: Int, $inventoryItems_before: String, $inventoryItems_reverse: Boolean = false, $inventoryItems_query: String) {
+  inventoryItems(
+    first: $inventoryItems_first
+    after: $inventoryItems_after
+    last: $inventoryItems_last
+    before: $inventoryItems_before
+    reverse: $inventoryItems_reverse
+    query: $inventoryItems_query
+  ) {
+    edges {
+      cursor
+      node {
+        countryCodeOfOrigin
+        countryHarmonizedSystemCodes(
+          first: $countryHarmonizedSystemCodes_first
+          after: $countryHarmonizedSystemCodes_after
+          last: $countryHarmonizedSystemCodes_last
+          before: $countryHarmonizedSystemCodes_before
+          reverse: $countryHarmonizedSystemCodes_reverse
+        ) {
+          edges {
+            cursor
+            node {
+              countryCode
+              harmonizedSystemCode
+            }
+          }
+          pageInfo {
+            endCursor
+            hasNextPage
+            hasPreviousPage
+            startCursor
+          }
+        }
+        createdAt
+        duplicateSkuCount
+        harmonizedSystemCode
+        id
+        inventoryHistoryUrl
+        inventoryLevel(locationId: $inventoryLevel_locationId) {
+          canDeactivate
+          createdAt
+          deactivationAlert
+          id
+          updatedAt
+        }
+        inventoryLevels(
+          first: $inventoryLevels_first
+          after: $inventoryLevels_after
+          last: $inventoryLevels_last
+          before: $inventoryLevels_before
+          reverse: $inventoryLevels_reverse
+          query: $inventoryLevels_query
+        ) {
+          edges {
+            cursor
+            node {
+              canDeactivate
+              createdAt
+              deactivationAlert
+              id
+              updatedAt
+            }
+          }
+          pageInfo {
+            endCursor
+            hasNextPage
+            hasPreviousPage
+            startCursor
+          }
+        }
+        legacyResourceId
+        measurement {
+          id
+        }
+        provinceCodeOfOrigin
+        requiresShipping
+        sku
+        tracked
+        trackedEditable {
+          locked
+          reason
+        }
+        unitCost {
+          amount
+          currencyCode
+        }
+        updatedAt
+      }
+    }
+    pageInfo {
+      endCursor
+      hasNextPage
+      hasPreviousPage
+      startCursor
+    }
+  }
+}

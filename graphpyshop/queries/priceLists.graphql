@@ -1,0 +1,84 @@
+query priceLists($prices_originType: PriceListPriceOriginType, $prices_first: Int = 250, $prices_after: String, $prices_last: Int, $prices_before: String, $prices_reverse: Boolean = false, $prices_query: String, $quantityRules_originType: QuantityRuleOriginType, $quantityRules_first: Int = 250, $quantityRules_after: String, $quantityRules_last: Int, $quantityRules_before: String, $quantityRules_reverse: Boolean = false, $priceLists_first: Int = 250, $priceLists_after: String, $priceLists_last: Int, $priceLists_before: String, $priceLists_reverse: Boolean = false, $priceLists_sortKey: PriceListSortKeys = ID) {
+  priceLists(
+    first: $priceLists_first
+    after: $priceLists_after
+    last: $priceLists_last
+    before: $priceLists_before
+    reverse: $priceLists_reverse
+    sortKey: $priceLists_sortKey
+  ) {
+    edges {
+      cursor
+      node {
+        catalog {
+          ... on AppCatalog {
+            id
+          }
+          ... on CompanyLocationCatalog {
+            id
+          }
+          ... on MarketCatalog {
+            id
+          }
+        }
+        currency
+        fixedPricesCount
+        id
+        name
+        prices(
+          originType: $prices_originType
+          first: $prices_first
+          after: $prices_after
+          last: $prices_last
+          before: $prices_before
+          reverse: $prices_reverse
+          query: $prices_query
+        ) {
+          edges {
+            cursor
+            node {
+              originType
+            }
+          }
+          pageInfo {
+            endCursor
+            hasNextPage
+            hasPreviousPage
+            startCursor
+          }
+        }
+        quantityRules(
+          originType: $quantityRules_originType
+          first: $quantityRules_first
+          after: $quantityRules_after
+          last: $quantityRules_last
+          before: $quantityRules_before
+          reverse: $quantityRules_reverse
+        ) {
+          edges {
+            cursor
+            node {
+              increment
+              isDefault
+              maximum
+              minimum
+              originType
+            }
+          }
+          pageInfo {
+            endCursor
+            hasNextPage
+            hasPreviousPage
+            startCursor
+          }
+        }
+      }
+    }
+    pageInfo {
+      endCursor
+      hasNextPage
+      hasPreviousPage
+      startCursor
+    }
+  }
+}

@@ -1,0 +1,1675 @@
+query job($hasCollection_id: ID!, $description_truncateAt: Int, $hasProduct_id: ID!, $publishedOnPublication_publicationId: ID!, $formattedAddress_withName: Boolean = false, $formattedAddress_withCompanyName: Boolean = true, $hasPriceList_priceListId: ID!, $inCatalog_catalogId: ID!, $formattedName_countryCodes: [CountryCode!], $formatted_withName: Boolean = false, $formatted_withCompany: Boolean = true, $metafieldsCount_validationStatus: MetafieldValidationStatus, $inCollection_id: ID!, $publishedInContext_context: ContextualPublicationContext!, $appliesToProduct_productId: ID!, $appliesToProductVariant_productVariantId: ID!, $appliesToProductVariants_productId: ID!, $customerTags_first: Int! = 250, $draftOrderTags_first: Int! = 250, $orderTags_first: Int! = 250, $orderTags_sort: ShopTagSort = ALPHABETICAL, $productTags_first: Int! = 250, $productTypes_first: Int! = 250, $productVendors_first: Int! = 250, $node_id: ID!, $job_id: ID!) {
+  job(id: $job_id) {
+    done
+    id
+    query {
+      bundleCount
+      node(id: $node_id) {
+        ... on AbandonedCheckout {
+          abandonedCheckoutUrl
+          defaultCursor
+          id
+          lineItemsQuantity
+        }
+        ... on AbandonedCheckoutLineItem {
+          id
+          quantity
+          sku
+          title
+          variantTitle
+        }
+        ... on Abandonment {
+          abandonmentType
+          cartUrl
+          createdAt
+          customerHasNoDraftOrderSinceAbandonment
+          customerHasNoOrderSinceAbandonment
+          daysSinceLastAbandonmentEmail
+          emailSentAt
+          emailState
+          hoursSinceLastAbandonedCheckout
+          id
+          inventoryAvailable
+          isFromCustomStorefront
+          isFromOnlineStore
+          isFromShopApp
+          isFromShopPay
+          isMostSignificantAbandonment
+          lastBrowseAbandonmentDate
+          lastCartAbandonmentDate
+          lastCheckoutAbandonmentDate
+          mostRecentStep
+          visitStartedAt
+        }
+        ... on AddAllProductsOperation {
+          id
+          processedRowCount
+          status
+        }
+        ... on AdditionalFee {
+          id
+          name
+        }
+        ... on App {
+          apiKey
+          appStoreAppUrl
+          appStoreDeveloperUrl
+          description
+          developerName
+          developerType
+          embedded
+          features
+          handle
+          id
+          installUrl
+          isPostPurchaseAppInUse
+          previouslyInstalled
+          pricingDetails
+          pricingDetailsSummary
+          privacyPolicyUrl
+          publicCategory
+          published
+          shopifyDeveloped
+          starRating
+          storefrontApiAvailable
+          title
+          uninstallMessage
+          webhookApiVersion
+        }
+        ... on AppCatalog {
+          id
+          status
+          title
+        }
+        ... on AppCredit {
+          createdAt
+          description
+          id
+          test
+        }
+        ... on AppInstallation {
+          id
+          launchUrl
+          storefrontApiAccessible
+          uninstallUrl
+        }
+        ... on AppPurchaseOneTime {
+          createdAt
+          id
+          name
+          returnUrl
+          status
+          test
+        }
+        ... on AppRevenueAttributionRecord {
+          capturedAt
+          createdAt
+          id
+          idempotencyKey
+          test
+          type
+        }
+        ... on AppSubscription {
+          createdAt
+          currentPeriodEnd
+          id
+          name
+          returnUrl
+          status
+          test
+          trialDays
+        }
+        ... on AppUsageRecord {
+          createdAt
+          description
+          id
+          idempotencyKey
+        }
+        ... on BasicEvent {
+          appTitle
+          attributeToApp
+          attributeToUser
+          createdAt
+          criticalAlert
+          id
+          message
+        }
+        ... on BulkOperation {
+          completedAt
+          createdAt
+          errorCode
+          fileSize
+          id
+          objectCount
+          partialDataUrl
+          query
+          rootObjectCount
+          status
+          type
+          url
+        }
+        ... on CalculatedOrder {
+          committed
+          id
+          notificationPreviewHtml
+          notificationPreviewTitle
+          subtotalLineItemsQuantity
+        }
+        ... on CartTransform {
+          blockOnFailure
+          functionId
+          id
+        }
+        ... on CashTrackingAdjustment {
+          id
+          note
+          time
+        }
+        ... on CashTrackingSession {
+          cashTrackingEnabled
+          closingNote
+          closingTime
+          id
+          openingNote
+          openingTime
+          registerName
+        }
+        ... on CatalogCsvOperation {
+          id
+          processedRowCount
+          status
+        }
+        ... on Channel {
+          hasCollection(id: $hasCollection_id)
+          id
+          name
+          supportsFuturePublishing
+        }
+        ... on ChannelDefinition {
+          channelName
+          handle
+          id
+          isMarketplace
+          subChannelName
+          svgIcon
+        }
+        ... on ChannelInformation {
+          channelId
+          displayName
+          id
+        }
+        ... on CheckoutProfile {
+          createdAt
+          editedAt
+          id
+          isPublished
+          name
+          typOspPagesActive
+          updatedAt
+        }
+        ... on Collection {
+          description(truncateAt: $description_truncateAt)
+          descriptionHtml
+          handle
+          hasProduct(id: $hasProduct_id)
+          id
+          legacyResourceId
+          publishedOnCurrentPublication
+          publishedOnPublication(publicationId: $publishedOnPublication_publicationId)
+          sortOrder
+          templateSuffix
+          title
+          updatedAt
+        }
+        ... on CommentEvent {
+          appTitle
+          attributeToApp
+          attributeToUser
+          canDelete
+          canEdit
+          createdAt
+          criticalAlert
+          edited
+          id
+          message
+          rawMessage
+        }
+        ... on Company {
+          createdAt
+          customerSince
+          defaultCursor
+          externalId
+          hasTimelineComment
+          id
+          lifetimeDuration
+          name
+          note
+          updatedAt
+        }
+        ... on CompanyAddress {
+          address1
+          address2
+          city
+          companyName
+          country
+          countryCode
+          createdAt
+          firstName
+          formattedAddress(
+            withName: $formattedAddress_withName
+            withCompanyName: $formattedAddress_withCompanyName
+          )
+          formattedArea
+          id
+          lastName
+          phone
+          province
+          recipient
+          updatedAt
+          zip
+          zoneCode
+        }
+        ... on CompanyContact {
+          createdAt
+          id
+          isMainContact
+          lifetimeDuration
+          locale
+          title
+          updatedAt
+        }
+        ... on CompanyContactRole {
+          id
+          name
+          note
+        }
+        ... on CompanyContactRoleAssignment {
+          createdAt
+          id
+          updatedAt
+        }
+        ... on CompanyLocation {
+          createdAt
+          currency
+          defaultCursor
+          externalId
+          hasPriceList(priceListId: $hasPriceList_priceListId)
+          hasTimelineComment
+          id
+          inCatalog(catalogId: $inCatalog_catalogId)
+          locale
+          name
+          note
+          phone
+          taxExemptions
+          taxRegistrationId
+          updatedAt
+        }
+        ... on CompanyLocationCatalog {
+          id
+          status
+          title
+        }
+        ... on CompanyLocationStaffMemberAssignment {
+          id
+        }
+        ... on ConsentPolicy {
+          consentRequired
+          countryCode
+          dataSaleOptOutRequired
+          id
+          regionCode
+          shopId
+        }
+        ... on Customer {
+          canDelete
+          createdAt
+          displayName
+          email
+          firstName
+          id
+          lastName
+          legacyResourceId
+          lifetimeDuration
+          locale
+          multipassIdentifier
+          note
+          numberOfOrders
+          phone
+          productSubscriberStatus
+          state
+          tags
+          taxExempt
+          taxExemptions
+          unsubscribeUrl
+          updatedAt
+          validEmailAddress
+          verifiedEmail
+        }
+        ... on CustomerPaymentMethod {
+          id
+          revokedAt
+          revokedReason
+        }
+        ... on CustomerSegmentMembersQuery {
+          currentCount
+          done
+          id
+        }
+        ... on CustomerVisit {
+          id
+          landingPage
+          landingPageHtml
+          occurredAt
+          referralCode
+          referralInfoHtml
+          referrerUrl
+          source
+          sourceDescription
+          sourceType
+        }
+        ... on DeliveryCarrierService {
+          active
+          callbackUrl
+          formattedName(countryCodes: $formattedName_countryCodes)
+          id
+          name
+          supportsServiceDiscovery
+        }
+        ... on DeliveryCondition {
+          field
+          id
+          operator
+        }
+        ... on DeliveryCountry {
+          id
+          name
+          translatedName
+        }
+        ... on DeliveryCustomization {
+          enabled
+          functionId
+          id
+          title
+        }
+        ... on DeliveryLocationGroup {
+          id
+          locationsCount
+        }
+        ... on DeliveryMethod {
+          id
+          maxDeliveryDateTime
+          methodType
+          minDeliveryDateTime
+          serviceCode
+          sourceReference
+        }
+        ... on DeliveryMethodDefinition {
+          active
+          description
+          id
+          name
+        }
+        ... on DeliveryParticipant {
+          adaptToNewServicesFlag
+          id
+          percentageOfRateFee
+        }
+        ... on DeliveryProfile {
+          activeMethodDefinitionsCount
+          default
+          id
+          legacyMode
+          locationsWithoutRatesCount
+          name
+          originLocationCount
+          zoneCountryCount
+        }
+        ... on DeliveryProfileItem {
+          id
+        }
+        ... on DeliveryPromiseProvider {
+          active
+          fulfillmentDelay
+          id
+          timeZone
+        }
+        ... on DeliveryProvince {
+          code
+          id
+          name
+          translatedName
+        }
+        ... on DeliveryRateDefinition {
+          id
+        }
+        ... on DeliveryZone {
+          id
+          name
+        }
+        ... on DiscountAutomaticBxgy {
+          asyncUsageCount
+          createdAt
+          discountClass
+          endsAt
+          startsAt
+          status
+          summary
+          title
+          updatedAt
+          usesPerOrderLimit
+        }
+        ... on DiscountAutomaticNode {
+          id
+        }
+        ... on DiscountCodeNode {
+          id
+        }
+        ... on DiscountNode {
+          id
+        }
+        ... on DiscountRedeemCodeBulkCreation {
+          codesCount
+          createdAt
+          done
+          failedCount
+          id
+          importedCount
+        }
+        ... on Domain {
+          host
+          id
+          sslEnabled
+          url
+        }
+        ... on DraftOrder {
+          acceptAutomaticDiscounts
+          allowDiscountCodesInCheckout
+          billingAddressMatchesShippingAddress
+          completedAt
+          createdAt
+          currencyCode
+          defaultCursor
+          discountCodes
+          email
+          hasTimelineComment
+          id
+          invoiceEmailTemplateSubject
+          invoiceSentAt
+          invoiceUrl
+          legacyResourceId
+          marketName
+          marketRegionCountryCode
+          name
+          note2
+          phone
+          poNumber
+          presentmentCurrencyCode
+          ready
+          reserveInventoryUntil
+          status
+          subtotalPrice
+          tags
+          taxExempt
+          taxesIncluded
+          totalPrice
+          totalShippingPrice
+          totalTax
+          totalWeight
+          updatedAt
+          visibleToCustomer
+        }
+        ... on DraftOrderLineItem {
+          custom
+          discountedTotal
+          id
+          isGiftCard
+          name
+          originalTotal
+          originalUnitPrice
+          quantity
+          requiresShipping
+          sku
+          taxable
+          title
+          totalDiscount
+          uuid
+          variantTitle
+          vendor
+        }
+        ... on DraftOrderTag {
+          handle
+          id
+          title
+        }
+        ... on Duty {
+          countryCodeOfOrigin
+          harmonizedSystemCode
+          id
+        }
+        ... on ExchangeLineItem {
+          id
+        }
+        ... on ExchangeV2 {
+          completedAt
+          createdAt
+          id
+          note
+        }
+        ... on ExternalVideo {
+          alt
+          createdAt
+          embedUrl
+          fileStatus
+          host
+          id
+          mediaContentType
+          originUrl
+          status
+          updateStatus
+          updatedAt
+        }
+        ... on Fulfillment {
+          createdAt
+          deliveredAt
+          displayStatus
+          estimatedDeliveryAt
+          id
+          inTransitAt
+          legacyResourceId
+          name
+          requiresShipping
+          status
+          totalQuantity
+          updatedAt
+        }
+        ... on FulfillmentConstraintRule {
+          id
+        }
+        ... on FulfillmentEvent {
+          address1
+          city
+          country
+          createdAt
+          estimatedDeliveryAt
+          happenedAt
+          id
+          latitude
+          longitude
+          message
+          province
+          status
+          zip
+        }
+        ... on FulfillmentLineItem {
+          id
+          quantity
+        }
+        ... on FulfillmentOrder {
+          channelId
+          createdAt
+          fulfillAt
+          fulfillBy
+          id
+          orderId
+          orderName
+          orderProcessedAt
+          requestStatus
+          status
+          updatedAt
+        }
+        ... on FulfillmentOrderDestination {
+          address1
+          address2
+          city
+          company
+          countryCode
+          email
+          firstName
+          id
+          lastName
+          phone
+          province
+          zip
+        }
+        ... on FulfillmentOrderLineItem {
+          id
+          inventoryItemId
+          productTitle
+          remainingQuantity
+          requiresShipping
+          sku
+          totalQuantity
+          variantTitle
+          vendor
+        }
+        ... on FulfillmentOrderMerchantRequest {
+          id
+          kind
+          message
+          requestOptions
+          responseData
+          sentAt
+        }
+        ... on GateConfiguration {
+          createdAt
+          defaultCursor
+          handle
+          id
+          name
+          updatedAt
+        }
+        ... on GateSubject {
+          active
+          createdAt
+          defaultCursor
+          id
+          updatedAt
+        }
+        ... on GenericFile {
+          alt
+          createdAt
+          fileStatus
+          id
+          mimeType
+          originalFileSize
+          updateStatus
+          updatedAt
+          url
+        }
+        ... on GiftCard {
+          createdAt
+          disabledAt
+          enabled
+          expiresOn
+          id
+          lastCharacters
+          maskedCode
+          message
+          note
+          notify
+          sendOn
+        }
+        ... on InventoryAdjustmentGroup {
+          createdAt
+          id
+          reason
+          referenceDocumentUri
+        }
+        ... on InventoryItem {
+          countryCodeOfOrigin
+          createdAt
+          duplicateSkuCount
+          harmonizedSystemCode
+          id
+          inventoryHistoryUrl
+          legacyResourceId
+          provinceCodeOfOrigin
+          requiresShipping
+          sku
+          tracked
+          updatedAt
+        }
+        ... on InventoryItemMeasurement {
+          id
+        }
+        ... on InventoryLevel {
+          canDeactivate
+          createdAt
+          deactivationAlert
+          id
+          updatedAt
+        }
+        ... on InventoryQuantity {
+          id
+          name
+          quantity
+          updatedAt
+        }
+        ... on LineItem {
+          currentQuantity
+          id
+          isGiftCard
+          merchantEditable
+          name
+          nonFulfillableQuantity
+          quantity
+          refundableQuantity
+          requiresShipping
+          restockable
+          sku
+          taxable
+          title
+          unfulfilledQuantity
+          variantTitle
+          vendor
+        }
+        ... on LineItemGroup {
+          id
+          quantity
+          title
+          variantId
+          variantSku
+        }
+        ... on LineItemMutable {
+          fulfillableQuantity
+          fulfillmentStatus
+          id
+          isGiftCard
+          merchantEditable
+          name
+          nonFulfillableQuantity
+          quantity
+          refundableQuantity
+          requiresShipping
+          restockable
+          sku
+          taxable
+          title
+          unfulfilledQuantity
+          variantTitle
+          vendor
+        }
+        ... on Location {
+          activatable
+          addressVerified
+          createdAt
+          deactivatable
+          deactivatedAt
+          deletable
+          fulfillsOnlineOrders
+          hasActiveInventory
+          hasUnfulfilledOrders
+          id
+          isActive
+          isFulfillmentService
+          legacyResourceId
+          name
+          shipsInventory
+          updatedAt
+        }
+        ... on MailingAddress {
+          address1
+          address2
+          city
+          company
+          coordinatesValidated
+          country
+          countryCodeV2
+          firstName
+          formatted(withName: $formatted_withName, withCompany: $formatted_withCompany)
+          formattedArea
+          id
+          lastName
+          latitude
+          longitude
+          name
+          phone
+          province
+          provinceCode
+          timeZone
+          zip
+        }
+        ... on Market {
+          enabled
+          handle
+          id
+          name
+          primary
+        }
+        ... on MarketCatalog {
+          id
+          status
+          title
+        }
+        ... on MarketRegionCountry {
+          code
+          id
+          name
+        }
+        ... on MarketWebPresence {
+          id
+          subfolderSuffix
+        }
+        ... on MarketingActivity {
+          activityListUrl
+          adminEditUrl
+          automationStepType
+          automationTriggerDescription
+          createdAt
+          errorOccurredAt
+          flowEditorUrl
+          formData
+          hierarchyLevel
+          id
+          inMainWorkflowVersion
+          isExternal
+          marketingChannelType
+          parentActivityId
+          parentRemoteId
+          scheduledToEndAt
+          scheduledToStartAt
+          sourceAndMedium
+          status
+          statusBadgeTypeV2
+          statusLabel
+          statusTransitionedAt
+          tactic
+          targetStatus
+          title
+          trackingOpens
+          updatedAt
+          urlParameterValue
+        }
+        ... on MarketingEvent {
+          channelHandle
+          description
+          endedAt
+          id
+          legacyResourceId
+          manageUrl
+          marketingChannelType
+          previewUrl
+          remoteId
+          scheduledToEndAt
+          sourceAndMedium
+          startedAt
+          type
+          utmCampaign
+          utmMedium
+          utmSource
+        }
+        ... on MediaImage {
+          alt
+          createdAt
+          fileStatus
+          id
+          mediaContentType
+          mimeType
+          status
+          updateStatus
+          updatedAt
+        }
+        ... on Metafield {
+          createdAt
+          description
+          id
+          key
+          legacyResourceId
+          namespace
+          ownerType
+          type
+          updatedAt
+          value
+        }
+        ... on MetafieldDefinition {
+          createdAt
+          description
+          id
+          key
+          metafieldsCount(validationStatus: $metafieldsCount_validationStatus)
+          name
+          namespace
+          ownerType
+          pinnedPosition
+          updatedAt
+          useAsCollectionCondition
+          validationStatus
+        }
+        ... on MetafieldStorefrontVisibility {
+          createdAt
+          id
+          key
+          legacyResourceId
+          namespace
+          ownerType
+          updatedAt
+        }
+        ... on Metaobject {
+          createdAt
+          displayName
+          handle
+          id
+          type
+          updatedAt
+        }
+        ... on MetaobjectDefinition {
+          createdAt
+          description
+          displayNameKey
+          hasThumbnailField
+          id
+          metaobjectsCount
+          name
+          type
+          updatedAt
+          visibleToStorefrontApi
+        }
+        ... on Model3d {
+          alt
+          createdAt
+          fileStatus
+          filename
+          id
+          mediaContentType
+          status
+          updateStatus
+          updatedAt
+        }
+        ... on OnlineStoreArticle {
+          defaultCursor
+          id
+        }
+        ... on OnlineStoreBlog {
+          id
+        }
+        ... on OnlineStorePage {
+          defaultCursor
+          id
+        }
+        ... on Order {
+          billingAddressMatchesShippingAddress
+          canMarkAsPaid
+          canNotifyCustomer
+          cancelReason
+          cancelledAt
+          capturable
+          clientIp
+          closed
+          closedAt
+          confirmationNumber
+          confirmed
+          createdAt
+          currencyCode
+          currentSubtotalLineItemsQuantity
+          currentTotalWeight
+          customerAcceptsMarketing
+          customerLocale
+          discountCode
+          discountCodes
+          displayFinancialStatus
+          displayFulfillmentStatus
+          dutiesIncluded
+          edited
+          email
+          estimatedTaxes
+          fulfillable
+          fullyPaid
+          hasTimelineComment
+          id
+          legacyResourceId
+          merchantEditable
+          merchantEditableErrors
+          name
+          note
+          paymentGatewayNames
+          phone
+          poNumber
+          presentmentCurrencyCode
+          processedAt
+          refundable
+          registeredSourceUrl
+          requiresShipping
+          restockable
+          returnStatus
+          sourceIdentifier
+          sourceName
+          statusPageUrl
+          subtotalLineItemsQuantity
+          tags
+          taxExempt
+          taxesIncluded
+          test
+          totalWeight
+          unpaid
+          updatedAt
+        }
+        ... on OrderAdjustment {
+          id
+          kind
+        }
+        ... on OrderCancelJobResult {
+          done
+          id
+          status
+        }
+        ... on OrderDisputeSummary {
+          id
+          initiatedAs
+          status
+        }
+        ... on OrderTransaction {
+          accountNumber
+          authorizationCode
+          authorizationExpiresAt
+          createdAt
+          errorCode
+          formattedGateway
+          gateway
+          id
+          kind
+          manuallyCapturable
+          multiCapturable
+          paymentId
+          processedAt
+          receiptJson
+          settlementCurrency
+          settlementCurrencyRate
+          status
+          test
+        }
+        ... on PaymentCustomization {
+          enabled
+          functionId
+          id
+          title
+        }
+        ... on PaymentMandate {
+          id
+        }
+        ... on PaymentSchedule {
+          completedAt
+          dueAt
+          id
+          issuedAt
+        }
+        ... on PaymentTerms {
+          dueInDays
+          id
+          overdue
+          paymentTermsName
+          paymentTermsType
+          translatedName
+        }
+        ... on PaymentTermsTemplate {
+          description
+          dueInDays
+          id
+          name
+          paymentTermsType
+          translatedName
+        }
+        ... on PriceList {
+          currency
+          fixedPricesCount
+          id
+          name
+        }
+        ... on PriceRule {
+          allocationLimit
+          allocationMethod
+          createdAt
+          discountClass
+          endsAt
+          features
+          hasTimelineComment
+          id
+          legacyResourceId
+          oncePerCustomer
+          startsAt
+          status
+          summary
+          target
+          title
+          usageCount
+          usageLimit
+        }
+        ... on PriceRuleDiscountCode {
+          code
+          id
+          usageCount
+        }
+        ... on PrivateMetafield {
+          createdAt
+          id
+          key
+          namespace
+          updatedAt
+          value
+          valueType
+        }
+        ... on Product {
+          combinedListingRole
+          createdAt
+          defaultCursor
+          description(truncateAt: $description_truncateAt)
+          descriptionHtml
+          giftCardTemplateSuffix
+          handle
+          hasOnlyDefaultVariant
+          hasOutOfStockVariants
+          hasVariantsThatRequiresComponents
+          id
+          inCollection(id: $inCollection_id)
+          isGiftCard
+          legacyResourceId
+          onlineStorePreviewUrl
+          onlineStoreUrl
+          productType
+          publishedAt
+          publishedInContext(context: $publishedInContext_context)
+          publishedOnCurrentPublication
+          publishedOnPublication(publicationId: $publishedOnPublication_publicationId)
+          requiresSellingPlan
+          status
+          tags
+          templateSuffix
+          title
+          totalInventory
+          tracksInventory
+          updatedAt
+          vendor
+        }
+        ... on ProductFeed {
+          country
+          id
+          language
+          status
+        }
+        ... on ProductOption {
+          id
+          name
+          position
+          values
+        }
+        ... on ProductOptionValue {
+          hasVariants
+          id
+          linkedMetafieldValue
+          name
+        }
+        ... on ProductSetOperation {
+          id
+          status
+        }
+        ... on ProductTaxonomyNode {
+          fullName
+          id
+          isArchived
+          isLeaf
+          isRoot
+          name
+        }
+        ... on ProductVariant {
+          availableForSale
+          barcode
+          compareAtPrice
+          createdAt
+          defaultCursor
+          displayName
+          id
+          inventoryPolicy
+          inventoryQuantity
+          legacyResourceId
+          position
+          price
+          requiresComponents
+          sellableOnlineQuantity
+          sku
+          taxCode
+          taxable
+          title
+          updatedAt
+        }
+        ... on ProductVariantComponent {
+          id
+          quantity
+        }
+        ... on Publication {
+          autoPublish
+          hasCollection(id: $hasCollection_id)
+          id
+          supportsFuturePublishing
+        }
+        ... on PublicationResourceOperation {
+          id
+          processedRowCount
+          status
+        }
+        ... on QuantityPriceBreak {
+          id
+          minimumQuantity
+        }
+        ... on Refund {
+          createdAt
+          id
+          legacyResourceId
+          note
+          updatedAt
+        }
+        ... on RefundShippingLine {
+          id
+        }
+        ... on Return {
+          id
+          name
+          status
+          totalQuantity
+        }
+        ... on ReturnLineItem {
+          customerNote
+          id
+          quantity
+          refundableQuantity
+          refundedQuantity
+          returnReason
+          returnReasonNote
+        }
+        ... on ReturnableFulfillment {
+          id
+        }
+        ... on ReverseDelivery {
+          id
+        }
+        ... on ReverseDeliveryLineItem {
+          id
+          quantity
+        }
+        ... on ReverseFulfillmentOrder {
+          id
+          status
+        }
+        ... on ReverseFulfillmentOrderDisposition {
+          id
+          quantity
+          type
+        }
+        ... on ReverseFulfillmentOrderLineItem {
+          id
+          totalQuantity
+        }
+        ... on SaleAdditionalFee {
+          id
+          name
+        }
+        ... on SavedSearch {
+          id
+          legacyResourceId
+          name
+          query
+          resourceType
+          searchTerms
+        }
+        ... on ScriptTag {
+          cache
+          createdAt
+          displayScope
+          id
+          legacyResourceId
+          src
+          updatedAt
+        }
+        ... on Segment {
+          creationDate
+          id
+          lastEditDate
+          name
+          query
+        }
+        ... on SellingPlan {
+          category
+          createdAt
+          description
+          id
+          name
+          options
+          position
+        }
+        ... on SellingPlanGroup {
+          appId
+          appliesToProduct(productId: $appliesToProduct_productId)
+          appliesToProductVariant(
+            productVariantId: $appliesToProductVariant_productVariantId
+          )
+          appliesToProductVariants(productId: $appliesToProductVariants_productId)
+          createdAt
+          description
+          id
+          merchantCode
+          name
+          options
+          position
+          summary
+        }
+        ... on ServerPixel {
+          id
+          status
+          webhookEndpointAddress
+        }
+        ... on Shop {
+          checkoutApiSupported
+          contactEmail
+          createdAt
+          currencyCode
+          customerAccounts
+          customerTags(first: $customerTags_first) {
+            edges {
+              node
+            }
+          }
+          description
+          draftOrderTags(first: $draftOrderTags_first) {
+            edges {
+              node
+            }
+          }
+          email
+          enabledPresentmentCurrencies
+          ianaTimezone
+          id
+          marketingSmsConsentEnabledAtCheckout
+          myshopifyDomain
+          name
+          orderNumberFormatPrefix
+          orderNumberFormatSuffix
+          orderTags(first: $orderTags_first, sort: $orderTags_sort) {
+            edges {
+              node
+            }
+          }
+          productTags(first: $productTags_first) {
+            edges {
+              node
+            }
+          }
+          productTypes(first: $productTypes_first) {
+            edges {
+              node
+            }
+          }
+          productVendors(first: $productVendors_first) {
+            edges {
+              node
+            }
+          }
+          richTextEditorUrl
+          setupRequired
+          shipsToCountries
+          taxShipping
+          taxesIncluded
+          timezoneAbbreviation
+          timezoneOffset
+          timezoneOffsetMinutes
+          transactionalSmsDisabled
+          unitSystem
+          updatedAt
+          url
+          weightUnit
+        }
+        ... on ShopAddress {
+          address1
+          address2
+          city
+          company
+          coordinatesValidated
+          country
+          countryCodeV2
+          formatted(withCompany: $formatted_withCompany)
+          formattedArea
+          id
+          latitude
+          longitude
+          phone
+          province
+          provinceCode
+          zip
+        }
+        ... on ShopPolicy {
+          body
+          createdAt
+          id
+          title
+          type
+          updatedAt
+          url
+        }
+        ... on ShopifyPaymentsAccount {
+          activated
+          country
+          defaultCurrency
+          id
+          onboardable
+          payoutStatementDescriptor
+        }
+        ... on ShopifyPaymentsBalanceTransaction {
+          id
+          sourceType
+          test
+          transactionDate
+          type
+        }
+        ... on ShopifyPaymentsBankAccount {
+          accountNumber
+          accountNumberLastDigits
+          bankName
+          country
+          createdAt
+          currency
+          id
+          routingNumber
+          status
+        }
+        ... on ShopifyPaymentsDispute {
+          evidenceDueBy
+          evidenceSentOn
+          finalizedOn
+          id
+          initiatedAt
+          legacyResourceId
+          status
+          type
+        }
+        ... on ShopifyPaymentsDisputeEvidence {
+          accessActivityLog
+          cancellationPolicyDisclosure
+          cancellationRebuttal
+          customerEmailAddress
+          customerFirstName
+          customerLastName
+          customerPurchaseIp
+          id
+          productDescription
+          refundPolicyDisclosure
+          refundRefusalExplanation
+          submitted
+          uncategorizedText
+        }
+        ... on ShopifyPaymentsDisputeFileUpload {
+          disputeEvidenceType
+          fileSize
+          fileType
+          id
+          originalFileName
+          url
+        }
+        ... on ShopifyPaymentsDisputeFulfillment {
+          id
+          shippingCarrier
+          shippingDate
+          shippingTrackingNumber
+        }
+        ... on ShopifyPaymentsPayout {
+          id
+          issuedAt
+          legacyResourceId
+          status
+          transactionType
+        }
+        ... on ShopifyPaymentsVerification {
+          id
+          status
+        }
+        ... on SmartGridLayout {
+          enabled
+          id
+          name
+          tiles
+        }
+        ... on StaffMember {
+          active
+          email
+          exists
+          firstName
+          id
+          initials
+          isShopOwner
+          lastName
+          locale
+          name
+          phone
+        }
+        ... on StandardMetafieldDefinitionTemplate {
+          description
+          id
+          key
+          name
+          namespace
+          ownerTypes
+          visibleToStorefrontApi
+        }
+        ... on StoreCreditAccount {
+          id
+        }
+        ... on StoreCreditAccountCreditTransaction {
+          expiresAt
+          id
+        }
+        ... on StoreCreditAccountDebitTransaction {
+          id
+        }
+        ... on StorefrontAccessToken {
+          accessToken
+          createdAt
+          id
+          title
+          updatedAt
+        }
+        ... on SubscriptionBillingAttempt {
+          completedAt
+          createdAt
+          errorCode
+          errorMessage
+          id
+          idempotencyKey
+          nextActionUrl
+          originTime
+          ready
+        }
+        ... on SubscriptionContract {
+          appAdminUrl
+          createdAt
+          currencyCode
+          id
+          lastPaymentStatus
+          nextBillingDate
+          note
+          revisionId
+          status
+          updatedAt
+        }
+        ... on SubscriptionDraft {
+          currencyCode
+          id
+          nextBillingDate
+          note
+          status
+        }
+        ... on SubscriptionGateway {
+          enabled
+          id
+          label
+          testModeEnabled
+        }
+        ... on TaxonomyAttribute {
+          id
+        }
+        ... on TaxonomyCategory {
+          ancestorIds
+          childrenIds
+          fullName
+          id
+          isArchived
+          isLeaf
+          isRoot
+          level
+          name
+          parentId
+        }
+        ... on TaxonomyChoiceListAttribute {
+          id
+          name
+        }
+        ... on TaxonomyMeasurementAttribute {
+          id
+          name
+        }
+        ... on TaxonomyValue {
+          id
+          name
+        }
+        ... on TenderTransaction {
+          id
+          paymentMethod
+          processedAt
+          remoteReference
+          test
+        }
+        ... on TransactionFee {
+          flatFeeName
+          id
+          rate
+          rateName
+          type
+        }
+        ... on UrlRedirect {
+          id
+          path
+          target
+        }
+        ... on UrlRedirectImport {
+          count
+          createdCount
+          failedCount
+          finished
+          finishedAt
+          id
+          updatedCount
+        }
+        ... on Validation {
+          blockOnFailure
+          enabled
+          id
+          title
+        }
+        ... on Video {
+          alt
+          createdAt
+          duration
+          fileStatus
+          filename
+          id
+          mediaContentType
+          status
+          updateStatus
+          updatedAt
+        }
+        ... on WebPixel {
+          id
+          settings
+        }
+        ... on WebhookSubscription {
+          createdAt
+          format
+          id
+          includeFields
+          legacyResourceId
+          metafieldNamespaces
+          subTopic
+          topic
+          updatedAt
+        }
+      }
+      smartGridLayoutTilesSchema
+    }
+  }
+}

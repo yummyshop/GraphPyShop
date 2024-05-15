@@ -1,32 +1,40 @@
-query webhookSubscriptions(
-  $first: Int!
-  $topics: [WebhookSubscriptionTopic!]
-  $callbackUrl: URL!
-) {
+query webhookSubscriptions($webhookSubscriptions_first: Int = 250, $webhookSubscriptions_after: String, $webhookSubscriptions_last: Int, $webhookSubscriptions_before: String, $webhookSubscriptions_reverse: Boolean = false, $webhookSubscriptions_sortKey: WebhookSubscriptionSortKeys = CREATED_AT, $webhookSubscriptions_query: String, $webhookSubscriptions_callbackUrl: URL, $webhookSubscriptions_format: WebhookSubscriptionFormat, $webhookSubscriptions_topics: [WebhookSubscriptionTopic!]) {
   webhookSubscriptions(
-    first: $first
-    topics: $topics
-    callbackUrl: $callbackUrl
+    first: $webhookSubscriptions_first
+    after: $webhookSubscriptions_after
+    last: $webhookSubscriptions_last
+    before: $webhookSubscriptions_before
+    reverse: $webhookSubscriptions_reverse
+    sortKey: $webhookSubscriptions_sortKey
+    query: $webhookSubscriptions_query
+    callbackUrl: $webhookSubscriptions_callbackUrl
+    format: $webhookSubscriptions_format
+    topics: $webhookSubscriptions_topics
   ) {
     edges {
+      cursor
       node {
-        __typename
-        id
-        topic
-        endpoint {
-          __typename
-          ... on WebhookHttpEndpoint {
-            callbackUrl
-          }
-          ... on WebhookEventBridgeEndpoint {
-            arn
-          }
-          ... on WebhookPubSubEndpoint {
-            pubSubProject
-            pubSubTopic
-          }
+        apiVersion {
+          displayName
+          handle
+          supported
         }
+        createdAt
+        format
+        id
+        includeFields
+        legacyResourceId
+        metafieldNamespaces
+        subTopic
+        topic
+        updatedAt
       }
+    }
+    pageInfo {
+      endCursor
+      hasNextPage
+      hasPreviousPage
+      startCursor
     }
   }
 }

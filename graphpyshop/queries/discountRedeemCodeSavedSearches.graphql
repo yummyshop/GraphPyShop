@@ -1,0 +1,33 @@
+query discountRedeemCodeSavedSearches($discountRedeemCodeSavedSearches_first: Int = 250, $discountRedeemCodeSavedSearches_after: String, $discountRedeemCodeSavedSearches_last: Int, $discountRedeemCodeSavedSearches_before: String, $discountRedeemCodeSavedSearches_reverse: Boolean = false, $discountRedeemCodeSavedSearches_sortKey: DiscountCodeSortKeys = ID, $discountRedeemCodeSavedSearches_query: String) {
+  discountRedeemCodeSavedSearches(
+    first: $discountRedeemCodeSavedSearches_first
+    after: $discountRedeemCodeSavedSearches_after
+    last: $discountRedeemCodeSavedSearches_last
+    before: $discountRedeemCodeSavedSearches_before
+    reverse: $discountRedeemCodeSavedSearches_reverse
+    sortKey: $discountRedeemCodeSavedSearches_sortKey
+    query: $discountRedeemCodeSavedSearches_query
+  ) {
+    edges {
+      cursor
+      node {
+        filters {
+          key
+          value
+        }
+        id
+        legacyResourceId
+        name
+        query
+        resourceType
+        searchTerms
+      }
+    }
+    pageInfo {
+      endCursor
+      hasNextPage
+      hasPreviousPage
+      startCursor
+    }
+  }
+}
