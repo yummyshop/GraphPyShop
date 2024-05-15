@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Any, Dict, Optional, List
 import orjson
 from graphql import build_client_schema, print_schema, parse, print_ast
 from graphql.language import ast as graphql_ast
@@ -121,7 +121,10 @@ import json
 def print_indented_json(data, indent=4):
     print(json.dumps(data, indent=indent))
 
-
+# List of arguments with hardcoded defaults
+hardcoded_defaults: Dict[str, Any] = {
+    "first": graphql_ast.IntValueNode(value="250")
+}
 
 scalar_types = {definition.name.value for definition in ast.definitions if isinstance(definition, graphql_ast.ScalarTypeDefinitionNode)}
 enum_types = {definition.name.value for definition in ast.definitions if isinstance(definition, graphql_ast.EnumTypeDefinitionNode)}
@@ -130,9 +133,10 @@ def is_core_type(type_name: str) -> bool:
     core_types = {"String", "Int", "Float", "Boolean", "ID", "DateTime", "UnsignedInt64"}
     return type_name in core_types or type_name in scalar_types or type_name in enum_types
 
-# TODO: Avoid putting an array of order id's to customer if it an order has one to many to customer
+excluded_type_names = ["StoreCreditAccount","Market"]
 
-def generate_query_ast(query_name: str, field: graphql_ast.FieldDefinitionNode, visited_types: dict[str, int], depth: int = 0, max_depth: int = max_depth, parent: Optional[graphql_ast.FieldDefinitionNode] = None, path: str = "") -> graphql_ast.SelectionSetNode:
+
+def generate_query_ast(query_name: str, field: graphql_ast.FieldDefinitionNode, visited_types: dict[str, int], depth: int = 0, max_depth: int = max_depth, parent: Optional[graphql_ast.FieldDefinitionNode] = None, path: str = "", variables: dict[str, graphql_ast.VariableDefinitionNode] = {}) -> graphql_ast.SelectionSetNode:
     current_path = f"{path} > {field.name.value}" if path else field.name.value
     field_type_name = get_field_type_name(field.type)
     ultimate_field_type_name = find_ultimate_object(field_type_name)
@@ -141,10 +145,14 @@ def generate_query_ast(query_name: str, field: graphql_ast.FieldDefinitionNode, 
     logging.info(f"[{query_name}][{current_path}][depth: {depth}] Generating query AST for field: {current_path}, depth: {depth}")
     
     # Are there any fields with only nodes without edges?
-    if field.name.value == 'nodes':
+    if field.name.value in {'nodes', 'metafield', 'metafieldsByIdentifiers'}:
         logging.info(f"[{query_name}][{current_path}][depth: {depth}] Skipping all nodes fields as we traverse only edges > node")
         return graphql_ast.SelectionSetNode(selections=[])
     
+    if ultimate_field_type_name in excluded_type_names:
+        logging.info(f"[{query_name}][{current_path}][depth: {depth}] Skipping as it's an excluded field")
+        return graphql_ast.SelectionSetNode(selections=[])
+
     if depth > max_depth:
         logging.info(f"[{query_name}][{current_path}][depth: {depth}] Max depth reached. Returning empty selection set.")
         return graphql_ast.SelectionSetNode(selections=[])
@@ -172,7 +180,7 @@ def generate_query_ast(query_name: str, field: graphql_ast.FieldDefinitionNode, 
                     # Do not count depth if the field is named 'edges' or 'node'
                     new_depth = depth if sub_field.name.value in {"edges", "node", "pageInfo"} else depth + 1
 
-                    sub_query = generate_query_ast(query_name, sub_field, visited_types, new_depth, max_depth, field, current_path)
+                    sub_query = generate_query_ast(query_name, sub_field, visited_types, new_depth, max_depth, field, current_path, variables)
 
                     # Check if the sub_query has any selections and would exceed max depth
                     if len(sub_query.selections) == 0 and not is_core_type(get_field_type_name(sub_field.type)):
@@ -185,12 +193,29 @@ def generate_query_ast(query_name: str, field: graphql_ast.FieldDefinitionNode, 
                     
 
                     subfield_type_name = get_field_type_name(sub_field.type)
-                    if field_type_name in list_returning_queries_by_type and depth != 0 and subfield_type_name != "ID":
+                    if field_type_name != "Metafield" and field_type_name in list_returning_queries_by_type and depth != 0 and subfield_type_name != "ID":
                         logging.info(f"[{query_name}][{current_path}][depth: {depth}] It's a list returning field and type is not id, returning empty set")
                         continue
                     
+                    sub_arguments = []
+                    for arg in sub_field.arguments:
+                        arg_type_name = get_field_type_name(arg.type)
+                        variable_name = f"{sub_field.name.value}_{arg.name.value}"
+                        if variable_name not in variables:
+                            default_value = hardcoded_defaults.get(arg.name.value, arg.default_value)
+                            variables[variable_name] = graphql_ast.VariableDefinitionNode(
+                                variable=graphql_ast.VariableNode(name=graphql_ast.NameNode(value=variable_name)),
+                                type=arg.type,
+                                default_value=default_value
+                            )
+                        sub_arguments.append(graphql_ast.ArgumentNode(
+                            name=graphql_ast.NameNode(value=arg.name.value),
+                            value=graphql_ast.VariableNode(name=graphql_ast.NameNode(value=variable_name))
+                        ))
+
                     selections.append(graphql_ast.FieldNode(
                         name=graphql_ast.NameNode(value=sub_field.name.value),
+                        arguments=sub_arguments,
                         selection_set=sub_query
                     ))
             break
@@ -211,7 +236,7 @@ def generate_query_ast(query_name: str, field: graphql_ast.FieldDefinitionNode, 
                             if not is_deprecated(sub_field):
                                 new_depth = depth if sub_field.name.value in {"edges", "node", "pageInfo"} else depth + 1
 
-                                sub_query = generate_query_ast(query_name, sub_field, visited_types, new_depth, max_depth, field, current_path)
+                                sub_query = generate_query_ast(query_name, sub_field, visited_types, new_depth, max_depth, field, current_path, variables)
 
                                 if len(sub_query.selections) == 0 and not is_core_type(get_field_type_name(sub_field.type)):
                                     logging.warning(f"[{query_name}][{current_path}][depth: {depth}] Field {sub_field.name.value} should have children but doesn't. Returning empty selection set.")
@@ -222,12 +247,29 @@ def generate_query_ast(query_name: str, field: graphql_ast.FieldDefinitionNode, 
                                     continue
 
                                 subfield_type_name = get_field_type_name(sub_field.type)
-                                if field_type_name in list_returning_queries_by_type and depth != 0 and subfield_type_name != "ID":
+                                if field_type_name != "Metafield" and field_type_name in list_returning_queries_by_type and depth != 0 and subfield_type_name != "ID":
                                     logging.info(f"[{query_name}][{current_path}][depth: {depth}] It's a list returning field and type is not id, returning empty set")
                                     continue
 
+                                sub_arguments = []
+                                for arg in sub_field.arguments:
+                                    arg_type_name = get_field_type_name(arg.type)
+                                    variable_name = f"{sub_field.name.value}_{arg.name.value}"
+                                    if variable_name not in variables:
+                                        default_value = hardcoded_defaults.get(arg.name.value, arg.default_value)
+                                        variables[variable_name] = graphql_ast.VariableDefinitionNode(
+                                            variable=graphql_ast.VariableNode(name=graphql_ast.NameNode(value=variable_name)),
+                                            type=arg.type,
+                                            default_value=default_value
+                                        )
+                                    sub_arguments.append(graphql_ast.ArgumentNode(
+                                        name=graphql_ast.NameNode(value=arg.name.value),
+                                        value=graphql_ast.VariableNode(name=graphql_ast.NameNode(value=variable_name))
+                                    ))
+
                                 fragment_selections.append(graphql_ast.FieldNode(
                                     name=graphql_ast.NameNode(value=sub_field.name.value),
+                                    arguments=sub_arguments,
                                     selection_set=sub_query
                                 ))
 
@@ -249,19 +291,26 @@ def generate_query_ast(query_name: str, field: graphql_ast.FieldDefinitionNode, 
     return graphql_ast.SelectionSetNode(selections=selections)
 
 def generate_query_with_variables_ast(query_name: str, field: graphql_ast.FieldDefinitionNode, visited_types: dict[str, int], depth: int = 0, max_depth: int = max_depth) -> graphql_ast.OperationDefinitionNode:
-    query_fields = generate_query_ast(query_name, field, visited_types, depth, max_depth)
-    variable_definitions = []
-    arguments = []
+    variables: Dict[str, graphql_ast.VariableDefinitionNode] = {}
+    query_fields = generate_query_ast(query_name, field, visited_types, depth, max_depth, variables=variables)
+    variable_definitions: List[graphql_ast.VariableDefinitionNode] = list(variables.values())
+    arguments: List[graphql_ast.ArgumentNode] = []
+
+
 
     for arg in field.arguments:
         arg_type_name = get_field_type_name(arg.type)
-        variable_definitions.append(graphql_ast.VariableDefinitionNode(
-            variable=graphql_ast.VariableNode(name=graphql_ast.NameNode(value=arg.name.value)),
-            type=arg.type
-        ))
+        variable_name = f"{field.name.value}_{arg.name.value}"
+        if variable_name not in variables:
+            default_value = hardcoded_defaults.get(arg.name.value, arg.default_value)
+            variables[variable_name] = graphql_ast.VariableDefinitionNode(
+                variable=graphql_ast.VariableNode(name=graphql_ast.NameNode(value=variable_name)),
+                type=arg.type,
+                default_value=default_value
+            )
         arguments.append(graphql_ast.ArgumentNode(
             name=graphql_ast.NameNode(value=arg.name.value),
-            value=graphql_ast.VariableNode(name=graphql_ast.NameNode(value=arg.name.value))
+            value=graphql_ast.VariableNode(name=graphql_ast.NameNode(value=variable_name))
         ))
 
     # Include the root field in the selection set with arguments
@@ -271,13 +320,22 @@ def generate_query_with_variables_ast(query_name: str, field: graphql_ast.FieldD
         selection_set=query_fields
     )
 
+    # Create a list of variable definitions for the top-level query
+    top_level_variable_definitions: List[graphql_ast.VariableDefinitionNode] = [
+        graphql_ast.VariableDefinitionNode(
+            variable=graphql_ast.VariableNode(name=graphql_ast.NameNode(value=var_name)),
+            type=var_def.type,
+            default_value=var_def.default_value
+        )
+        for var_name, var_def in variables.items()
+    ]
+
     return graphql_ast.OperationDefinitionNode(
         operation=graphql_ast.OperationType.QUERY,
         name=graphql_ast.NameNode(value=field.name.value),
-        variable_definitions=variable_definitions,
+        variable_definitions=top_level_variable_definitions,
         selection_set=graphql_ast.SelectionSetNode(selections=[root_field])
     )
-
 
 include_definitions = ['QueryRoot']
 exclude_definitions: list[str] = []
