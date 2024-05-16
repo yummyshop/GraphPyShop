@@ -1,8 +1,0 @@
-query draftOrderTag($id: ID!) {
-  draftOrderTag(id: $id) {
-    handle
-    id
-    title
-    __typename
-  }
-}

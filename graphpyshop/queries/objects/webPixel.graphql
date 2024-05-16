@@ -1,7 +1,0 @@
-query webPixel($id: ID) {
-  webPixel(id: $id) {
-    id
-    settings
-    __typename
-  }
-}

@@ -5,6 +5,7 @@ import argparse
 import os
 import shutil
 
+
 logging.basicConfig(level=logging.INFO)
 
 
@@ -18,10 +19,27 @@ def generate_client():
 
 
 def generate_queries():
-    from .extensions.shopify_generate_queries import shopify_generate_queries
+    from graphpyshop.extensions.shopify_generate_queries import ShopifyQueryGenerator
 
     load_dotenv(find_dotenv())
-    shopify_generate_queries(get_config_dict())
+
+    
+    config_dict = get_config_dict()
+    settings = get_client_settings(config_dict)
+
+    schema_path = f"{settings.target_package_path}/schema.graphql"
+    
+    logging.info(f"Looking for schema at {schema_path}")
+    
+    if os.path.exists(schema_path):
+        logging.info(f"Schema found at {schema_path}")
+        settings.schema_path = schema_path
+    else:
+        logging.info("Schema not found, will write schema to file")
+        #settings.write_schema_to_file = True
+    
+    query_generator = ShopifyQueryGenerator(settings)
+    query_generator.shopify_generate_queries()
 
 
 def clean():

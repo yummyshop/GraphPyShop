@@ -1,7 +1,0 @@
-query ordersCount($query: String, $savedSearchId: ID, $limit: Int) {
-  ordersCount(query: $query, savedSearchId: $savedSearchId, limit: $limit) {
-    count
-    precision
-    __typename
-  }
-}

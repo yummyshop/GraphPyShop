@@ -1,7 +1,0 @@
-query companiesCount {
-  companiesCount {
-    count
-    precision
-    __typename
-  }
-}

@@ -1,9 +1,0 @@
-query productFeed($id: ID!) {
-  productFeed(id: $id) {
-    country
-    id
-    language
-    status
-    __typename
-  }
-}

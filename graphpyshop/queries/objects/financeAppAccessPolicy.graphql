@@ -1,6 +1,0 @@
-query financeAppAccessPolicy {
-  financeAppAccessPolicy {
-    access
-    __typename
-  }
-}

@@ -1,8 +1,0 @@
-query collectionRulesConditions {
-  collectionRulesConditions {
-    allowedRelations
-    defaultRelation
-    ruleType
-    __typename
-  }
-}

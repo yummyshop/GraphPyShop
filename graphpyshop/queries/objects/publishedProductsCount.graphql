@@ -1,7 +1,0 @@
-query publishedProductsCount($publicationId: ID!) {
-  publishedProductsCount(publicationId: $publicationId) {
-    count
-    precision
-    __typename
-  }
-}

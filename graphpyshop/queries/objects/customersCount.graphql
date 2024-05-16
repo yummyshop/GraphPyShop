@@ -1,7 +1,0 @@
-query customersCount($query: String) {
-  customersCount(query: $query) {
-    count
-    precision
-    __typename
-  }
-}

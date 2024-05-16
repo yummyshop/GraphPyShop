@@ -1,8 +1,0 @@
-query customerSegmentMembersQuery($id: ID!) {
-  customerSegmentMembersQuery(id: $id) {
-    currentCount
-    done
-    id
-    __typename
-  }
-}

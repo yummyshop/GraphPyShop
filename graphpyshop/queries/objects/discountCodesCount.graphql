@@ -1,7 +1,0 @@
-query discountCodesCount($query: String) {
-  discountCodesCount(query: $query) {
-    count
-    precision
-    __typename
-  }
-}
