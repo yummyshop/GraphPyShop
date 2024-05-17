@@ -112,176 +112,6 @@ class ShopifyQueryGenerator:
         field_type_name = self.get_field_type_name(field.type)
         return field_type_name.endswith("Connection") or isinstance(field.type, ListTypeNode)
 
-    def handle_arguments(self, field: FieldDefinitionNode, variables: Dict[str, VariableDefinitionNode], field_type_name: str, query_name: str) -> List[ArgumentNode]:
-        arguments: List[ArgumentNode] = []
-        for arg in field.arguments:
-            type_name = self.get_field_type_name(arg.type)
-            variable_name = f"{field.name.value}_{arg.name.value}"
-            if type_name not in self.core_types:
-                variable_name += f"_{type_name}"
-            if variable_name not in variables:
-                default_value = self.hardcoded_defaults.get(arg.name.value, arg.default_value)
-                variables[variable_name] = VariableDefinitionNode(
-                    variable=VariableNode(name=NameNode(value=variable_name)),
-                    type=arg.type,
-                    default_value=default_value
-                )
-            arguments.append(ArgumentNode(
-                name=NameNode(value=arg.name.value),
-                value=VariableNode(name=NameNode(value=variable_name))
-            ))
-            self.used_variables[query_name][variable_name] = variables[variable_name]
-        return arguments
-
-    def create_type_definition_map(self) -> Dict[str, TypeDefinitionNode]:
-        type_definition_map: Dict[str, TypeDefinitionNode] = {}
-        for definition in self.ast.definitions:
-            if isinstance(definition, (ObjectTypeDefinitionNode, InterfaceTypeDefinitionNode, UnionTypeDefinitionNode)):
-                type_definition_map[definition.name.value] = definition
-        return type_definition_map
-
-    def generate_subfield_selections(self, field_type_name: str, query_return_type: str | None, query_name: str, definition: ObjectTypeDefinitionNode | InterfaceTypeDefinitionNode | UnionTypeDefinitionNode, depth: int, max_depth: int, field: FieldDefinitionNode, current_path: str, variables: Dict[str, VariableDefinitionNode]) -> List[FieldNode]:
-        selections: List[FieldNode] = []
-        
-        if isinstance(definition, (ObjectTypeDefinitionNode, InterfaceTypeDefinitionNode)):
-            sub_fields: List[FieldDefinitionNode] = list(definition.fields)
-        else:
-            sub_fields: List[FieldDefinitionNode] = []
-            for type_ in definition.types:
-                type_name = type_.name.value
-                if type_name in self.type_definition_map:
-                    sub_definition = self.type_definition_map[type_name]
-                    if isinstance(sub_definition, (ObjectTypeDefinitionNode, InterfaceTypeDefinitionNode)):
-                        sub_fields.extend(sub_definition.fields)
-        
-        for sub_field in sub_fields:
-            new_depth = depth if sub_field.name.value in {"edges", "node", "pageInfo"} else depth + 1
-            sub_query = self.generate_query_ast(query_name, sub_field, new_depth, max_depth, field, current_path, variables)
-            if isinstance(sub_query, FieldNode) or (isinstance(sub_query, SelectionSetNode) and sub_query.selections):
-                sub_arguments = self.handle_arguments(sub_field, variables, field_type_name, query_name)
-                if isinstance(sub_query, SelectionSetNode):
-                    sub_query = FieldNode(
-                        name=NameNode(value=sub_field.name.value),
-                        selection_set=sub_query,
-                        arguments=sub_arguments
-                    )
-                selections.append(sub_query)
-        return selections
-
-    def generate_query_ast(self, query_name: str, field: FieldDefinitionNode, depth: int, max_depth: int, parent: Optional[FieldDefinitionNode] = None, path: str = "", variables: Dict[str, VariableDefinitionNode] = {}) -> SelectionSetNode | FieldNode:
-        current_path = f"{path} > {field.name.value}" if path else field.name.value
-        parent_type_name = self.get_field_type_name(parent.type) if parent else None
-        field_type_name = self.get_field_type_name(field.type)
-        ultimate_field_type_name = self.find_ultimate_object(field_type_name)
-        query_return_type = self.list_returning_queries.get(query_name, None)
-
-        if field.name.value in self.field_name_rules["exclude"]:
-            logging.debug(f"[{query_name}][{current_path}][depth: {depth}] Skipping field {field.name.value} as it is in the exclude list")
-            return SelectionSetNode(selections=[])
-        
-        if ultimate_field_type_name in self.field_type_rules["exclude"].keys():
-            logging.debug(f"[{query_name}][{current_path}][depth: {depth}] Skipping as it's an excluded field")
-            return SelectionSetNode(selections=[])
-        
-        if depth > max_depth:
-            logging.debug(f"[{query_name}][{current_path}][depth: {depth}] Max depth reached. Returning empty selection set.")
-            return SelectionSetNode(selections=[])
-        
-        if self.is_deprecated(field):
-            logging.debug(f"[{query_name}][{current_path}][depth: {depth}] Field {field.name.value} is deprecated. Skipping.")
-            return SelectionSetNode(selections=[])
-        
-        if depth != 0 and any(isinstance(arg.type, NonNullTypeNode) for arg in field.arguments):
-            logging.debug(f"[{query_name}][{current_path}][depth: {depth}] Skipping field {field.name.value} as it has required non-null arguments")
-            return SelectionSetNode(selections=[])
-        
-        if ultimate_field_type_name in self.list_returning_queries_by_type:
-            if ultimate_field_type_name in self.direct_object_references and query_return_type in self.direct_object_references[ultimate_field_type_name]:
-                logging.debug(f"[{query_name}][{current_path}][depth: {depth}] Skipping field as it matches direct object reference.")
-        
-        if parent_type_name and parent_type_name != query_return_type and parent_type_name in self.field_type_rules["include"].keys() and field_type_name not in self.field_type_rules["include"][parent_type_name]:
-            logging.debug(f"[{query_name}][{current_path}][depth: {depth}] Field type {parent_type_name} includes subfield type {field_type_name}, returning empty set")
-            return SelectionSetNode(selections=[])
-        
-        if parent_type_name != "Metafield" and parent_type_name in self.list_returning_queries_by_type and query_return_type!=parent_type_name and field_type_name != "ID":
-            logging.debug(f"[{query_name}][{current_path}][depth: {depth}] It's a list returning field and type is not id, returning empty set")
-            return SelectionSetNode(selections=[])
-
-        selections: List[Union[FieldNode, InlineFragmentNode]] = []
-        if self.is_core_type(field_type_name):
-            logging.debug(f"[{query_name}][{current_path}][depth: {depth}] Adding core type field {field.name.value}")
-            sub_arguments = self.handle_arguments(field, variables, field_type_name, query_name)
-            selections.append(FieldNode(
-                name=NameNode(value=field.name.value),
-                arguments=sub_arguments,
-            ))
-        else:
-            if field_type_name in self.type_definition_map:
-                definition = self.type_definition_map[field_type_name]
-                if isinstance(definition, ObjectTypeDefinitionNode):
-                    logging.debug(f"[{query_name}][{current_path}][depth: {depth}] Processing ObjectTypeDefinitionNode: {definition.name.value}")
-                    subfield_selections = self.generate_subfield_selections(field_type_name, query_return_type, query_name, definition, depth, max_depth, field, current_path, variables)
-                    if subfield_selections:
-                        sub_arguments = self.handle_arguments(field, variables, field_type_name, query_name)
-                        selections.append(FieldNode(
-                            name=NameNode(value=field.name.value),
-                            selection_set=SelectionSetNode(selections=subfield_selections),
-                            arguments=sub_arguments
-                        ))
-                        subfield_selections.append(FieldNode(
-                            name=NameNode(value="__typename")
-                        ))
-                if isinstance(definition, (InterfaceTypeDefinitionNode, UnionTypeDefinitionNode)) and definition.name.value == field_type_name:
-                    logging.debug(f"[{query_name}][{current_path}][depth: {depth}] Processing {type(definition).__name__}: {definition.name.value}")
-                    interface_fields = self.generate_subfield_selections(field_type_name, query_return_type, query_name, definition, depth, max_depth, field, current_path, variables)
-                    selections.extend(interface_fields)
-                    for object_definition in self.ast.definitions:
-                        if isinstance(object_definition, ObjectTypeDefinitionNode) and (
-                            definition.name.value in [interface.name.value for interface in object_definition.interfaces] or
-                            definition.name.value in [union_type.name.value for union_type in getattr(object_definition, 'types', [])]
-                        ):
-                            logging.debug(f"[{query_name}][{current_path}][depth: {depth}] Found implementing type: {object_definition.name.value}")
-                            fragment_selections = self.generate_subfield_selections(field_type_name, query_return_type, query_name, object_definition, depth, max_depth, field, current_path, variables)
-                            if fragment_selections:
-                                fragment_selections.append(FieldNode(
-                                    name=NameNode(value="__typename")
-                                ))
-                                selections.append(InlineFragmentNode(
-                                    type_condition=NamedTypeNode(name=NameNode(value=object_definition.name.value)),
-                                    selection_set=SelectionSetNode(selections=fragment_selections)
-                                ))
-        
-        if len(selections) == 0:
-            logging.debug(f"[{query_name}][{current_path}][depth: {depth}] Field {field.name.value} has no children. Skipping nested selection.")
-            return SelectionSetNode(selections=[])
-        
-        if any(isinstance(selection, FieldNode) and selection.name.value == "edges" for selection in selections):
-            selections = [selection for selection in selections if not (isinstance(selection, FieldNode) and selection.name.value in {"nodes"})]
-            
-        logging.debug(f"[{query_name}][{current_path}][depth: {depth}] Returning selection set with {len(selections)} selections.")
-
-        if len(selections) == 1 and isinstance(selections[0], FieldNode):
-            return selections[0]
-        
-        return SelectionSetNode(selections=selections)
-    
-    def generate_query_with_variables_ast(self, query_name: str, field: FieldDefinitionNode, depth: int, max_depth: int) -> DocumentNode:
-        self.used_variables[query_name] = {}
-
-        variables: Dict[str, VariableDefinitionNode] = {}
-        query_fields = self.generate_query_ast(query_name, field, depth, max_depth, variables=variables)
-
-        return DocumentNode(
-            definitions=[   
-                OperationDefinitionNode(
-                    operation=OperationType.QUERY,
-                    name=NameNode(value=field.name.value),
-                    variable_definitions=list(self.used_variables[query_name].values()),
-                    selection_set=SelectionSetNode(selections=[query_fields] if isinstance(query_fields, FieldNode) else query_fields.selections)
-                )
-            ]
-        )
-
     def is_core_type(self, type_name: str) -> bool:
         return type_name in self.core_types or type_name in self.scalar_types or type_name in self.enum_types
 
@@ -325,6 +155,192 @@ class ShopifyQueryGenerator:
             if direct_references:
                 direct_object_references[key] = list(direct_references)
         return direct_object_references
+
+    def handle_arguments(self, field: FieldDefinitionNode, variables: Dict[str, VariableDefinitionNode], field_type_name: str, query_name: str) -> List[ArgumentNode]:
+        arguments: List[ArgumentNode] = []
+        for arg in field.arguments:
+            type_name = self.get_field_type_name(arg.type)
+            variable_name = f"{field.name.value}_{arg.name.value}"
+            if type_name not in self.core_types:
+                variable_name += f"_{type_name}"
+            if variable_name not in variables:
+                default_value = self.hardcoded_defaults.get(arg.name.value, arg.default_value)
+                variables[variable_name] = VariableDefinitionNode(
+                    variable=VariableNode(name=NameNode(value=variable_name)),
+                    type=arg.type,
+                    default_value=default_value
+                )
+            arguments.append(ArgumentNode(
+                name=NameNode(value=arg.name.value),
+                value=VariableNode(name=NameNode(value=variable_name))
+            ))
+            self.used_variables[query_name][variable_name] = variables[variable_name]
+        return arguments
+
+    def create_type_definition_map(self) -> Dict[str, TypeDefinitionNode]:
+        type_definition_map: Dict[str, TypeDefinitionNode] = {}
+        for definition in self.ast.definitions:
+            if isinstance(definition, (ObjectTypeDefinitionNode, InterfaceTypeDefinitionNode, UnionTypeDefinitionNode)):
+                type_definition_map[definition.name.value] = definition
+        return type_definition_map
+
+    def generate_subfield_selections(self, field_type_name: str, query_return_type: str | None, query_name: str, definition: TypeDefinitionNode, depth: int, max_depth: int, field: FieldDefinitionNode, current_path: str, variables: Dict[str, VariableDefinitionNode]) -> List[FieldNode | InlineFragmentNode]:
+        selections: List[FieldNode | InlineFragmentNode] = []
+        sub_fields: List[FieldDefinitionNode] = []
+        
+        if isinstance(definition, (ObjectTypeDefinitionNode, InterfaceTypeDefinitionNode)):
+            sub_fields = list(definition.fields)
+        else:
+            for type_ in definition.types:
+                type_name = type_.name.value
+                if type_name in self.type_definition_map:
+                    sub_definition = self.type_definition_map[type_name]
+                    if isinstance(sub_definition, (ObjectTypeDefinitionNode, InterfaceTypeDefinitionNode)):
+                        sub_fields.extend(sub_definition.fields)
+        
+        for sub_field in sub_fields:
+            new_depth = depth if sub_field.name.value in {"edges", "node", "pageInfo"} else depth + 1
+            sub_query = self.generate_query_ast(query_name, sub_field, new_depth, max_depth, field, current_path, variables)
+            if isinstance(sub_query, FieldNode) or (isinstance(sub_query, SelectionSetNode) and sub_query.selections):
+                sub_arguments = self.handle_arguments(sub_field, variables, field_type_name, query_name)
+                if isinstance(sub_query, SelectionSetNode):
+                    sub_query = FieldNode(
+                        name=NameNode(value=sub_field.name.value),
+                        selection_set=sub_query,
+                        arguments=sub_arguments
+                    )
+                selections.append(sub_query)
+
+        # Always add __typename to the selections
+        selections.append(FieldNode(name=NameNode(value="__typename")))
+
+        return selections
+
+    def should_skip_field(self, field: FieldDefinitionNode, ultimate_field_type_name: str, depth: int, max_depth: int, query_name: str, current_path: str, parent_type_name: Optional[str], query_return_type: Optional[str], field_type_name: str) -> bool:
+        if field.name.value in self.field_name_rules["exclude"]:
+            logging.debug(f"[{query_name}][{current_path}][depth: {depth}] Skipping field {field.name.value} as it is in the exclude list")
+            return True
+        
+        if ultimate_field_type_name in self.field_type_rules["exclude"].keys():
+            logging.debug(f"[{query_name}][{current_path}][depth: {depth}] Skipping as it's an excluded field")
+            return True
+        
+        if depth > max_depth:
+            logging.debug(f"[{query_name}][{current_path}][depth: {depth}] Max depth reached. Returning empty selection set.")
+            return True
+        
+        if self.is_deprecated(field):
+            logging.debug(f"[{query_name}][{current_path}][depth: {depth}] Field {field.name.value} is deprecated. Skipping.")
+            return True
+        
+        if depth != 0 and any(isinstance(arg.type, NonNullTypeNode) for arg in field.arguments):
+            logging.debug(f"[{query_name}][{current_path}][depth: {depth}] Skipping field {field.name.value} as it has required non-null arguments")
+            return True
+        
+        if ultimate_field_type_name in self.list_returning_queries_by_type:
+            if ultimate_field_type_name in self.direct_object_references and query_return_type in self.direct_object_references[ultimate_field_type_name]:
+                logging.debug(f"[{query_name}][{current_path}][depth: {depth}] Skipping field as it matches direct object reference.")
+                #return True
+        
+        if parent_type_name and parent_type_name != query_return_type and parent_type_name in self.field_type_rules["include"].keys() and field_type_name not in self.field_type_rules["include"][parent_type_name]:
+            logging.debug(f"[{query_name}][{current_path}][depth: {depth}] Field type {parent_type_name} includes subfield type {field_type_name}, returning empty set")
+            return True
+        
+        if parent_type_name != "Metafield" and parent_type_name in self.list_returning_queries_by_type and query_return_type != parent_type_name and field_type_name != "ID":
+            logging.debug(f"[{query_name}][{current_path}][depth: {depth}] It's a list returning field and type is not id, returning empty set")
+            return True
+        
+        return False
+
+    def generate_query_ast(self, query_name: str, field: FieldDefinitionNode, depth: int, max_depth: int, parent: Optional[FieldDefinitionNode] = None, path: str = "", variables: Dict[str, VariableDefinitionNode] = {}) -> SelectionSetNode | FieldNode:
+        current_path = f"{path} > {field.name.value}" if path else field.name.value
+        parent_type_name = self.get_field_type_name(parent.type) if parent else None
+        field_type_name = self.get_field_type_name(field.type)
+        ultimate_field_type_name = self.find_ultimate_object(field_type_name)
+        query_return_type = self.list_returning_queries.get(query_name, None)
+
+        if self.should_skip_field(field, ultimate_field_type_name, depth, max_depth, query_name, current_path, parent_type_name, query_return_type, field_type_name):
+            return SelectionSetNode(selections=[])
+
+        selections: List[Union[FieldNode, InlineFragmentNode]] = []
+        if self.is_core_type(field_type_name):
+            logging.debug(f"[{query_name}][{current_path}][depth: {depth}] Adding core type field {field.name.value}")
+            sub_arguments = self.handle_arguments(field, variables, field_type_name, query_name)
+            selections.append(FieldNode(
+                name=NameNode(value=field.name.value),
+                arguments=sub_arguments,
+            ))
+        else:
+            if field_type_name in self.type_definition_map:
+                definition = self.type_definition_map[field_type_name]
+                logging.debug(f"[{query_name}][{current_path}][depth: {depth}] Processing {type(definition).__name__}: {definition.name.value}")
+                subfield_selections = self.generate_subfield_selections(field_type_name, query_return_type, query_name, definition, depth, max_depth, field, current_path, variables)
+                sub_arguments = self.handle_arguments(field, variables, field_type_name, query_name)
+
+                if isinstance(definition, ObjectTypeDefinitionNode):
+                    if subfield_selections:
+                        selections.append(FieldNode(
+                            name=NameNode(value=field.name.value),
+                            selection_set=SelectionSetNode(selections=subfield_selections),
+                            arguments=sub_arguments
+                        ))
+                        #subfield_selections.append(FieldNode(
+                        #    name=NameNode(value="__typename")
+                        #))
+
+                if isinstance(definition, (InterfaceTypeDefinitionNode, UnionTypeDefinitionNode)):
+                    #selections.extend(subfield_selections)
+                    for object_definition in self.ast.definitions:
+                        if isinstance(object_definition, ObjectTypeDefinitionNode) and (
+                            field_type_name in [interface.name.value for interface in object_definition.interfaces] or
+                            field_type_name in [union_type.name.value for union_type in getattr(object_definition, 'types', [])]
+                        ):
+                            logging.debug(f"[{query_name}][{current_path}][depth: {depth}] Found implementing type: {object_definition.name.value}")
+                            fragment_selections = self.generate_subfield_selections(field_type_name, query_return_type, query_name, object_definition, depth, max_depth, field, current_path, variables)
+                            
+                            # Remove fields already included in the parent interface
+                            fragment_selections = [sel for sel in fragment_selections if sel.name.value not in [f.name.value for f in definition.fields]]
+                            if fragment_selections:
+                                subfield_selections.append(InlineFragmentNode(
+                                    type_condition=NamedTypeNode(name=NameNode(value=object_definition.name.value)),
+                                    selection_set=SelectionSetNode(selections=fragment_selections)
+                                ))
+                    selections.append(FieldNode(
+                            name=NameNode(value=field.name.value),
+                            selection_set=SelectionSetNode(selections=subfield_selections),
+                            arguments=sub_arguments
+                        ))
+        
+        if len(selections) == 0:
+            logging.debug(f"[{query_name}][{current_path}][depth: {depth}] Field {field.name.value} has no children. Skipping nested selection.")
+            return SelectionSetNode(selections=[])
+        
+        if any(isinstance(selection, FieldNode) and selection.name.value == "edges" for selection in selections):
+            selections = [selection for selection in selections if not (isinstance(selection, FieldNode) and selection.name.value in {"nodes"})]
+            
+        logging.debug(f"[{query_name}][{current_path}][depth: {depth}] Returning selection set with {len(selections)} selections.")
+
+        if len(selections) == 1 and isinstance(selections[0], FieldNode):
+            return selections[0]
+        
+        return SelectionSetNode(selections=selections)
+    
+    def generate_query_with_variables_ast(self, query_name: str, field: FieldDefinitionNode, depth: int, max_depth: int) -> DocumentNode:
+        self.used_variables[query_name] = {}
+
+        variables: Dict[str, VariableDefinitionNode] = {}
+        query_fields = self.generate_query_ast(query_name, field, depth, max_depth, variables=variables)
+
+        return DocumentNode(
+            definitions=[   
+                OperationDefinitionNode(
+                    operation=OperationType.QUERY,
+                    name=NameNode(value=field.name.value),
+                    variable_definitions=list(self.used_variables[query_name].values()),
+                    selection_set=SelectionSetNode(selections=[query_fields] if isinstance(query_fields, FieldNode) else query_fields.selections)
+                )
+            ]
+        )
 
     def process_field(self, field: FieldDefinitionNode, included_queries: List[str], excluded_queries: List[str], write_invalid: bool) -> Optional[str]:
         start_time = time.time()
@@ -448,4 +464,4 @@ if __name__ == "__main__":
         #settings.write_schema_to_file = True
     
     query_generator = ShopifyQueryGenerator(settings)
-    query_generator.generate_queries(included_queries=["catalog","catalogs"],write_invalid=True)
+    query_generator.generate_queries(included_queries=["searchResult"],write_invalid=True)
