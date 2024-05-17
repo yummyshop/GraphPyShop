@@ -3,6 +3,11 @@ __pycache__/
 *.py[cod]
 *$py.class
 
+graphpyshop/queries/objects
+graphpyshop/queries/lists
+graphpyshop/client
+graphpyshop/schema.graphql
+
 # C extensions
 *.so
 
