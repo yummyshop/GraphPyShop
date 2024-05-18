@@ -184,7 +184,7 @@ class ShopifyQueryGenerator:
                 type_definition_map[definition.name.value] = definition
         return type_definition_map
 
-    def generate_subfield_selections(self, field_type_name: str, query_return_type: str | None, query_name: str, definition: TypeDefinitionNode, depth: int, max_depth: int, field: FieldDefinitionNode, current_path: str, variables: Dict[str, VariableDefinitionNode], is_inline_fragment: bool = False) -> List[FieldNode | InlineFragmentNode]:
+    def generate_subfield_selections(self, field_type_name: str, query_return_type: str | None, query_name: str, definition: TypeDefinitionNode, depth: int, max_depth: int, field: FieldDefinitionNode, current_path: str, variables: Dict[str, VariableDefinitionNode], inline_fragment_type_name: str | None = None) -> List[FieldNode | InlineFragmentNode]:
         selections: List[FieldNode | InlineFragmentNode] = []
         sub_fields: List[FieldDefinitionNode] = []
         
@@ -200,7 +200,7 @@ class ShopifyQueryGenerator:
         
         for sub_field in sub_fields:
             new_depth = depth if sub_field.name.value in {"edges", "node", "pageInfo"} else depth + 1
-            sub_query = self.generate_query_ast(query_name, sub_field, new_depth, max_depth, field, current_path, variables, is_inline_fragment)
+            sub_query = self.generate_query_ast(query_name, sub_field, new_depth, max_depth, field, current_path, variables, inline_fragment_type_name)
             if isinstance(sub_query, FieldNode) or (isinstance(sub_query, SelectionSetNode) and sub_query.selections):
                 sub_arguments = self.handle_arguments(sub_field, variables, field_type_name, query_name)
                 if isinstance(sub_query, SelectionSetNode):
@@ -218,7 +218,7 @@ class ShopifyQueryGenerator:
 
         return selections
 
-    def should_skip_field(self, field: FieldDefinitionNode, ultimate_field_type_name: str, depth: int, max_depth: int, query_name: str, current_path: str, parent_type_name: Optional[str], query_return_type: Optional[str], field_type_name: str, parent_definition: Optional[TypeDefinitionNode] = None, is_inline_fragment: bool = False) -> bool:
+    def should_skip_field(self, field: FieldDefinitionNode, ultimate_field_type_name: str, depth: int, max_depth: int, query_name: str, current_path: str, parent_type_name: Optional[str], query_return_type: Optional[str], field_type_name: str, parent_definition: Optional[TypeDefinitionNode] = None, inline_fragment_type_name: str | None = None) -> bool:
         if field.name.value in self.field_name_rules["exclude"]:
             logging.debug(f"[{query_name}][{current_path}][depth: {depth}] Skipping field {field.name.value} as it is in the exclude list")
             return True
@@ -255,20 +255,20 @@ class ShopifyQueryGenerator:
             logging.debug(f"[{query_name}][{current_path}][depth: {depth}] Field type {parent_type_name} includes subfield type {field_type_name}, returning empty set")
             return True
         
-        if parent_type_name in self.list_returning_queries_by_type and depth>1 and field_type_name != "ID":
-            logging.debug(f"[{query_name}][{current_path}][depth: {depth}] It's a list returning field and type is not id, returning empty set")
+        # Check against the fragment type derived from an interface or union
+        if (parent_type_name in self.list_returning_queries_by_type or inline_fragment_type_name in self.list_returning_queries_by_type) and depth > 1 and field_type_name != "ID":
+            logging.debug(f"[{query_name}][{current_path}][depth: {depth}] It's a list returning field and type is not ID, returning empty set")
             return True
-        
 
         # Check if field is already included in the parent interface or union type, only if it's part of an inline fragment
-        if is_inline_fragment and parent_definition and isinstance(parent_definition, InterfaceTypeDefinitionNode) and any(field.name.value == existing_field.name.value for existing_field in parent_definition.fields):
+        if inline_fragment_type_name and parent_definition and isinstance(parent_definition, InterfaceTypeDefinitionNode) and any(field.name.value == existing_field.name.value for existing_field in parent_definition.fields):
             logging.debug(f"[{query_name}][{current_path}][depth: {depth}] Field {field.name.value} already included in parent type {parent_type_name}. Skipping.")
             return True
 
 
         return False
 
-    def generate_query_ast(self, query_name: str, field: FieldDefinitionNode, depth: int, max_depth: int, parent: Optional[FieldDefinitionNode] = None, path: str = "", variables: Dict[str, VariableDefinitionNode] = {}, is_inline_fragment: bool = False) -> SelectionSetNode | FieldNode:
+    def generate_query_ast(self, query_name: str, field: FieldDefinitionNode, depth: int, max_depth: int, parent: Optional[FieldDefinitionNode] = None, path: str = "", variables: Dict[str, VariableDefinitionNode] = {}, inline_fragment_type_name: str | None = None) -> SelectionSetNode | FieldNode:
         current_path = f"{path} > {field.name.value}" if path else field.name.value
         parent_type_name = self.get_field_type_name(parent.type) if parent else None
         field_type_name = self.get_field_type_name(field.type)
@@ -276,7 +276,7 @@ class ShopifyQueryGenerator:
         query_return_type = self.list_returning_queries.get(query_name, None)
         parent_definition = self.type_definition_map.get(parent_type_name) if parent_type_name in self.type_definition_map else None
 
-        if self.should_skip_field(field, ultimate_field_type_name, depth, max_depth, query_name, current_path, parent_type_name, query_return_type, field_type_name, parent_definition, is_inline_fragment):
+        if self.should_skip_field(field, ultimate_field_type_name, depth, max_depth, query_name, current_path, parent_type_name, query_return_type, field_type_name, parent_definition, inline_fragment_type_name):
             return SelectionSetNode(selections=[])
 
         selections: List[Union[FieldNode, InlineFragmentNode]] = []
@@ -310,7 +310,7 @@ class ShopifyQueryGenerator:
                             field_type_name in [union_type.name.value for union_type in getattr(object_definition, 'types', [])]
                         ):
                             logging.debug(f"[{query_name}][{current_path}][depth: {depth}] Found implementing type: {object_definition.name.value}")
-                            interface_selections_inside = self.generate_subfield_selections(field_type_name, query_return_type, query_name, object_definition, depth, max_depth, field, current_path, variables, True)
+                            interface_selections_inside = self.generate_subfield_selections(field_type_name, query_return_type, query_name, object_definition, depth, max_depth, field, current_path, variables, field_type_name)
                             interface_selections.append(interface_selections_inside)
                             if interface_selections_inside:
                                 subfield_selections.append(InlineFragmentNode(
@@ -327,7 +327,7 @@ class ShopifyQueryGenerator:
                         type_name = type_.name.value
                         if type_name in self.type_definition_map:
                             object_type = self.type_definition_map[type_name]
-                            union_sub_selections = self.generate_subfield_selections(type_name, query_return_type, query_name, object_type, depth, max_depth, field, current_path, variables, True)
+                            union_sub_selections = self.generate_subfield_selections(type_name, query_return_type, query_name, object_type, depth, max_depth, field, current_path, variables, type_name)
                             if len(union_sub_selections) > 0:
                                 subfield_selections.append(InlineFragmentNode(
                                     type_condition=NamedTypeNode(name=NameNode(value=type_name)),
