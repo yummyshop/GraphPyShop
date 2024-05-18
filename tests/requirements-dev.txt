@@ -9,9 +9,7 @@ ariadne-codegen==0.13.0
 autoflake==2.3.1
     # via ariadne-codegen
 black==24.4.2
-    # via
-    #   -r tests/requirements-dev.in
-    #   ariadne-codegen
+    # via ariadne-codegen
 build==1.2.1
     # via -r tests/requirements-dev.in
 certifi==2024.2.2

@@ -3,5 +3,4 @@ setuptools
 wheel
 setuptools-scm
 
-black
 ruff

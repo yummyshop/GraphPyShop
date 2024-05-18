@@ -38,6 +38,15 @@ build:  ## Build the package
 requirements:  ## Freeze the requirements.txt file
 	uv pip compile pyproject.toml tests/requirements-dev.in --output-file=tests/requirements-dev.txt --upgrade
 
+af: autoformat  ## Alias for `autoformat`
+autoformat:  ## Run the autoformatter.
+	@-ruff check --config tests/ruff.toml . --fix-only
+	@ruff format --config tests/ruff.toml .
+
+lint:  ## Run the code linter.
+	@ruff check --config tests/ruff.toml .
+	@echo -e "No linting errors - well done! ✨ 🍰 ✨"
+
 require_pyenv:
 	@if ! [ -x "$$(command -v pyenv)" ]; then\
 	  echo -e '\n\033[0;31m ❌ pyenv is not installed.  Follow instructions here: $(pyenv_instructions)\n\033[0m';\
