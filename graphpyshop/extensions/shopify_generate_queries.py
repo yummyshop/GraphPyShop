@@ -291,11 +291,18 @@ class ShopifyQueryGenerator:
             if field_type_name in self.type_definition_map:
                 definition = self.type_definition_map[field_type_name]
                 logging.debug(f"[{query_name}][{current_path}][depth: {depth}] Processing {type(definition).__name__}: {definition.name.value}")
-                subfield_selections = self.generate_subfield_selections(field_type_name, query_return_type, query_name, definition, depth, max_depth, field, current_path, variables)
-                sub_arguments = self.handle_arguments(field, variables, field_type_name, query_name)
 
-                if isinstance(definition, (InterfaceTypeDefinitionNode, UnionTypeDefinitionNode)):
-                    #selections.extend(subfield_selections)
+                subfield_selections = []
+                sub_arguments = []
+
+                if not isinstance(definition, UnionTypeDefinitionNode):
+                    subfield_selections = self.generate_subfield_selections(field_type_name, query_return_type, query_name, definition, depth, max_depth, field, current_path, variables)
+                
+                if isinstance(definition, ObjectTypeDefinitionNode):
+                    if subfield_selections:
+                        sub_arguments = self.handle_arguments(field, variables, field_type_name, query_name)
+
+                if isinstance(definition, (InterfaceTypeDefinitionNode)):
                     for object_definition in self.ast.definitions:
                         if isinstance(object_definition, ObjectTypeDefinitionNode) and (
                             field_type_name in [interface.name.value for interface in object_definition.interfaces] or
@@ -303,21 +310,39 @@ class ShopifyQueryGenerator:
                         ):
                             logging.debug(f"[{query_name}][{current_path}][depth: {depth}] Found implementing type: {object_definition.name.value}")
                             fragment_selections = self.generate_subfield_selections(field_type_name, query_return_type, query_name, object_definition, depth, max_depth, field, current_path, variables, True)
-                            
-                            # Remove fields already included in the parent interface
-                            #fragment_selections = [sel for sel in fragment_selections if sel.name.value not in [f.name.value for f in definition.fields]]
+
                             if fragment_selections:
+                                fragment_sub_arguments = self.handle_arguments(field, variables, object_definition.name.value, query_name)
+                                sub_arguments.extend(fragment_sub_arguments)
                                 subfield_selections.append(InlineFragmentNode(
                                     type_condition=NamedTypeNode(name=NameNode(value=object_definition.name.value)),
                                     selection_set=SelectionSetNode(selections=fragment_selections)
                                 ))
+
+                if isinstance(definition, UnionTypeDefinitionNode):
+                    for type_ in definition.types:
+                        type_name = type_.name.value
+                        if type_name in self.type_definition_map:
+                            object_type = self.type_definition_map[type_name]
+                            union_sub_selections = self.generate_subfield_selections(type_name, query_return_type, query_name, object_type, depth, max_depth, field, current_path, variables, True)
+                            if len(union_sub_selections) > 0:
+                                union_sub_arguments = self.handle_arguments(field, variables, type_name, query_name)
+                                sub_arguments.extend(union_sub_arguments)
+                                subfield_selections.append(InlineFragmentNode(
+                                    type_condition=NamedTypeNode(name=NameNode(value=type_name)),
+                                    selection_set=SelectionSetNode(selections=union_sub_selections)
+                                ))
+                    if len(subfield_selections) > 0:
+                        subfield_selections.append(FieldNode(name=NameNode(value="__typename")))
+
+
                 if subfield_selections:
                     selections.append(FieldNode(
                         name=NameNode(value=field.name.value),
                         selection_set=SelectionSetNode(selections=subfield_selections),
                         arguments=sub_arguments
                     ))
-                    
+
         
         if len(selections) == 0:
             logging.debug(f"[{query_name}][{current_path}][depth: {depth}] Field {field.name.value} has no children. Skipping nested selection.")

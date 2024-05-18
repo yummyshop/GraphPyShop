@@ -531,3 +531,51 @@ def test_query_with_combined_interfaces_and_unions(compare: CompareType):
             }
         """),
     )
+
+def test_query_with_arguments_in_combined_interfaces_and_unions(compare: CompareType):
+    compare(
+        gql("""
+            interface Identifiable {
+                id: ID
+            }
+
+            type Book implements Identifiable {
+                id: ID
+                title: String
+                author: String
+            }
+
+            type Movie implements Identifiable {
+                id: ID
+                title: String
+                director: String
+            }
+
+            union Media = Book | Movie
+
+            type QueryRoot {
+                media(type: String): [Media]
+            }
+        """),
+        gql("""
+            query media($media_type: String) {
+                media(type: $media_type) {
+                    ... on Book {
+                        id
+                        title
+                        author
+                        __typename
+                    }
+                    ... on Movie {
+                        id
+                        title
+                        director
+                        __typename
+                    }
+                    __typename
+                }
+            }
+        """),
+    )
+
+#TODO: Write tests that are testing of max depth limiting, both before and after hitting it across all scenarios above
