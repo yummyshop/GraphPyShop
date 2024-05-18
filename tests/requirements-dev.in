@@ -1,0 +1,8 @@
+build
+setuptools
+wheel
+setuptools-scm
+
+mypy
+pytest
+ruff

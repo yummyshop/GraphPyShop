@@ -1,19 +1,23 @@
-from typing import Callable, List, Union
-import pytest
-from graphql import parse, print_ast
-from graphpyshop.extensions.shopify_generate_queries import ShopifyQueryGenerator
 import subprocess
 import tempfile
+from typing import Callable, List, Union
+
+import pytest
+from graphql import parse, print_ast
+
+from graphpyshop.extensions.shopify_generate_queries import ShopifyQueryGenerator
+
 
 def gql(q: str) -> str:
     return q.strip()
 
-@pytest.fixture
+
+@pytest.fixture()
 def generator() -> ShopifyQueryGenerator:
     return ShopifyQueryGenerator()
 
 
-@pytest.fixture
+@pytest.fixture()
 def compare(generator: ShopifyQueryGenerator):
     def _compare(schema: str, expected_queries: Union[str, List[str]]):
         generator.set_schema(schema_override=schema)
@@ -26,19 +30,34 @@ def compare(generator: ShopifyQueryGenerator):
             actual_query = print_ast(parse(query))
             expected_query = print_ast(parse(expected))
             if actual_query != expected_query:
-                with tempfile.NamedTemporaryFile(delete=False, suffix=".graphql") as actual_file:
+                with tempfile.NamedTemporaryFile(
+                    delete=False, suffix=".graphql"
+                ) as actual_file:
                     actual_file.write(actual_query.encode())
                     actual_file_path = actual_file.name
 
-                with tempfile.NamedTemporaryFile(delete=False, suffix=".graphql") as expected_file:
+                with tempfile.NamedTemporaryFile(
+                    delete=False, suffix=".graphql"
+                ) as expected_file:
                     expected_file.write(expected_query.encode())
                     expected_file_path = expected_file.name
 
-                subprocess.run(["cursor", "--diff", actual_file_path, expected_file_path, "--reuse-window"])
+                subprocess.run(
+                    [
+                        "cursor",
+                        "--diff",
+                        actual_file_path,
+                        expected_file_path,
+                        "--reuse-window",
+                    ]
+                )
                 assert actual_query == expected_query
+
     return _compare
 
+
 CompareType = Callable[[str, Union[str, List[str]]], None]
+
 
 def test_basic_query_generation(compare: CompareType):
     compare(
@@ -59,6 +78,7 @@ def test_basic_query_generation(compare: CompareType):
             }
         """),
     )
+
 
 def test_query_with_optional_arguments(compare: CompareType):
     compare(
@@ -83,6 +103,7 @@ def test_query_with_optional_arguments(compare: CompareType):
             }
         """),
     )
+
 
 def test_query_with_nested_fields(compare: CompareType):
     compare(
@@ -122,6 +143,7 @@ def test_query_with_nested_fields(compare: CompareType):
         """),
     )
 
+
 def test_query_with_list_field(compare: CompareType):
     compare(
         gql("""
@@ -145,6 +167,7 @@ def test_query_with_list_field(compare: CompareType):
             }
         """),
     )
+
 
 def test_query_with_interface_field(compare: CompareType):
     compare(
@@ -186,6 +209,7 @@ def test_query_with_interface_field(compare: CompareType):
         """),
     )
 
+
 def test_query_with_enum_field(compare: CompareType):
     compare(
         gql("""
@@ -204,6 +228,7 @@ def test_query_with_enum_field(compare: CompareType):
             }
         """),
     )
+
 
 def test_query_excludes_deprecated_fields(compare: CompareType):
     compare(
@@ -228,6 +253,7 @@ def test_query_excludes_deprecated_fields(compare: CompareType):
             }
         """),
     )
+
 
 def test_skip_fields_with_required_non_null_args(compare: CompareType):
     compare(
@@ -254,6 +280,7 @@ def test_skip_fields_with_required_non_null_args(compare: CompareType):
         """),
     )
 
+
 def test_query_with_custom_scalar(compare: CompareType):
     compare(
         gql("""
@@ -276,6 +303,7 @@ def test_query_with_custom_scalar(compare: CompareType):
             }
         """),
     )
+
 
 def test_query_with_complex_arguments(compare: CompareType):
     compare(
@@ -312,6 +340,7 @@ def test_query_with_complex_arguments(compare: CompareType):
         """),
     )
 
+
 def test_generate_mutation_query(compare: CompareType):
     compare(
         gql("""
@@ -336,6 +365,7 @@ def test_generate_mutation_query(compare: CompareType):
             }
         """),
     )
+
 
 def test_query_with_deeply_nested_fields(compare: CompareType):
     compare(
@@ -382,6 +412,7 @@ def test_query_with_deeply_nested_fields(compare: CompareType):
         """),
     )
 
+
 def test_query_with_self_referencing_type(compare: CompareType):
     compare(
         gql("""
@@ -411,6 +442,7 @@ def test_query_with_self_referencing_type(compare: CompareType):
             }
         """),
     )
+
 
 def test_query_with_custom_directives(compare: CompareType):
     compare(
@@ -447,6 +479,7 @@ def test_query_with_custom_directives(compare: CompareType):
             }
         """),
     )
+
 
 def test_query_with_union_types(compare: CompareType):
     compare(
@@ -485,6 +518,7 @@ def test_query_with_union_types(compare: CompareType):
             }
         """),
     )
+
 
 def test_query_with_combined_interfaces_and_unions(compare: CompareType):
     compare(
@@ -531,6 +565,7 @@ def test_query_with_combined_interfaces_and_unions(compare: CompareType):
             }
         """),
     )
+
 
 def test_query_with_arguments_in_combined_interfaces_and_unions(compare: CompareType):
     compare(
@@ -637,7 +672,10 @@ def test_query_with_conflicting_field_types_in_unions(compare: CompareType):
         """),
     )
 
-def test_query_with_nullable_and_non_nullable_field_types_in_unions(compare: CompareType):
+
+def test_query_with_nullable_and_non_nullable_field_types_in_unions(
+    compare: CompareType,
+):
     compare(
         gql("""
             interface Identifiable {
@@ -696,5 +734,4 @@ def test_query_with_nullable_and_non_nullable_field_types_in_unions(compare: Com
     )
 
 
-
-#TODO: Write tests that are testing of max depth limiting, both before and after hitting it across all scenarios above
+# TODO: Write tests that are testing of max depth limiting, both before and after hitting it across all scenarios above
