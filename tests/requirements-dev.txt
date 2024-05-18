@@ -44,8 +44,12 @@ iniconfig==2.0.0
     # via pytest
 isort==5.13.2
     # via ariadne-codegen
+mypy==1.10.0
+    # via -r tests/requirements-dev.in
 mypy-extensions==1.0.0
-    # via black
+    # via
+    #   black
+    #   mypy
 packaging==24.0
     # via
     #   black
@@ -91,12 +95,14 @@ tomli==2.0.1
     #   autoflake
     #   black
     #   build
+    #   mypy
     #   pytest
     #   setuptools-scm
 typing-extensions==4.11.0
     # via
     #   anyio
     #   black
+    #   mypy
     #   pydantic
     #   pydantic-core
 wheel==0.43.0

@@ -47,6 +47,9 @@ lint:  ## Run the code linter.
 	@ruff check --config tests/ruff.toml .
 	@echo -e "No linting errors - well done! ✨ 🍰 ✨"
 
+type-check: ## Run the type checker.
+	@mypy --config-file tox.ini .
+
 require_pyenv:
 	@if ! [ -x "$$(command -v pyenv)" ]; then\
 	  echo -e '\n\033[0;31m ❌ pyenv is not installed.  Follow instructions here: $(pyenv_instructions)\n\033[0m';\
