@@ -1,7 +1,7 @@
 extend-exclude = []
 
 [lint]
-extend-ignore =  ["E501", "G004", "PT004", "PT005", "RET504", "SIM114", "TRY003", "TRY400", "TRY401", "RUF012", "RUF100", "ISC001"]
+extend-ignore =  ["E501", "G004", "PT004", "PT005", "RET504", "SIM114", "TRY003", "TRY300", "TRY400", "TRY401", "RUF012", "RUF100", "ISC001"]
 extend-select = [
     "I", "E", "W", "UP", "ASYNC", "BLE", "A001", "A002",
     "C4", "DTZ", "T10", "EM", "ISC", "ICN", "G", "PIE", "PT",

@@ -92,7 +92,8 @@ class ShopifyQueryGenerator:
         schema_override: Optional[str] = None,
     ):
         if not settings and not schema_override:
-            raise ValueError("Either 'settings' or 'schema_override' must be provided.")
+            msg = "Either 'settings' or 'schema_override' must be provided."
+            raise ValueError(msg)
         self.settings: Optional[ClientSettings] = settings
 
         if schema_override:
@@ -391,7 +392,7 @@ class ShopifyQueryGenerator:
             )
             return True
 
-        if ultimate_field_type_name in self.field_type_rules["exclude"].keys():
+        if ultimate_field_type_name in self.field_type_rules["exclude"]:
             logging.debug(
                 f"[{query_name}][{current_path}][depth: {depth}] Skipping as it's an excluded field"
             )
@@ -422,23 +423,23 @@ class ShopifyQueryGenerator:
                 f"[{query_name}][{current_path}][depth: {depth}] Skipping field as it's an Order type"
             )
 
-        if ultimate_field_type_name in self.list_returning_queries_by_type:
-            if (
-                ultimate_field_type_name in self.direct_object_references
-                and query_return_type
-                in self.direct_object_references[ultimate_field_type_name]
-            ):
-                logging.debug(
-                    f"[{query_name}][{current_path}][depth: {depth}] Skipping field as another object refers to this directly"
-                )
-                return True
+        if (
+            ultimate_field_type_name in self.list_returning_queries_by_type
+            and ultimate_field_type_name in self.direct_object_references
+            and query_return_type
+            in self.direct_object_references[ultimate_field_type_name]
+        ):
+            logging.debug(
+                f"[{query_name}][{current_path}][depth: {depth}] Skipping field as another object refers to this directly"
+            )
+            return True
 
         # Add only id if depth 0, otherwise don't at all, check the parent type as well - so its
 
         if (
             parent_type_name
             and parent_type_name != query_return_type
-            and parent_type_name in self.field_type_rules["include"].keys()
+            and parent_type_name in self.field_type_rules["include"]
             and field_type_name
             not in self.field_type_rules["include"][parent_type_name]
         ):
@@ -595,11 +596,13 @@ class ShopifyQueryGenerator:
                         variables,
                     )
 
-                if isinstance(definition, ObjectTypeDefinitionNode):
-                    if subfield_selections:
-                        sub_arguments = self.handle_arguments(
-                            field, variables, field_type_name, query_name
-                        )
+                if (
+                    isinstance(definition, ObjectTypeDefinitionNode)
+                    and subfield_selections
+                ):
+                    sub_arguments = self.handle_arguments(
+                        field, variables, field_type_name, query_name
+                    )
 
                 if isinstance(definition, (InterfaceTypeDefinitionNode)):
                     interface_selections = []
@@ -813,7 +816,7 @@ class ShopifyQueryGenerator:
                 else:
                     logging.info(f"All validations passed for query {query_name}")
 
-            except Exception as e:
+            except Exception as e:  # noqa
                 logging.error(
                     f"An error occurred during validation for query {query_name}: {e}"
                 )
@@ -833,7 +836,7 @@ class ShopifyQueryGenerator:
         try:
             with open(output_file, "w") as f:
                 f.write(query_str)
-        except Exception as e:
+        except Exception as e:  # noqa
             logging.error(
                 f"Failed to write query for {query_name} to {output_file}: {e}"
             )
