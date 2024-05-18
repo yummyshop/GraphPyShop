@@ -31,12 +31,12 @@ base_client_file_path = "./graphpyshop/extensions/shopify_async_base_client.py"
 plugins = [
     "ariadne_codegen.contrib.extract_operations.ExtractOperationsPlugin",
     "ariadne_codegen.contrib.shorter_results.ShorterResultsPlugin",
-    #"graphpyshop.extensions.ShopifyBulkQueriesPlugin",
+    "graphpyshop.extensions.ShopifyBulkQueriesPlugin",
 ]
 
 [tool.pytest.ini_options]
 minversion = "8.0"
-addopts = "--strict-markers"
+addopts = "-vv --tb=native --color=yes"
 testpaths = ["tests"]
 
 [tool.setuptools.packages.find]
