@@ -267,6 +267,22 @@ class ShopifyQueryGenerator:
 
 
         return False
+    
+    def detect_field_type_conflicts(self, union_definition: UnionTypeDefinitionNode) -> Dict[str, Set[str]]:
+        field_types = {}
+        for type_ in union_definition.types:
+            type_name = type_.name.value
+            if type_name in self.type_definition_map:
+                object_type = self.type_definition_map[type_name]
+                for field in object_type.fields:
+                    field_name = field.name.value
+                    field_type = self.get_field_type_name(field.type)
+                    if field_name not in field_types:
+                        field_types[field_name] = set()
+                    field_types[field_name].add(field_type)
+
+        conflicts = {field_name: types for field_name, types in field_types.items() if len(types) > 1}
+        return conflicts
 
     def generate_query_ast(self, query_name: str, field: FieldDefinitionNode, depth: int, max_depth: int, parent: Optional[FieldDefinitionNode] = None, path: str = "", variables: Dict[str, VariableDefinitionNode] = {}, inline_fragment_type_name: str | None = None) -> SelectionSetNode | FieldNode:
         current_path = f"{path} > {field.name.value}" if path else field.name.value
@@ -323,12 +339,17 @@ class ShopifyQueryGenerator:
                         sub_arguments.extend(interface_sub_arguments)
 
                 if isinstance(definition, UnionTypeDefinitionNode):
+                    field_conflicts = self.detect_field_type_conflicts(definition)
                     for type_ in definition.types:
                         type_name = type_.name.value
                         if type_name in self.type_definition_map:
                             object_type = self.type_definition_map[type_name]
                             union_sub_selections = self.generate_subfield_selections(type_name, query_return_type, query_name, object_type, depth, max_depth, field, current_path, variables, type_name)
                             if len(union_sub_selections) > 0:
+                                # Handle field conflicts by adding type-specific aliases
+                                for sub_selection in union_sub_selections:
+                                    if sub_selection.name.value in field_conflicts:
+                                        sub_selection.alias = NameNode(value=f"{type_name[0].lower()}{type_name[1:]}{sub_selection.name.value.capitalize()}")
                                 subfield_selections.append(InlineFragmentNode(
                                     type_condition=NamedTypeNode(name=NameNode(value=type_name)),
                                     selection_set=SelectionSetNode(selections=union_sub_selections)

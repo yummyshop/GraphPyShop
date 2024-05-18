@@ -578,4 +578,64 @@ def test_query_with_arguments_in_combined_interfaces_and_unions(compare: Compare
         """),
     )
 
+
+def test_query_with_conflicting_field_types_in_unions(compare: CompareType):
+    compare(
+        gql("""
+            interface Identifiable {
+                id: ID
+            }
+
+            type Book implements Identifiable {
+                id: ID
+                title: String
+                author: String
+            }
+
+            type Movie implements Identifiable {
+                id: ID
+                title: String
+                director: String
+            }
+
+            type VideoGame implements Identifiable {
+                id: ID
+                title: Int  # Conflicting type with Book and Movie
+                developer: String
+            }
+
+            union Media = Book | Movie | VideoGame
+
+            type QueryRoot {
+                media(type: String): [Media]
+            }
+        """),
+        gql("""
+            query media($media_type: String) {
+                media(type: $media_type) {
+                    ... on Book {
+                        id
+                        bookTitle: title
+                        author
+                        __typename
+                    }
+                    ... on Movie {
+                        id
+                        movieTitle: title
+                        director
+                        __typename
+                    }
+                    ... on VideoGame {
+                        id
+                        videoGameTitle: title
+                        developer
+                        __typename
+                    }
+                    __typename
+                }
+            }
+        """),
+    )
+
+
 #TODO: Write tests that are testing of max depth limiting, both before and after hitting it across all scenarios above
