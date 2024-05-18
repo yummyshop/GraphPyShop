@@ -447,3 +447,87 @@ def test_query_with_custom_directives(compare: CompareType):
             }
         """),
     )
+
+def test_query_with_union_types(compare: CompareType):
+    compare(
+        gql("""
+            union SearchResult = Product | User
+
+            type Product {
+                id: ID
+                name: String
+                price: Float
+            }
+
+            type User {
+                id: ID
+                name: String
+                email: String
+            }
+        """),
+        gql("""
+            query searchResult {
+                searchResult {
+                    ... on Product {
+                        id
+                        name
+                        price
+                        __typename
+                    }
+                    ... on User {
+                        id
+                        name
+                        email
+                        __typename
+                    }
+                    __typename
+                }
+            }
+        """),
+    )
+
+def test_query_with_combined_interfaces_and_unions(compare: CompareType):
+    compare(
+        gql("""
+            interface Identifiable {
+                id: ID
+            }
+
+            type Book implements Identifiable {
+                id: ID
+                title: String
+                author: String
+            }
+
+            type Movie implements Identifiable {
+                id: ID
+                title: String
+                director: String
+            }
+
+            union Media = Book | Movie
+
+            type QueryRoot {
+                media: [Media]
+            }
+        """),
+        gql("""
+            query media {
+                media {
+                    ... on Book {
+                        id
+                        title
+                        author
+                        __typename
+                    }
+                    ... on Movie {
+                        id
+                        title
+                        director
+                        __typename
+                    }
+                    __typename
+                }
+            }
+        """),
+    )

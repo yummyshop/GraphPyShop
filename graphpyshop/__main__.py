@@ -39,7 +39,7 @@ def generate_queries():
         #settings.write_schema_to_file = True
     
     query_generator = ShopifyQueryGenerator(settings)
-    query_generator.shopify_generate_queries()
+    query_generator.generate_queries()
 
 
 def clean():
