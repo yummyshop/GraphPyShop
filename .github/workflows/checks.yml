@@ -25,7 +25,7 @@ jobs:
         id: cache
         with:
           path: ${{ env.pythonLocation }}
-          key: ${{ env.pythonLocation }}-${{ hashFiles('requirements-dev.txt') }}-lint
+          key: ${{ env.pythonLocation }}-${{ hashFiles('tests/requirements-dev.txt') }}-lint
       - name: Install Ruff
         if: steps.cache.outputs.cache-hit != 'true'
         run: grep -E 'ruff==' tests/requirements-dev.txt | xargs pip install
@@ -62,8 +62,6 @@ jobs:
         pip install -e .
     - name: Test with pytest
       timeout-minutes: 30
-      env:
-        CUDA_LAUNCH_BLOCKING: 1
       run: |
         pytest -v
 #  type-check:
