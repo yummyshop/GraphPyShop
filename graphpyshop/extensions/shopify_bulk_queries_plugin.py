@@ -1,6 +1,6 @@
 import ast
 import logging
-from typing import Dict
+from typing import Any, Dict
 
 from ariadne_codegen.codegen import (
     generate_import_from,
@@ -13,7 +13,7 @@ class ShopifyBulkQueriesPlugin(Plugin):
     _ignore_args = {}
     _ignore_args_full = {"self", *_ignore_args}
 
-    def __init__(self, schema: GraphQLSchema, config_dict: Dict[str, any]) -> None:
+    def __init__(self, schema: GraphQLSchema, config_dict: Dict[str, Any]) -> None:
         super().__init__(schema=schema, config_dict=config_dict)
         self.imported_types = {}  # Track imported types
         logging.info("ShopifyBulkQueriesPlugin initialized with schema and config.")

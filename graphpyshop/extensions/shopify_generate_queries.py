@@ -1,3 +1,4 @@
+import concurrent.futures
 import logging
 import os
 import threading
@@ -111,6 +112,7 @@ class ShopifyQueryGenerator:
             )
         self.sdl = print_schema(self.schema)
         if not schema_override and not self.settings.schema_path:
+            assert self.settings is not None
             with open(
                 f"{self.settings.target_package_path}/schema.graphql", "w"
             ) as schema_file:
@@ -842,6 +844,7 @@ class ShopifyQueryGenerator:
             )
 
     def get_query_file_path(self, query_name: str) -> str:
+        assert self.settings is not None
         if not hasattr(self, "_dirs_checked"):
             os.makedirs(self.settings.queries_path, exist_ok=True)
             self._dirs_checked = True
@@ -866,19 +869,20 @@ class ShopifyQueryGenerator:
         included_queries: List[str] = [],
         excluded_queries: List[str] = ["node", "nodes"],
         write_invalid: bool = False,
-        concurrent: bool = False,
+        use_concurrent: bool = False,
         return_queries: bool = False,
     ) -> Union[None, List[str]]:
         start_time = time.time()
         logging.info("Starting generation of queries")
 
         queries = []
-        if concurrent:
+        futures = []
+
+        if use_concurrent:
             num_threads = threading.active_count()
             with concurrent.futures.ThreadPoolExecutor(
                 max_workers=num_threads
             ) as executor:
-                futures = []
                 for definition in self.ast.definitions:
                     if isinstance(definition, ObjectTypeDefinitionNode):
                         type_name = definition.name.value
@@ -898,7 +902,6 @@ class ShopifyQueryGenerator:
 
                 concurrent.futures.wait(futures)
         else:
-            futures = []
             for definition in self.ast.definitions:
                 if isinstance(definition, ObjectTypeDefinitionNode):
                     type_name = definition.name.value
