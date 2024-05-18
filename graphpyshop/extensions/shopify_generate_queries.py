@@ -256,7 +256,7 @@ class ShopifyQueryGenerator:
             return True
         
         # Check against the fragment type derived from an interface or union
-        if (parent_type_name in self.list_returning_queries_by_type or inline_fragment_type_name in self.list_returning_queries_by_type) and depth > 1 and field_type_name != "ID":
+        if parent_type_name != "Metafield" and (parent_type_name in self.list_returning_queries_by_type or inline_fragment_type_name in self.list_returning_queries_by_type) and depth > 1 and field_type_name != "ID":
             logging.debug(f"[{query_name}][{current_path}][depth: {depth}] It's a list returning field and type is not ID, returning empty set")
             return True
 
@@ -484,7 +484,7 @@ class ShopifyQueryGenerator:
         return f"{output_dir}/{query_name}.graphql"
 
 
-    def generate_queries(self, include_definitions: List[str] = ['QueryRoot'], included_queries: List[str] = [], excluded_queries: List[str] = ["node", "nodes", "metafields", "job"], write_invalid: bool = True, concurrent: bool = False, return_queries: bool = False) -> Union[None, List[str]]:
+    def generate_queries(self, include_definitions: List[str] = ['QueryRoot'], included_queries: List[str] = [], excluded_queries: List[str] = ["node", "nodes"], write_invalid: bool = False, concurrent: bool = False, return_queries: bool = False) -> Union[None, List[str]]:
         start_time = time.time()
         logging.info("Starting generation of queries")
 
