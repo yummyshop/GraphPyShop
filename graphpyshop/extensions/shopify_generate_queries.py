@@ -259,7 +259,7 @@ class ShopifyQueryGenerator:
             logging.debug(f"[{query_name}][{current_path}][depth: {depth}] It's a list returning field and type is not id, returning empty set")
             return True
         
-        
+
         # Check if field is already included in the parent interface or union type, only if it's part of an inline fragment
         if is_inline_fragment and parent_definition and isinstance(parent_definition, InterfaceTypeDefinitionNode) and any(field.name.value == existing_field.name.value for existing_field in parent_definition.fields):
             logging.debug(f"[{query_name}][{current_path}][depth: {depth}] Field {field.name.value} already included in parent type {parent_type_name}. Skipping.")
@@ -397,7 +397,11 @@ class ShopifyQueryGenerator:
 
                 if validation_errors:
                     for error in validation_errors:
-                        logging.error(f"Validation error in query {query_name}: {error.message}")
+                        error_message = f"Validation error in query {query_name}: {error.message}"
+                        if error.locations:
+                            locations_str = ", ".join(f"{self.get_query_file_path(query_name)}:{loc.line}:{loc.column}" for loc in error.locations)
+                            error_message += f" at locations {locations_str}"
+                        logging.error(error_message)
                     if not write_invalid:
                         return None
                 else:
@@ -415,6 +419,14 @@ class ShopifyQueryGenerator:
         return None
 
     def write_query_to_file(self, query_name: str, query_str: str) -> None:
+        output_file = self.get_query_file_path(query_name)
+        try:
+            with open(output_file, "w") as f:
+                f.write(query_str)
+        except Exception as e:
+            logging.error(f"Failed to write query for {query_name} to {output_file}: {e}")
+
+    def get_query_file_path(self, query_name: str) -> str:
         if not hasattr(self, '_dirs_checked'):
             os.makedirs(self.settings.queries_path, exist_ok=True)
             self._dirs_checked = True
@@ -431,15 +443,10 @@ class ShopifyQueryGenerator:
             os.makedirs(output_dir, exist_ok=True)
             self._created_dirs.add(output_dir)
         
-        output_file = f"{output_dir}/{query_name}.graphql"
-        try:
-            with open(output_file, "w") as f:
-                f.write(query_str)
-        except Exception as e:
-            logging.error(f"Failed to write query for {query_name} to {output_file}: {e}")
+        return f"{output_dir}/{query_name}.graphql"
 
 
-    def generate_queries(self, include_definitions: List[str] = ['QueryRoot'], included_queries: List[str] = [], excluded_queries: List[str] = ["node", "nodes", "metafields", "job"], write_invalid: bool = False, concurrent: bool = False, return_queries: bool = False) -> Union[None, List[str]]:
+    def generate_queries(self, include_definitions: List[str] = ['QueryRoot'], included_queries: List[str] = [], excluded_queries: List[str] = ["node", "nodes", "metafields", "job"], write_invalid: bool = True, concurrent: bool = False, return_queries: bool = False) -> Union[None, List[str]]:
         start_time = time.time()
         logging.info("Starting generation of queries")
 
