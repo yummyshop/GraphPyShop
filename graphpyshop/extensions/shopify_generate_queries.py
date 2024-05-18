@@ -255,7 +255,7 @@ class ShopifyQueryGenerator:
             logging.debug(f"[{query_name}][{current_path}][depth: {depth}] Field type {parent_type_name} includes subfield type {field_type_name}, returning empty set")
             return True
         
-        if parent_type_name != "Metafield" and parent_type_name in self.list_returning_queries_by_type and depth>1 and field_type_name != "ID":
+        if parent_type_name in self.list_returning_queries_by_type and depth>1 and field_type_name != "ID":
             logging.debug(f"[{query_name}][{current_path}][depth: {depth}] It's a list returning field and type is not id, returning empty set")
             return True
         
@@ -303,21 +303,24 @@ class ShopifyQueryGenerator:
                         sub_arguments = self.handle_arguments(field, variables, field_type_name, query_name)
 
                 if isinstance(definition, (InterfaceTypeDefinitionNode)):
+                    fragment_selections = []
                     for object_definition in self.ast.definitions:
                         if isinstance(object_definition, ObjectTypeDefinitionNode) and (
                             field_type_name in [interface.name.value for interface in object_definition.interfaces] or
                             field_type_name in [union_type.name.value for union_type in getattr(object_definition, 'types', [])]
                         ):
                             logging.debug(f"[{query_name}][{current_path}][depth: {depth}] Found implementing type: {object_definition.name.value}")
-                            fragment_selections = self.generate_subfield_selections(field_type_name, query_return_type, query_name, object_definition, depth, max_depth, field, current_path, variables, True)
-
-                            if fragment_selections:
-                                fragment_sub_arguments = self.handle_arguments(field, variables, object_definition.name.value, query_name)
-                                sub_arguments.extend(fragment_sub_arguments)
+                            fragment_selections_inside = self.generate_subfield_selections(field_type_name, query_return_type, query_name, object_definition, depth, max_depth, field, current_path, variables, True)
+                            fragment_selections.append(fragment_selections_inside)
+                            if fragment_selections_inside:
                                 subfield_selections.append(InlineFragmentNode(
                                     type_condition=NamedTypeNode(name=NameNode(value=object_definition.name.value)),
-                                    selection_set=SelectionSetNode(selections=fragment_selections)
+                                    selection_set=SelectionSetNode(selections=fragment_selections_inside)
                                 ))
+
+                    if fragment_selections:
+                        fragment_sub_arguments = self.handle_arguments(field, variables, definition.name.value, query_name)
+                        sub_arguments.extend(fragment_sub_arguments)
 
                 if isinstance(definition, UnionTypeDefinitionNode):
                     for type_ in definition.types:
@@ -326,13 +329,13 @@ class ShopifyQueryGenerator:
                             object_type = self.type_definition_map[type_name]
                             union_sub_selections = self.generate_subfield_selections(type_name, query_return_type, query_name, object_type, depth, max_depth, field, current_path, variables, True)
                             if len(union_sub_selections) > 0:
-                                union_sub_arguments = self.handle_arguments(field, variables, type_name, query_name)
-                                sub_arguments.extend(union_sub_arguments)
                                 subfield_selections.append(InlineFragmentNode(
                                     type_condition=NamedTypeNode(name=NameNode(value=type_name)),
                                     selection_set=SelectionSetNode(selections=union_sub_selections)
                                 ))
                     if len(subfield_selections) > 0:
+                        union_sub_arguments = self.handle_arguments(field, variables, definition.name.value, query_name)
+                        sub_arguments.extend(union_sub_arguments)
                         subfield_selections.append(FieldNode(name=NameNode(value="__typename")))
 
 
