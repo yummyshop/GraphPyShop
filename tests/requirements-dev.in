@@ -3,4 +3,5 @@ setuptools
 wheel
 setuptools-scm
 
+pytest
 ruff

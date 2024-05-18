@@ -21,7 +21,9 @@ click==8.1.7
     #   ariadne-codegen
     #   black
 exceptiongroup==1.2.1
-    # via anyio
+    # via
+    #   anyio
+    #   pytest
 graphql-core==3.2.3
     # via
     #   graphpyshop (pyproject.toml)
@@ -38,6 +40,8 @@ idna==3.7
     # via
     #   anyio
     #   httpx
+iniconfig==2.0.0
+    # via pytest
 isort==5.13.2
     # via ariadne-codegen
 mypy-extensions==1.0.0
@@ -46,11 +50,14 @@ packaging==24.0
     # via
     #   black
     #   build
+    #   pytest
     #   setuptools-scm
 pathspec==0.12.1
     # via black
 platformdirs==4.2.2
     # via black
+pluggy==1.5.0
+    # via pytest
 pydantic==2.7.1
     # via
     #   graphpyshop (pyproject.toml)
@@ -61,6 +68,8 @@ pyflakes==3.2.0
     # via autoflake
 pyproject-hooks==1.1.0
     # via build
+pytest==8.2.0
+    # via -r tests/requirements-dev.in
 python-dotenv==1.0.1
     # via graphpyshop (pyproject.toml)
 ruff==0.4.4
@@ -82,6 +91,7 @@ tomli==2.0.1
     #   autoflake
     #   black
     #   build
+    #   pytest
     #   setuptools-scm
 typing-extensions==4.11.0
     # via

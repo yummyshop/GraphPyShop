@@ -1,0 +1,157 @@
+name: Python Checks
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+env:
+  PIP_DISABLE_PIP_VERSION_CHECK: 1
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v4.5.0
+        with:
+          python-version: "3.10"
+      - name: Cache dependencies
+        uses: actions/cache@v3.2.4
+        id: cache
+        with:
+          path: ${{ env.pythonLocation }}
+          key: ${{ env.pythonLocation }}-${{ hashFiles('requirements-dev.txt') }}-lint
+      - name: Install Ruff
+        if: steps.cache.outputs.cache-hit != 'true'
+        run: grep -E 'ruff==' tests/requirements-dev.txt | xargs pip install
+      - name: Format
+        run: |
+          echo "::add-matcher::.github/pylama_matcher.json"
+          ruff format --config tests/ruff.toml .  --check
+      - name: Lint
+        run: |
+          echo "::add-matcher::.github/pylama_matcher.json"
+          ruff --config tests/ruff.toml .
+  tests:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version:
+          - "3.10"
+          - "3.11"
+          - "3.12"
+        os: ["ubuntu-latest"]
+    steps:
+    - uses: actions/checkout@v3
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ matrix.python-version }}
+        cache: pip
+        cache-dependency-path: tests/requirements-dev.txt
+    - name: Install dependencies
+      run: |
+        python -m pip install uv 
+        uv pip sync --system tests/requirements-dev.txt
+        pip install -e .
+    - name: Test with pytest
+      timeout-minutes: 30
+      env:
+        CUDA_LAUNCH_BLOCKING: 1
+      run: |
+        pytest -v
+#  type-check:
+#    runs-on: ubuntu-latest
+#    steps:
+#    - uses: actions/checkout@v3
+#    - uses: actions/setup-python@v4.5.0
+#      with:
+#        python-version: "3.10"
+#        cache: pip
+#        cache-dependency-path: tests/requirements-dev.txt
+#    - name: Install dependencies
+#      run: |
+#        python -m pip install -r tests/requirements-dev.txt . --upgrade
+#    - name: Run mypy
+#      run: |
+#        make type-check
+  build-wheel:
+    name: Build Wheel
+    runs-on: ubuntu-latest
+    outputs:
+      wheel_name: ${{ steps.set_wheel_name.outputs.wheel_name }}
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v4.5.0
+        with:
+          python-version: "3.10"
+      - name: Install dependencies
+        run: python -m pip install wheel build setuptools_scm
+      - name: Build package
+        run: make build
+      - name: Set wheel filename
+        id: set_wheel_name
+        run: echo "wheel_name=$(ls dist/*.whl)" >> "$GITHUB_OUTPUT"
+      - uses: actions/upload-artifact@v3
+        with:
+          name: wheels
+          path: dist/*.whl
+  smoke-test-wheel:
+    needs: build-wheel
+    name:  Smoketest (Python ${{ matrix.python-version }}, ${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.10", "3.11"]
+        os: ["ubuntu-latest", "windows-latest", "macos-latest"]
+    steps:
+    - uses: actions/checkout@v3
+    - uses: actions/setup-python@v4.5.0
+      with:
+        python-version: ${{ matrix.python-version }}
+    - uses: actions/download-artifact@v3
+      with:
+        name: wheels
+        path: dist
+    - name: Install built wheel
+      env:
+        WHEEL_FILENAME: ${{ needs.build-wheel.outputs.wheel_name }}
+      run: |
+        python -m pip install uv
+        uv pip install --system ${{ needs.build-wheel.outputs.wheel_name }}
+  smoke-test-wheel-conda:
+    needs: build-wheel
+    name: Smoketest (Conda, Python ${{ matrix.python-version }}, ${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: [ "3.10", "3.11" ]
+        os: [ "ubuntu-latest", "windows-latest", "macos-latest" ]
+    steps:
+      - uses: actions/checkout@v3
+      - uses: conda-incubator/setup-miniconda@v3
+        with:
+          auto-update-conda: true
+          python-version: ${{ matrix.python-version }}
+          activate-environment: test-env
+          create-env-file: true
+      - uses: actions/download-artifact@v3
+        with:
+          name: wheels
+          path: dist
+      - name: Install built wheel
+        shell: bash -l {0}
+        env:
+          WHEEL_FILENAME: ${{ steps.set-wheel-name.outputs.WHEEL_FILENAME }}
+        run: |
+          conda activate test-env
+          python -m pip install uv
+          uv pip install ${{ needs.build-wheel.outputs.wheel_name }}
