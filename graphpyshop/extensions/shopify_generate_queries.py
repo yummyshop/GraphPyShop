@@ -267,22 +267,35 @@ class ShopifyQueryGenerator:
 
 
         return False
-    
+    def get_field_type_from_definition(self, object_type: ObjectTypeDefinitionNode, field_name: str) -> str:
+        for field in object_type.fields:
+            if field.name.value == field_name:
+                return self.get_full_field_type(field.type)
+        return ""
+
     def detect_field_type_conflicts(self, union_definition: UnionTypeDefinitionNode) -> Dict[str, Set[str]]:
-        field_types = {}
+        field_types: Dict[str, Set[str]] = {}
         for type_ in union_definition.types:
             type_name = type_.name.value
             if type_name in self.type_definition_map:
                 object_type = self.type_definition_map[type_name]
-                for field in object_type.fields:
-                    field_name = field.name.value
-                    field_type = self.get_field_type_name(field.type)
-                    if field_name not in field_types:
-                        field_types[field_name] = set()
-                    field_types[field_name].add(field_type)
+                if isinstance(object_type, ObjectTypeDefinitionNode):  # Ensure object_type is an ObjectTypeDefinitionNode
+                    for field in object_type.fields:
+                        field_name = field.name.value
+                        field_type = self.get_full_field_type(field.type)  # Include nullability in type string
+                        if field_name not in field_types:
+                            field_types[field_name] = set()
+                        field_types[field_name].add(field_type)
 
         conflicts = {field_name: types for field_name, types in field_types.items() if len(types) > 1}
         return conflicts
+
+    def get_full_field_type(self, field_type: TypeNode) -> str:
+        """Generate a string representation of the field type, including nullability."""
+        type_str = self.get_field_type_name(field_type)
+        if isinstance(field_type, NonNullTypeNode):
+            type_str += '!'
+        return type_str
 
     def generate_query_ast(self, query_name: str, field: FieldDefinitionNode, depth: int, max_depth: int, parent: Optional[FieldDefinitionNode] = None, path: str = "", variables: Dict[str, VariableDefinitionNode] = {}, inline_fragment_type_name: str | None = None) -> SelectionSetNode | FieldNode:
         current_path = f"{path} > {field.name.value}" if path else field.name.value
@@ -348,8 +361,9 @@ class ShopifyQueryGenerator:
                             if len(union_sub_selections) > 0:
                                 # Handle field conflicts by adding type-specific aliases
                                 for sub_selection in union_sub_selections:
-                                    if sub_selection.name.value in field_conflicts:
-                                        sub_selection.alias = NameNode(value=f"{type_name[0].lower()}{type_name[1:]}{sub_selection.name.value.capitalize()}")
+                                    field_name = sub_selection.name.value
+                                    if field_name in field_conflicts:
+                                        sub_selection.alias = NameNode(value=f"{type_name[0].lower()}{type_name[1:]}{field_name.capitalize()}")
                                 subfield_selections.append(InlineFragmentNode(
                                     type_condition=NamedTypeNode(name=NameNode(value=type_name)),
                                     selection_set=SelectionSetNode(selections=union_sub_selections)
