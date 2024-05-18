@@ -27,17 +27,17 @@ jobs:
         python -m build
         pip install -e .
     
-    - name: Generate fresh client files
-      run: |
-        python -m graphpyshop generate
-
-    - name: Build package for distribution
-      run: |
-        python -m build
-
-    - name: Upload to PyPI
-      env:
-        TWINE_USERNAME: __token__
-        TWINE_PASSWORD: ${{ secrets.PYPI_ACCESS_TOKEN }}
-      run: |
-        twine upload dist/*
+#    - name: Generate fresh client files
+#      run: |
+#        python -m graphpyshop generate
+#
+#    - name: Build package for distribution
+#      run: |
+#        python -m build
+#
+#    - name: Upload to PyPI
+#      env:
+#        TWINE_USERNAME: __token__
+#        TWINE_PASSWORD: ${{ secrets.PYPI_ACCESS_TOKEN }}
+#      run: |
+#        twine upload dist/*
