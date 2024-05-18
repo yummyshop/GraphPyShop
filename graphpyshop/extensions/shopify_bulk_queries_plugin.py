@@ -2,11 +2,12 @@ import ast
 import logging
 from typing import Dict
 
-from graphql import GraphQLSchema
-from ariadne_codegen.plugins.base import Plugin
 from ariadne_codegen.codegen import (
     generate_import_from,
 )
+from ariadne_codegen.plugins.base import Plugin
+from graphql import GraphQLSchema
+
 
 class ShopifyBulkQueriesPlugin(Plugin):
     _ignore_args = {}
