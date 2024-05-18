@@ -303,24 +303,24 @@ class ShopifyQueryGenerator:
                         sub_arguments = self.handle_arguments(field, variables, field_type_name, query_name)
 
                 if isinstance(definition, (InterfaceTypeDefinitionNode)):
-                    fragment_selections = []
+                    interface_selections = []
                     for object_definition in self.ast.definitions:
                         if isinstance(object_definition, ObjectTypeDefinitionNode) and (
                             field_type_name in [interface.name.value for interface in object_definition.interfaces] or
                             field_type_name in [union_type.name.value for union_type in getattr(object_definition, 'types', [])]
                         ):
                             logging.debug(f"[{query_name}][{current_path}][depth: {depth}] Found implementing type: {object_definition.name.value}")
-                            fragment_selections_inside = self.generate_subfield_selections(field_type_name, query_return_type, query_name, object_definition, depth, max_depth, field, current_path, variables, True)
-                            fragment_selections.append(fragment_selections_inside)
-                            if fragment_selections_inside:
+                            interface_selections_inside = self.generate_subfield_selections(field_type_name, query_return_type, query_name, object_definition, depth, max_depth, field, current_path, variables, True)
+                            interface_selections.append(interface_selections_inside)
+                            if interface_selections_inside:
                                 subfield_selections.append(InlineFragmentNode(
                                     type_condition=NamedTypeNode(name=NameNode(value=object_definition.name.value)),
-                                    selection_set=SelectionSetNode(selections=fragment_selections_inside)
+                                    selection_set=SelectionSetNode(selections=interface_selections_inside)
                                 ))
 
-                    if fragment_selections:
-                        fragment_sub_arguments = self.handle_arguments(field, variables, definition.name.value, query_name)
-                        sub_arguments.extend(fragment_sub_arguments)
+                    if interface_selections:
+                        interface_sub_arguments = self.handle_arguments(field, variables, definition.name.value, query_name)
+                        sub_arguments.extend(interface_sub_arguments)
 
                 if isinstance(definition, UnionTypeDefinitionNode):
                     for type_ in definition.types:
