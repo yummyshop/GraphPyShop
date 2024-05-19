@@ -27,14 +27,15 @@ jobs:
         python -m build
         pip install -e .
     
-#    - name: Generate fresh client files
-#      run: |
-#        python -m graphpyshop generate
-#
-#    - name: Build package for distribution
-#      run: |
-#        python -m build
-#
+    - name: Generate fresh client files
+      run: |
+        python -m graphpyshop generate-queries
+        python -m graphpyshop generate-client
+
+    - name: Build package for distribution
+      run: |
+        python -m build
+
 #    - name: Upload to PyPI
 #      env:
 #        TWINE_USERNAME: __token__
