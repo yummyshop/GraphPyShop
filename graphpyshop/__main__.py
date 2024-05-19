@@ -1,4 +1,5 @@
 import argparse
+import ast
 import functools
 import logging.config
 import os
@@ -6,22 +7,8 @@ import shutil
 import time
 from functools import lru_cache
 
-import httpx
+from ariadne_codegen.config import get_client_settings, get_config_dict
 from dotenv import find_dotenv, load_dotenv
-
-# Monkeypatching httpx.Client to have a default timeout of 30 seconds
-original_client_init = httpx.AsyncClient.__init__
-
-
-def new_client_init(self, *args, **kwargs):
-    if "timeout" not in kwargs:
-        kwargs["timeout"] = 30.0  # Set default timeout to 30 seconds
-    original_client_init(self, *args, **kwargs)
-
-
-httpx.AsyncClient.__init__ = new_client_init
-
-# Now, any new httpx.Client instance will have a default timeout of 30 seconds unless specified otherwise
 
 logging.basicConfig(level=logging.INFO)
 
@@ -36,6 +23,27 @@ class TimedLog:
     def __exit__(self, *args):
         duration = (time.time() - self.start) * 1000
         logging.info(f"{self.name} took {duration:.1f} ms")
+
+
+def _simple_ast_to_str(
+    ast_obj: ast.AST,
+    remove_unused_imports: bool = True,
+    multiline_strings: bool = False,
+    multiline_strings_offset: int = 4,
+) -> str:
+    """
+    Convert ast object into string.
+
+    Doesn't do expensive autoformatting like default does
+    """
+    return ast.unparse(ast_obj)
+
+
+@lru_cache
+def monkeypatch_ariadne_codegen():
+    from ariadne_codegen.client_generators import package
+
+    package.ast_to_str = _simple_ast_to_str
 
 
 @lru_cache
@@ -68,22 +76,17 @@ def monkey_patch_httpx():
 
 
 def generate_client():
-    monkey_patch_httpx()
-    from ariadne_codegen.config import get_config_dict
     from ariadne_codegen.main import client
 
     logging.info("Starting generation of client")
 
     load_dotenv(find_dotenv())
     config_dict = get_config_dict()
-    print(config_dict)
     with TimedLog("Client generation"):
         client(config_dict)
 
 
 def generate_queries():
-    from ariadne_codegen.config import get_client_settings, get_config_dict
-
     from graphpyshop.extensions.shopify_generate_queries import ShopifyQueryGenerator
 
     load_dotenv(find_dotenv())
@@ -107,8 +110,6 @@ def generate_queries():
 
 
 def clean():
-    from ariadne_codegen.config import get_client_settings, get_config_dict
-
     settings = get_client_settings(get_config_dict())
 
     paths = [
@@ -151,10 +152,18 @@ def main():
         choices=["generate-client", "generate-queries", "clean"],
         help="Command to run",
     )
+    parser.add_argument(
+        "--profile",
+        action="store_true",
+        help="Enable profiling",
+    )
     args = parser.parse_args()
     configure_logging()
     monkey_patch_httpx()
-    with TimedLog(f"Command {args.command}"):
+    monkeypatch_ariadne_codegen()
+    from graphpyshop.profiler import CallGrindProfiler
+
+    with CallGrindProfiler(f"Command {args.command}", enabled=args.profile):
         if args.command == "generate-client":
             generate_client()
         elif args.command == "generate-queries":
