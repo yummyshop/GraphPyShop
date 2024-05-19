@@ -128,18 +128,18 @@ class ShopifyQueryGenerator:
                     f"Schema written to {self.settings.target_package_path}/schema.graphql"
                 )
         self.ast = parse(self.sdl)
-        self.type_definition_map: Dict[str, TypeDefinitionNode] = (
-            self.create_type_definition_map()
-        )
-        self.list_returning_queries: Dict[str, str] = (
-            self.extract_list_returning_queries()
-        )
-        self.list_returning_queries_by_type: Dict[str, List[str]] = (
-            self.reverse_list_returning_queries()
-        )
-        self.direct_object_references: Dict[str, List[str]] = (
-            self.extract_direct_object_references()
-        )
+        self.type_definition_map: Dict[
+            str, TypeDefinitionNode
+        ] = self.create_type_definition_map()
+        self.list_returning_queries: Dict[
+            str, str
+        ] = self.extract_list_returning_queries()
+        self.list_returning_queries_by_type: Dict[
+            str, List[str]
+        ] = self.reverse_list_returning_queries()
+        self.direct_object_references: Dict[
+            str, List[str]
+        ] = self.extract_direct_object_references()
         self.scalar_types: Set[str] = {
             definition.name.value
             for definition in self.ast.definitions
@@ -152,13 +152,13 @@ class ShopifyQueryGenerator:
         }
 
         self.used_variables: Dict[str, Dict[str, VariableDefinitionNode]] = {}
-    
+
     @lru_cache(maxsize=None)
     def is_deprecated(self, field: FieldDefinitionNode) -> bool:
         return any(
             directive.name.value == "deprecated" for directive in field.directives
         )
-    
+
     @lru_cache(maxsize=None)
     def get_field_type(self, field_type: TypeNode) -> TypeNode:
         while isinstance(field_type, (NonNullTypeNode, ListTypeNode)):
@@ -943,7 +943,7 @@ class ShopifyQueryGenerator:
 
 
 if __name__ == "__main__":
-    logging.basicConfig(level=logging.DEBUG)
+    logging.basicConfig(level=logging.INFO)
 
     config_dict = get_config_dict()
     settings = get_client_settings(config_dict)
@@ -960,4 +960,4 @@ if __name__ == "__main__":
         # settings.write_schema_to_file = True
 
     query_generator = ShopifyQueryGenerator(settings)
-    query_generator.generate_queries(included_queries=["orders"], write_invalid=True)
+    query_generator.generate_queries(write_invalid=True, use_concurrent=False)

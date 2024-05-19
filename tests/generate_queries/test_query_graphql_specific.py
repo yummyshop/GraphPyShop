@@ -61,28 +61,33 @@ CompareType = Callable[[str, Union[str, List[str]]], None]
 
 def test_basic_query_generation(compare: CompareType):
     compare(
-        gql("""
+        gql(
+            """
             type QueryRoot {
                 shop: Shop
             }
             type Shop {
                 name: String
             }
-        """),
-        gql("""
+        """
+        ),
+        gql(
+            """
             query shop {
                 shop {
                     name
                     __typename
                 }
             }
-        """),
+        """
+        ),
     )
 
 
 def test_query_with_optional_arguments(compare: CompareType):
     compare(
-        gql("""
+        gql(
+            """
             type QueryRoot {
                 product(id: ID, name: String): Product
             }
@@ -91,8 +96,10 @@ def test_query_with_optional_arguments(compare: CompareType):
                 name: String
                 price: Float
             }
-        """),
-        gql("""
+        """
+        ),
+        gql(
+            """
             query product($product_id: ID, $product_name: String) {
                 product(id: $product_id, name: $product_name) {
                     id
@@ -101,13 +108,15 @@ def test_query_with_optional_arguments(compare: CompareType):
                     __typename
                 }
             }
-        """),
+        """
+        ),
     )
 
 
 def test_query_with_nested_fields(compare: CompareType):
     compare(
-        gql("""
+        gql(
+            """
             type QueryRoot {
                 shop: Shop
             }
@@ -123,8 +132,10 @@ def test_query_with_nested_fields(compare: CompareType):
                 street: String
                 city: String
             }
-        """),
-        gql("""
+        """
+        ),
+        gql(
+            """
             query shop {
                 shop {
                     name
@@ -140,13 +151,15 @@ def test_query_with_nested_fields(compare: CompareType):
                     __typename
                 }
             }
-        """),
+        """
+        ),
     )
 
 
 def test_query_with_list_field(compare: CompareType):
     compare(
-        gql("""
+        gql(
+            """
             type QueryRoot {
                 products: [Product]
             }
@@ -155,8 +168,10 @@ def test_query_with_list_field(compare: CompareType):
                 name: String
                 price: Float
             }
-        """),
-        gql("""
+        """
+        ),
+        gql(
+            """
             query products {
                 products {
                     id
@@ -165,13 +180,15 @@ def test_query_with_list_field(compare: CompareType):
                     __typename
                 }
             }
-        """),
+        """
+        ),
     )
 
 
 def test_query_with_interface_field(compare: CompareType):
     compare(
-        gql("""
+        gql(
+            """
             type QueryRoot {
                 searchResult: SearchResult
             }
@@ -189,8 +206,10 @@ def test_query_with_interface_field(compare: CompareType):
                 name: String
                 email: String
             }
-        """),
-        gql("""
+        """
+        ),
+        gql(
+            """
             query searchResult {
                 searchResult {
                     id
@@ -206,13 +225,15 @@ def test_query_with_interface_field(compare: CompareType):
                     }
                 }
             }
-        """),
+        """
+        ),
     )
 
 
 def test_query_with_enum_field(compare: CompareType):
     compare(
-        gql("""
+        gql(
+            """
             type QueryRoot {
                 status: StatusEnum
             }
@@ -221,18 +242,22 @@ def test_query_with_enum_field(compare: CompareType):
                 INACTIVE
                 PENDING
             }
-        """),
-        gql("""
+        """
+        ),
+        gql(
+            """
             query status {
                 status
             }
-        """),
+        """
+        ),
     )
 
 
 def test_query_excludes_deprecated_fields(compare: CompareType):
     compare(
-        gql("""
+        gql(
+            """
             type Product {
                 id: ID
                 name: String
@@ -240,8 +265,10 @@ def test_query_excludes_deprecated_fields(compare: CompareType):
                 oldField: String @deprecated(reason: "Use newField instead")
                 newField: String
             }
-        """),
-        gql("""
+        """
+        ),
+        gql(
+            """
             query product {
                 product {
                     id
@@ -251,13 +278,15 @@ def test_query_excludes_deprecated_fields(compare: CompareType):
                     __typename
                 }
             }
-        """),
+        """
+        ),
     )
 
 
 def test_skip_fields_with_required_non_null_args(compare: CompareType):
     compare(
-        gql("""
+        gql(
+            """
             type QueryRoot {
                 product: Product
             }
@@ -267,8 +296,10 @@ def test_skip_fields_with_required_non_null_args(compare: CompareType):
                 price: Float
                 details(requiredArg: String!): String
             }
-        """),
-        gql("""
+        """
+        ),
+        gql(
+            """
             query product {
                 product {
                     id
@@ -277,13 +308,15 @@ def test_skip_fields_with_required_non_null_args(compare: CompareType):
                     __typename
                 }
             }
-        """),
+        """
+        ),
     )
 
 
 def test_query_with_custom_scalar(compare: CompareType):
     compare(
-        gql("""
+        gql(
+            """
             scalar DateTime
 
             type Event {
@@ -291,8 +324,10 @@ def test_query_with_custom_scalar(compare: CompareType):
                 name: String
                 startTime: DateTime
             }
-        """),
-        gql("""
+        """
+        ),
+        gql(
+            """
             query event {
                 event {
                     id
@@ -301,13 +336,15 @@ def test_query_with_custom_scalar(compare: CompareType):
                     __typename
                 }
             }
-        """),
+        """
+        ),
     )
 
 
 def test_query_with_complex_arguments(compare: CompareType):
     compare(
-        gql("""
+        gql(
+            """
             input ProductFilter {
                 category: String
                 priceRange: PriceRange
@@ -327,8 +364,10 @@ def test_query_with_complex_arguments(compare: CompareType):
                 name: String
                 price: Float
             }
-        """),
-        gql("""
+        """
+        ),
+        gql(
+            """
             query products($products_filter_ProductFilter: ProductFilter) {
                 products(filter: $products_filter_ProductFilter) {
                     id
@@ -337,13 +376,15 @@ def test_query_with_complex_arguments(compare: CompareType):
                     __typename
                 }
             }
-        """),
+        """
+        ),
     )
 
 
 def test_generate_mutation_query(compare: CompareType):
     compare(
-        gql("""
+        gql(
+            """
             type Mutation {
                 addUser(name: String!, age: Int!): User
             }
@@ -353,8 +394,10 @@ def test_generate_mutation_query(compare: CompareType):
                 name: String
                 age: Int
             }
-        """),
-        gql("""
+        """
+        ),
+        gql(
+            """
             mutation {
                 addUser(name: "John Doe", age: 30) {
                     id
@@ -363,13 +406,15 @@ def test_generate_mutation_query(compare: CompareType):
                     __typename
                 }
             }
-        """),
+        """
+        ),
     )
 
 
 def test_query_with_deeply_nested_fields(compare: CompareType):
     compare(
-        gql("""
+        gql(
+            """
             type Company {
                 id: ID
                 name: String
@@ -388,8 +433,10 @@ def test_query_with_deeply_nested_fields(compare: CompareType):
                 name: String
                 deadline: String
             }
-        """),
-        gql("""
+        """
+        ),
+        gql(
+            """
             query {
                 company {
                     id
@@ -409,20 +456,24 @@ def test_query_with_deeply_nested_fields(compare: CompareType):
                     __typename
                 }
             }
-        """),
+        """
+        ),
     )
 
 
 def test_query_with_self_referencing_type(compare: CompareType):
     compare(
-        gql("""
+        gql(
+            """
             type Person {
                 id: ID
                 name: String
                 friends: [Person]
             }
-        """),
-        gql("""
+        """
+        ),
+        gql(
+            """
             query {
                 person {
                     id
@@ -440,13 +491,15 @@ def test_query_with_self_referencing_type(compare: CompareType):
                     __typename
                 }
             }
-        """),
+        """
+        ),
     )
 
 
 def test_query_with_custom_directives(compare: CompareType):
     compare(
-        gql("""
+        gql(
+            """
             directive @customDirective on FIELD_DEFINITION
 
             type Employee {
@@ -461,8 +514,10 @@ def test_query_with_custom_directives(compare: CompareType):
                 name: String
                 deadline: String
             }
-        """),
-        gql("""
+        """
+        ),
+        gql(
+            """
             query {
                 employee {
                     id
@@ -477,13 +532,15 @@ def test_query_with_custom_directives(compare: CompareType):
                     __typename
                 }
             }
-        """),
+        """
+        ),
     )
 
 
 def test_query_with_union_types(compare: CompareType):
     compare(
-        gql("""
+        gql(
+            """
             union SearchResult = Product | User
 
             type Product {
@@ -497,8 +554,10 @@ def test_query_with_union_types(compare: CompareType):
                 name: String
                 email: String
             }
-        """),
-        gql("""
+        """
+        ),
+        gql(
+            """
             query searchResult {
                 searchResult {
                     ... on Product {
@@ -516,13 +575,15 @@ def test_query_with_union_types(compare: CompareType):
                     __typename
                 }
             }
-        """),
+        """
+        ),
     )
 
 
 def test_query_with_combined_interfaces_and_unions(compare: CompareType):
     compare(
-        gql("""
+        gql(
+            """
             interface Identifiable {
                 id: ID
             }
@@ -544,8 +605,10 @@ def test_query_with_combined_interfaces_and_unions(compare: CompareType):
             type QueryRoot {
                 media: [Media]
             }
-        """),
-        gql("""
+        """
+        ),
+        gql(
+            """
             query media {
                 media {
                     ... on Book {
@@ -563,13 +626,15 @@ def test_query_with_combined_interfaces_and_unions(compare: CompareType):
                     __typename
                 }
             }
-        """),
+        """
+        ),
     )
 
 
 def test_query_with_arguments_in_combined_interfaces_and_unions(compare: CompareType):
     compare(
-        gql("""
+        gql(
+            """
             interface Identifiable {
                 id: ID
             }
@@ -591,8 +656,10 @@ def test_query_with_arguments_in_combined_interfaces_and_unions(compare: Compare
             type QueryRoot {
                 media(type: String): [Media]
             }
-        """),
-        gql("""
+        """
+        ),
+        gql(
+            """
             query media($media_type: String) {
                 media(type: $media_type) {
                     ... on Book {
@@ -610,13 +677,15 @@ def test_query_with_arguments_in_combined_interfaces_and_unions(compare: Compare
                     __typename
                 }
             }
-        """),
+        """
+        ),
     )
 
 
 def test_query_with_conflicting_field_types_in_unions(compare: CompareType):
     compare(
-        gql("""
+        gql(
+            """
             interface Identifiable {
                 id: ID
             }
@@ -644,8 +713,10 @@ def test_query_with_conflicting_field_types_in_unions(compare: CompareType):
             type QueryRoot {
                 media(type: String): [Media]
             }
-        """),
-        gql("""
+        """
+        ),
+        gql(
+            """
             query media($media_type: String) {
                 media(type: $media_type) {
                     ... on Book {
@@ -669,7 +740,8 @@ def test_query_with_conflicting_field_types_in_unions(compare: CompareType):
                     __typename
                 }
             }
-        """),
+        """
+        ),
     )
 
 
@@ -677,7 +749,8 @@ def test_query_with_nullable_and_non_nullable_field_types_in_unions(
     compare: CompareType,
 ):
     compare(
-        gql("""
+        gql(
+            """
             interface Identifiable {
                 id: ID
             }
@@ -705,8 +778,10 @@ def test_query_with_nullable_and_non_nullable_field_types_in_unions(
             type QueryRoot {
                 media(type: String): [Media]
             }
-        """),
-        gql("""
+        """
+        ),
+        gql(
+            """
             query media($media_type: String) {
                 media(type: $media_type) {
                     ... on Book {
@@ -730,7 +805,8 @@ def test_query_with_nullable_and_non_nullable_field_types_in_unions(
                     __typename
                 }
             }
-        """),
+        """
+        ),
     )
 
 
