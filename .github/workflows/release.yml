@@ -28,6 +28,10 @@ jobs:
         pip install -e .
     
     - name: Generate fresh client files
+      env:
+        SHOPIFY_ACCESS_TOKEN: ${{ secrets.SHOPIFY_ACCESS_TOKEN }}
+        SHOPIFY_API_VERSION: unstable
+        SHOPIFY_STORE: clean-kitchen-meal-kits
       run: |
         python -m graphpyshop generate-queries
         python -m graphpyshop generate-client
