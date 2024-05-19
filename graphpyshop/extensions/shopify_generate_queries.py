@@ -84,6 +84,10 @@ class ShopifyQueryGenerator:
             ],
         }
 
+        self._created_dirs: set[str] = set()
+
+        self.settings: Optional[ClientSettings] = settings
+
         if settings:
             self.set_schema(settings)
 
@@ -95,31 +99,34 @@ class ShopifyQueryGenerator:
         if not settings and not schema_override:
             msg = "Either 'settings' or 'schema_override' must be provided."
             raise ValueError(msg)
-        self.settings: Optional[ClientSettings] = settings
+        self.settings = settings
 
         if schema_override:
             graphql_ast = parse(schema_override)
             self.schema = build_ast_schema(graphql_ast, assume_valid=True)
-        elif self.settings.schema_path:
-            logging.info(f"Loading schema from path: {self.settings.schema_path}")
-            self.schema = get_graphql_schema_from_path(self.settings.schema_path)
+            self.sdl = print_schema(self.schema)
         else:
-            logging.info(f"Loading schema from URL: {self.settings.remote_schema_url}")
-            self.schema = get_graphql_schema_from_url(
-                url=self.settings.remote_schema_url,
-                headers=self.settings.remote_schema_headers,
-                verify_ssl=self.settings.remote_schema_verify_ssl,
-            )
-        self.sdl = print_schema(self.schema)
-        if not schema_override and not self.settings.schema_path:
             assert self.settings is not None
-            with open(
-                f"{self.settings.target_package_path}/schema.graphql", "w"
-            ) as schema_file:
-                schema_file.write(self.sdl)
-            logging.info(
-                f"Schema written to {self.settings.target_package_path}/schema.graphql"
-            )
+            if self.settings.schema_path:
+                logging.info(f"Loading schema from path: {self.settings.schema_path}")
+                self.schema = get_graphql_schema_from_path(self.settings.schema_path)
+                self.sdl = print_schema(self.schema)
+            else:
+                logging.info(
+                    f"Loading schema from URL: {self.settings.remote_schema_url}"
+                )
+                self.schema = get_graphql_schema_from_url(
+                    url=self.settings.remote_schema_url,
+                    headers=self.settings.remote_schema_headers,
+                    verify_ssl=self.settings.remote_schema_verify_ssl,
+                )
+                self.sdl = print_schema(self.schema)
+                fpath = f"{self.settings.target_package_path}/schema.graphql"
+                with open(fpath, "w") as schema_file:
+                    schema_file.write(self.sdl)
+                logging.info(
+                    f"Schema written to {self.settings.target_package_path}/schema.graphql"
+                )
         self.ast = parse(self.sdl)
 
         self.list_returning_queries: Dict[str, str] = (
@@ -326,8 +333,9 @@ class ShopifyQueryGenerator:
         if isinstance(
             definition, (ObjectTypeDefinitionNode, InterfaceTypeDefinitionNode)
         ):
-            sub_fields = definition.fields
+            sub_fields = list(definition.fields)
         else:
+            assert isinstance(definition, UnionTypeDefinitionNode)
             for type_ in definition.types:
                 type_name = type_.name.value
                 if type_name in self.type_definition_map:
@@ -682,6 +690,7 @@ class ShopifyQueryGenerator:
                             if len(union_sub_selections) > 0:
                                 # Handle field conflicts by adding type-specific aliases
                                 for sub_selection in union_sub_selections:
+                                    assert isinstance(sub_selection, FieldNode)
                                     field_name = sub_selection.name.value
                                     if field_name in field_conflicts:
                                         sub_selection.alias = NameNode(
@@ -854,9 +863,6 @@ class ShopifyQueryGenerator:
         else:
             output_dir = f"{self.settings.queries_path}/objects"
 
-        if not hasattr(self, "_created_dirs"):
-            self._created_dirs = set()
-
         if output_dir not in self._created_dirs:
             os.makedirs(output_dir, exist_ok=True)
             self._created_dirs.add(output_dir)
@@ -877,6 +883,7 @@ class ShopifyQueryGenerator:
 
         queries = []
         futures = []
+        query_count = 0
 
         if use_concurrent:
             num_threads = threading.active_count()
@@ -901,6 +908,7 @@ class ShopifyQueryGenerator:
                                 )
 
                 concurrent.futures.wait(futures)
+                query_count = len(futures)
         else:
             for definition in self.ast.definitions:
                 if isinstance(definition, ObjectTypeDefinitionNode):
@@ -919,16 +927,14 @@ class ShopifyQueryGenerator:
                                     self.write_query_to_file(
                                         field.name.value, query_str
                                     )
-                            futures.append(
-                                None
-                            )  # Just to keep count of the number of queries processed
+                            query_count += 1
 
-        end_time = time.time()
-        total_time = end_time - start_time
-        average_time_per_query = total_time / len(futures) if futures else 0
-        num_queries_generated = len(futures)
+        total_time = time.time() - start_time
+        average_time_per_query = total_time / query_count if query_count else 0
         logging.info(
-            f"Total time taken for generating queries: {total_time:.2f} seconds, Average time per query: {average_time_per_query:.2f} seconds, Number of queries generated: {num_queries_generated}"
+            f"Total time taken for generating queries: {total_time:.2f} seconds, "
+            f"Average time per query: {average_time_per_query:.2f} seconds, "
+            f"Number of queries generated: {query_count}"
         )
 
         if return_queries:

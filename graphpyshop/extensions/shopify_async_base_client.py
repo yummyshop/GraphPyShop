@@ -362,9 +362,9 @@ class ShopifyAsyncBaseClient(AsyncBaseClient):
 
     # TODO: Refactor this to automatically detect types from jsonl and stitch connections together
     async def get_jsonl(self, url: str, return_type: Any):
-        parent_objects = {}
+        parent_objects: dict[str, Any] = {}
         last_parent_id = None
-        missing_fields = {}
+        missing_fields: dict[str, str] = {}
 
         async with httpx.AsyncClient() as client, client.stream("GET", url) as response:
             response.raise_for_status()
