@@ -124,18 +124,18 @@ class ShopifyQueryGenerator:
                     f"Schema written to {self.settings.target_package_path}/schema.graphql"
                 )
         self.ast = parse(self.sdl)
-        self.type_definition_map: Dict[
-            str, TypeDefinitionNode
-        ] = self.create_type_definition_map()
-        self.list_returning_queries: Dict[
-            str, str
-        ] = self.extract_list_returning_queries()
-        self.list_returning_queries_by_type: Dict[
-            str, List[str]
-        ] = self.reverse_list_returning_queries()
-        self.direct_object_references: Dict[
-            str, List[str]
-        ] = self.extract_direct_object_references()
+        self.type_definition_map: Dict[str, TypeDefinitionNode] = (
+            self.create_type_definition_map()
+        )
+        self.list_returning_queries: Dict[str, str] = (
+            self.extract_list_returning_queries()
+        )
+        self.list_returning_queries_by_type: Dict[str, List[str]] = (
+            self.reverse_list_returning_queries()
+        )
+        self.direct_object_references: Dict[str, List[str]] = (
+            self.extract_direct_object_references()
+        )
         self.scalar_types: Set[str] = {
             definition.name.value
             for definition in self.ast.definitions

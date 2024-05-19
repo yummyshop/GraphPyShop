@@ -70,9 +70,11 @@ pydantic-core==2.18.2
     # via pydantic
 pyflakes==3.2.0
     # via autoflake
+pyprof2calltree==1.4.5
+    # via -r tests/requirements-dev.in
 pyproject-hooks==1.1.0
     # via build
-pytest==8.2.0
+pytest==8.2.1
     # via -r tests/requirements-dev.in
 python-dotenv==1.0.1
     # via graphpyshop (pyproject.toml)
