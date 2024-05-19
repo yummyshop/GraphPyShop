@@ -1,7 +1,5 @@
-import concurrent.futures
 import logging
 import os
-import threading
 import time
 from functools import lru_cache
 from typing import Any, Dict, List, Optional, Set, Union
@@ -78,9 +76,7 @@ class ShopifyQueryGenerator:
                 "nodes",
                 "metafield",
                 "metafieldsByIdentifiers",
-                "exchangeV2s",
-                "originalSource",
-                "hasCollection",
+                "originalSource",  # TODO: Implement recursive field collision detection, then it can be removed
             ],
         }
 
@@ -128,16 +124,18 @@ class ShopifyQueryGenerator:
                     f"Schema written to {self.settings.target_package_path}/schema.graphql"
                 )
         self.ast = parse(self.sdl)
-
-        self.list_returning_queries: Dict[str, str] = (
-            self.extract_list_returning_queries()
-        )
-        self.list_returning_queries_by_type: Dict[str, List[str]] = (
-            self.reverse_list_returning_queries()
-        )
-        self.direct_object_references: Dict[str, List[str]] = (
-            self.extract_direct_object_references()
-        )
+        self.type_definition_map: Dict[
+            str, TypeDefinitionNode
+        ] = self.create_type_definition_map()
+        self.list_returning_queries: Dict[
+            str, str
+        ] = self.extract_list_returning_queries()
+        self.list_returning_queries_by_type: Dict[
+            str, List[str]
+        ] = self.reverse_list_returning_queries()
+        self.direct_object_references: Dict[
+            str, List[str]
+        ] = self.extract_direct_object_references()
         self.scalar_types: Set[str] = {
             definition.name.value
             for definition in self.ast.definitions
@@ -148,16 +146,16 @@ class ShopifyQueryGenerator:
             for definition in self.ast.definitions
             if isinstance(definition, EnumTypeDefinitionNode)
         }
-        self.type_definition_map: Dict[str, TypeDefinitionNode] = (
-            self.create_type_definition_map()
-        )
+
         self.used_variables: Dict[str, Dict[str, VariableDefinitionNode]] = {}
 
+    @lru_cache(maxsize=None)
     def is_deprecated(self, field: FieldDefinitionNode) -> bool:
         return any(
             directive.name.value == "deprecated" for directive in field.directives
         )
 
+    @lru_cache(maxsize=None)
     def get_field_type(self, field_type: TypeNode) -> TypeNode:
         while isinstance(field_type, (NonNullTypeNode, ListTypeNode)):
             field_type = field_type.type
@@ -177,34 +175,32 @@ class ShopifyQueryGenerator:
             return type_node.name.value
         return ""
 
+    @lru_cache(maxsize=None)
     def find_ultimate_object(self, type_name: str) -> str:
-        for definition in self.ast.definitions:
-            if (
-                isinstance(
-                    definition, (ObjectTypeDefinitionNode, UnionTypeDefinitionNode)
-                )
-                and definition.name.value == type_name
-            ):
-                if isinstance(definition, ObjectTypeDefinitionNode):
-                    for field in definition.fields:
-                        field_type = self.get_field_type(field.type)
-                        if isinstance(field_type, ObjectTypeDefinitionNode):
-                            for sub_field in field_type.fields:
-                                if sub_field.name.value == "node":
-                                    return self.get_ultimate_object(sub_field.type)
-                        elif field.name.value == "nodes":
-                            return self.get_ultimate_object(field.type)
-                else:
-                    for type_ in definition.types:
-                        return type_.name.value
+        definition = self.type_definition_map.get(type_name)
+        if definition:
+            if isinstance(definition, ObjectTypeDefinitionNode):
+                for field in definition.fields:
+                    field_type = self.get_field_type(field.type)
+                    if isinstance(field_type, ObjectTypeDefinitionNode):
+                        for sub_field in field_type.fields:
+                            if sub_field.name.value == "node":
+                                return self.get_ultimate_object(sub_field.type)
+                    elif field.name.value == "nodes":
+                        return self.get_ultimate_object(field.type)
+            elif isinstance(definition, UnionTypeDefinitionNode):
+                for type_ in definition.types:
+                    return type_.name.value
         return type_name
 
+    @lru_cache(maxsize=None)
     def returns_a_list(self, field: FieldDefinitionNode) -> bool:
         field_type_name = self.get_field_type_name(field.type)
         return field_type_name.endswith("Connection") or isinstance(
             field.type, ListTypeNode
         )
 
+    @lru_cache(maxsize=None)
     def is_core_type(self, type_name: str) -> bool:
         return (
             type_name in self.core_types
@@ -444,9 +440,7 @@ class ShopifyQueryGenerator:
             )
             return True
 
-        # Add only id if depth 0, otherwise don't at all, check the parent type as well - so its
-
-        if (
+        if depth > 1 and (
             parent_type_name
             and parent_type_name != query_return_type
             and parent_type_name in self.field_type_rules["include"]
@@ -875,59 +869,30 @@ class ShopifyQueryGenerator:
         included_queries: List[str] = [],
         excluded_queries: List[str] = ["node", "nodes"],
         write_invalid: bool = False,
-        use_concurrent: bool = False,
         return_queries: bool = False,
     ) -> Union[None, List[str]]:
         start_time = time.time()
         logging.info("Starting generation of queries")
 
-        queries = []
-        futures = []
+        queries: List[str] = []
         query_count = 0
 
-        if use_concurrent:
-            num_threads = threading.active_count()
-            with concurrent.futures.ThreadPoolExecutor(
-                max_workers=num_threads
-            ) as executor:
-                for definition in self.ast.definitions:
-                    if isinstance(definition, ObjectTypeDefinitionNode):
-                        type_name = definition.name.value
-                        if type_name not in include_definitions:
-                            continue
-                        for field in definition.fields:
-                            if not self.is_deprecated(field):
-                                futures.append(
-                                    executor.submit(
-                                        self.process_field,
-                                        field,
-                                        included_queries,
-                                        excluded_queries,
-                                        write_invalid,
-                                    )
-                                )
-
-                concurrent.futures.wait(futures)
-                query_count = len(futures)
-        else:
-            for definition in self.ast.definitions:
-                if isinstance(definition, ObjectTypeDefinitionNode):
-                    type_name = definition.name.value
-                    if type_name not in include_definitions:
-                        continue
-                    for field in definition.fields:
-                        if not self.is_deprecated(field):
-                            query_str = self.process_field(
-                                field, included_queries, excluded_queries, write_invalid
-                            )
-                            if query_str:
-                                if return_queries:
-                                    queries.append(query_str)
-                                else:
-                                    self.write_query_to_file(
-                                        field.name.value, query_str
-                                    )
-                            query_count += 1
+        for definition in self.ast.definitions:
+            if isinstance(definition, ObjectTypeDefinitionNode):
+                type_name = definition.name.value
+                if type_name not in include_definitions:
+                    continue
+                for field in definition.fields:
+                    if not self.is_deprecated(field):
+                        query_str = self.process_field(
+                            field, included_queries, excluded_queries, write_invalid
+                        )
+                        if query_str:
+                            if return_queries:
+                                queries.append(query_str)
+                            else:
+                                self.write_query_to_file(field.name.value, query_str)
+                        query_count += 1
 
         total_time = time.time() - start_time
         average_time_per_query = total_time / query_count if query_count else 0
@@ -943,7 +908,7 @@ class ShopifyQueryGenerator:
 
 
 if __name__ == "__main__":
-    logging.basicConfig(level=logging.DEBUG)
+    logging.basicConfig(level=logging.INFO)
 
     config_dict = get_config_dict()
     settings = get_client_settings(config_dict)
@@ -960,4 +925,4 @@ if __name__ == "__main__":
         # settings.write_schema_to_file = True
 
     query_generator = ShopifyQueryGenerator(settings)
-    query_generator.generate_queries(included_queries=["orders"], write_invalid=True)
+    query_generator.generate_queries(write_invalid=True)

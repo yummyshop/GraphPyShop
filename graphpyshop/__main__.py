@@ -6,8 +6,22 @@ import shutil
 import time
 from functools import lru_cache
 
-from ariadne_codegen.config import get_client_settings, get_config_dict
+import httpx
 from dotenv import find_dotenv, load_dotenv
+
+# Monkeypatching httpx.Client to have a default timeout of 30 seconds
+original_client_init = httpx.AsyncClient.__init__
+
+
+def new_client_init(self, *args, **kwargs):
+    if "timeout" not in kwargs:
+        kwargs["timeout"] = 30.0  # Set default timeout to 30 seconds
+    original_client_init(self, *args, **kwargs)
+
+
+httpx.AsyncClient.__init__ = new_client_init
+
+# Now, any new httpx.Client instance will have a default timeout of 30 seconds unless specified otherwise
 
 logging.basicConfig(level=logging.INFO)
 
@@ -55,7 +69,7 @@ def monkey_patch_httpx():
 
 def generate_client():
     monkey_patch_httpx()
-
+    from ariadne_codegen.config import get_config_dict
     from ariadne_codegen.main import client
 
     logging.info("Starting generation of client")
@@ -68,6 +82,8 @@ def generate_client():
 
 
 def generate_queries():
+    from ariadne_codegen.config import get_client_settings, get_config_dict
+
     from graphpyshop.extensions.shopify_generate_queries import ShopifyQueryGenerator
 
     load_dotenv(find_dotenv())
@@ -91,6 +107,8 @@ def generate_queries():
 
 
 def clean():
+    from ariadne_codegen.config import get_client_settings, get_config_dict
+
     settings = get_client_settings(get_config_dict())
 
     paths = [

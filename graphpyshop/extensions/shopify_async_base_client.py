@@ -260,7 +260,7 @@ class ShopifyAsyncBaseClient(AsyncBaseClient):
             try:
                 query = self.inject_variables(gql_query, variables)
                 return await bulk_operation_call(query)
-            except Exception as e:
+            except ShopifyGetDataError as e:
                 current_time = time.time()
                 elapsed_time = current_time - start_time
                 if (
