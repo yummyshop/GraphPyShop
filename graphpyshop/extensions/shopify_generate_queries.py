@@ -1,7 +1,5 @@
-import concurrent.futures
 import logging
 import os
-import threading
 import time
 from functools import lru_cache
 from typing import Any, Dict, List, Optional, Set, Union
@@ -78,9 +76,7 @@ class ShopifyQueryGenerator:
                 "nodes",
                 "metafield",
                 "metafieldsByIdentifiers",
-                "exchangeV2s",
-                "originalSource",
-                "hasCollection",
+                "originalSource",  # TODO: Implement recursive field collision detection, then it can be removed
             ],
         }
 
@@ -444,9 +440,7 @@ class ShopifyQueryGenerator:
             )
             return True
 
-        # Add only id if depth 0, otherwise don't at all, check the parent type as well - so its
-
-        if (
+        if depth > 1 and (
             parent_type_name
             and parent_type_name != query_return_type
             and parent_type_name in self.field_type_rules["include"]
@@ -875,59 +869,30 @@ class ShopifyQueryGenerator:
         included_queries: List[str] = [],
         excluded_queries: List[str] = ["node", "nodes"],
         write_invalid: bool = False,
-        use_concurrent: bool = False,
         return_queries: bool = False,
     ) -> Union[None, List[str]]:
         start_time = time.time()
         logging.info("Starting generation of queries")
 
-        queries = []
-        futures = []
+        queries: List[str] = []
         query_count = 0
 
-        if use_concurrent:
-            num_threads = threading.active_count()
-            with concurrent.futures.ThreadPoolExecutor(
-                max_workers=num_threads
-            ) as executor:
-                for definition in self.ast.definitions:
-                    if isinstance(definition, ObjectTypeDefinitionNode):
-                        type_name = definition.name.value
-                        if type_name not in include_definitions:
-                            continue
-                        for field in definition.fields:
-                            if not self.is_deprecated(field):
-                                futures.append(
-                                    executor.submit(
-                                        self.process_field,
-                                        field,
-                                        included_queries,
-                                        excluded_queries,
-                                        write_invalid,
-                                    )
-                                )
-
-                concurrent.futures.wait(futures)
-                query_count = len(futures)
-        else:
-            for definition in self.ast.definitions:
-                if isinstance(definition, ObjectTypeDefinitionNode):
-                    type_name = definition.name.value
-                    if type_name not in include_definitions:
-                        continue
-                    for field in definition.fields:
-                        if not self.is_deprecated(field):
-                            query_str = self.process_field(
-                                field, included_queries, excluded_queries, write_invalid
-                            )
-                            if query_str:
-                                if return_queries:
-                                    queries.append(query_str)
-                                else:
-                                    self.write_query_to_file(
-                                        field.name.value, query_str
-                                    )
-                            query_count += 1
+        for definition in self.ast.definitions:
+            if isinstance(definition, ObjectTypeDefinitionNode):
+                type_name = definition.name.value
+                if type_name not in include_definitions:
+                    continue
+                for field in definition.fields:
+                    if not self.is_deprecated(field):
+                        query_str = self.process_field(
+                            field, included_queries, excluded_queries, write_invalid
+                        )
+                        if query_str:
+                            if return_queries:
+                                queries.append(query_str)
+                            else:
+                                self.write_query_to_file(field.name.value, query_str)
+                        query_count += 1
 
         total_time = time.time() - start_time
         average_time_per_query = total_time / query_count if query_count else 0
@@ -960,4 +925,4 @@ if __name__ == "__main__":
         # settings.write_schema_to_file = True
 
     query_generator = ShopifyQueryGenerator(settings)
-    query_generator.generate_queries(write_invalid=True, use_concurrent=False)
+    query_generator.generate_queries(write_invalid=True)

@@ -8,6 +8,8 @@ graphpyshop/queries/lists
 graphpyshop/client
 graphpyshop/schema.graphql
 
+.DS_Store
+
 # C extensions
 *.so
 
