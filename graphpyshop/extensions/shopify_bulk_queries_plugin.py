@@ -10,12 +10,12 @@ from graphql import GraphQLSchema
 
 
 class ShopifyBulkQueriesPlugin(Plugin):
-    _ignore_args = {}
+    _ignore_args: set[str] = set()
     _ignore_args_full = {"self", *_ignore_args}
 
     def __init__(self, schema: GraphQLSchema, config_dict: Dict[str, Any]) -> None:
         super().__init__(schema=schema, config_dict=config_dict)
-        self.imported_types = {}  # Track imported types
+        self.imported_types: dict[str, str] = {}  # Track imported types
         logging.info("ShopifyBulkQueriesPlugin initialized with schema and config.")
 
     def generate_client_module(self, module: ast.Module) -> ast.Module:
