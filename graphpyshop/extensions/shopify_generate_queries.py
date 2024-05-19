@@ -128,7 +128,9 @@ class ShopifyQueryGenerator:
                     f"Schema written to {self.settings.target_package_path}/schema.graphql"
                 )
         self.ast = parse(self.sdl)
-
+        self.type_definition_map: Dict[str, TypeDefinitionNode] = (
+            self.create_type_definition_map()
+        )
         self.list_returning_queries: Dict[str, str] = (
             self.extract_list_returning_queries()
         )
@@ -148,16 +150,16 @@ class ShopifyQueryGenerator:
             for definition in self.ast.definitions
             if isinstance(definition, EnumTypeDefinitionNode)
         }
-        self.type_definition_map: Dict[str, TypeDefinitionNode] = (
-            self.create_type_definition_map()
-        )
-        self.used_variables: Dict[str, Dict[str, VariableDefinitionNode]] = {}
 
+        self.used_variables: Dict[str, Dict[str, VariableDefinitionNode]] = {}
+    
+    @lru_cache(maxsize=None)
     def is_deprecated(self, field: FieldDefinitionNode) -> bool:
         return any(
             directive.name.value == "deprecated" for directive in field.directives
         )
-
+    
+    @lru_cache(maxsize=None)
     def get_field_type(self, field_type: TypeNode) -> TypeNode:
         while isinstance(field_type, (NonNullTypeNode, ListTypeNode)):
             field_type = field_type.type
@@ -177,34 +179,32 @@ class ShopifyQueryGenerator:
             return type_node.name.value
         return ""
 
+    @lru_cache(maxsize=None)
     def find_ultimate_object(self, type_name: str) -> str:
-        for definition in self.ast.definitions:
-            if (
-                isinstance(
-                    definition, (ObjectTypeDefinitionNode, UnionTypeDefinitionNode)
-                )
-                and definition.name.value == type_name
-            ):
-                if isinstance(definition, ObjectTypeDefinitionNode):
-                    for field in definition.fields:
-                        field_type = self.get_field_type(field.type)
-                        if isinstance(field_type, ObjectTypeDefinitionNode):
-                            for sub_field in field_type.fields:
-                                if sub_field.name.value == "node":
-                                    return self.get_ultimate_object(sub_field.type)
-                        elif field.name.value == "nodes":
-                            return self.get_ultimate_object(field.type)
-                else:
-                    for type_ in definition.types:
-                        return type_.name.value
+        definition = self.type_definition_map.get(type_name)
+        if definition:
+            if isinstance(definition, ObjectTypeDefinitionNode):
+                for field in definition.fields:
+                    field_type = self.get_field_type(field.type)
+                    if isinstance(field_type, ObjectTypeDefinitionNode):
+                        for sub_field in field_type.fields:
+                            if sub_field.name.value == "node":
+                                return self.get_ultimate_object(sub_field.type)
+                    elif field.name.value == "nodes":
+                        return self.get_ultimate_object(field.type)
+            elif isinstance(definition, UnionTypeDefinitionNode):
+                for type_ in definition.types:
+                    return type_.name.value
         return type_name
 
+    @lru_cache(maxsize=None)
     def returns_a_list(self, field: FieldDefinitionNode) -> bool:
         field_type_name = self.get_field_type_name(field.type)
         return field_type_name.endswith("Connection") or isinstance(
             field.type, ListTypeNode
         )
 
+    @lru_cache(maxsize=None)
     def is_core_type(self, type_name: str) -> bool:
         return (
             type_name in self.core_types
