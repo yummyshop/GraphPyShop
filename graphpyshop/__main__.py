@@ -1,7 +1,10 @@
 import argparse
-import logging
+import functools
+import logging.config
 import os
 import shutil
+import time
+from functools import lru_cache
 
 import httpx
 from dotenv import find_dotenv, load_dotenv
@@ -23,14 +26,59 @@ httpx.AsyncClient.__init__ = new_client_init
 logging.basicConfig(level=logging.INFO)
 
 
+class TimedLog:
+    def __init__(self, name: str):
+        self.name = name
+
+    def __enter__(self):
+        self.start = time.time()
+
+    def __exit__(self, *args):
+        duration = (time.time() - self.start) * 1000
+        logging.info(f"{self.name} took {duration:.1f} ms")
+
+
+@lru_cache
+def monkey_patch_httpx():
+    """Wrap all the httpx functions to have a default timeout of 30 (get, post, etc)"""
+    import httpx
+    from httpx import Timeout
+
+    new_timeout = Timeout(90)
+
+    original_get = httpx.get
+
+    @functools.wraps(httpx.get)
+    def get(*args, **kwargs):
+        if "timeout" not in kwargs:
+            kwargs["timeout"] = new_timeout
+        return original_get(*args, **kwargs)
+
+    httpx.get = get
+
+    original_post = httpx.post
+
+    @functools.wraps(httpx.post)
+    def post(*args, **kwargs):
+        if "timeout" not in kwargs:
+            kwargs["timeout"] = new_timeout
+        return original_post(*args, **kwargs)
+
+    httpx.post = post
+
+
 def generate_client():
+    monkey_patch_httpx()
     from ariadne_codegen.config import get_config_dict
     from ariadne_codegen.main import client
 
     logging.info("Starting generation of client")
 
     load_dotenv(find_dotenv())
-    client(get_config_dict())
+    config_dict = get_config_dict()
+    print(config_dict)
+    with TimedLog("Client generation"):
+        client(config_dict)
 
 
 def generate_queries():
@@ -77,6 +125,25 @@ def clean():
                 shutil.rmtree(path)
 
 
+def configure_logging():
+    log_config = {
+        "version": 1,
+        "disable_existing_loggers": False,
+        "formatters": {
+            "standard": {"format": "%(asctime)s [%(levelname)s] %(name)s: %(message)s"}
+        },
+        "handlers": {
+            "default": {
+                "level": "INFO",
+                "formatter": "standard",
+                "class": "logging.StreamHandler",
+            }
+        },
+        "loggers": {"": {"handlers": ["default"], "level": "INFO", "propagate": True}},
+    }
+    logging.config.dictConfig(log_config)
+
+
 def main():
     parser = argparse.ArgumentParser(description="GraphPyShop CLI")
     parser.add_argument(
@@ -85,13 +152,15 @@ def main():
         help="Command to run",
     )
     args = parser.parse_args()
-
-    if args.command == "generate-client":
-        generate_client()
-    elif args.command == "generate-queries":
-        generate_queries()
-    elif args.command == "clean":
-        clean()
+    configure_logging()
+    monkey_patch_httpx()
+    with TimedLog(f"Command {args.command}"):
+        if args.command == "generate-client":
+            generate_client()
+        elif args.command == "generate-queries":
+            generate_queries()
+        elif args.command == "clean":
+            clean()
 
 
 if __name__ == "__main__":
