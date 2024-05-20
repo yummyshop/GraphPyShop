@@ -3,6 +3,7 @@ setuptools
 wheel
 setuptools-scm
 
+pyprof2calltree
 mypy
 pytest
 ruff

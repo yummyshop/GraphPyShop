@@ -14,6 +14,14 @@ init: require_pyenv  ## Setup a dev environment for local development.
 	fi
 	@pyenv local $(venv_name)
 	@echo -e "\033[0;32m ✔️  🐍 $(venv_name) virtualenv activated \033[0m"
+
+	@echo -e "\nEnvironment setup! ✨ 🍰 ✨ 🐍 \n\nCopy this path to tell PyCharm where your virtualenv is. You may have to click the refresh button in the PyCharm file explorer.\n"
+	@echo -e "\033[0;32m$$(pyenv which python)\033[0m\n"
+	@echo -e "The following commands are available to run in the Makefile:\n"
+	@make -s help
+
+deps: dependencies
+dependencies:  ## Install the dependencies
 	@export VIRTUAL_ENV=$$(pyenv prefix); \
 	if uv --help >/dev/null 2>&1; then \
 		echo -e "\033[0;32m ✔️  uv detected \033[0m"; \
@@ -24,10 +32,6 @@ init: require_pyenv  ## Setup a dev environment for local development.
 	fi; \
 	uv pip sync tests/requirements-dev.txt; \
 	uv pip install -e .
-	@echo -e "\nEnvironment setup! ✨ 🍰 ✨ 🐍 \n\nCopy this path to tell PyCharm where your virtualenv is. You may have to click the refresh button in the PyCharm file explorer.\n"
-	@echo -e "\033[0;32m$$(pyenv which python)\033[0m\n"
-	@echo -e "The following commands are available to run in the Makefile:\n"
-	@make -s help
 
 codegen:  ## Generate code from the queries
 	@ariadne-codegen
