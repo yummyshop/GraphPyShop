@@ -3,10 +3,7 @@ import logging
 from typing import Any, Dict, List, Optional, Set, Tuple
 
 from ariadne_codegen.plugins.base import Plugin
-from ariadne_codegen.utils import str_to_snake_case
 from graphql import GraphQLSchema
-
-logging.basicConfig(level=logging.DEBUG)
 
 
 class ShopifyBulkQueriesPlugin(Plugin):
@@ -158,13 +155,11 @@ class ShopifyBulkQueriesPlugin(Plugin):
     ) -> Optional[Tuple[ast.expr, str]]:
         if isinstance(return_type, ast.Constant):
             class_name = return_type.value
-            result = self._get_class_ast(class_name)
+            result = self._get_class_ast(class_name, module)
             if result:
                 class_ast, class_module_name = result
                 class_def = self._find_class_in_ast(class_name, class_ast)
                 if class_def:
-                    logging.info(ast.dump(class_def, indent=4))
-
                     for node in ast.walk(class_def):
                         if (
                             isinstance(node, ast.AnnAssign)
@@ -191,7 +186,7 @@ class ShopifyBulkQueriesPlugin(Plugin):
                                             self._add_import_to_module(
                                                 class_node.annotation,
                                                 module,
-                                                "." + class_module_name,
+                                                class_module_name,
                                             )
                                             return (
                                                 class_node.annotation,
@@ -200,21 +195,25 @@ class ShopifyBulkQueriesPlugin(Plugin):
         return None
 
     def _get_class_ast(
-        self, class_name: str
+        self, class_name: str, module: ast.Module
     ) -> Optional[Tuple[ast.Module, str]]:
-        class_name_snake = str_to_snake_case(class_name)
-        absolute_module = f"graphpyshop.client.{class_name_snake}"
-        try:
-            # Get the file path of the module
-            module_file_path = absolute_module.replace(".", "/") + ".py"
-            with open(module_file_path, "r") as file:
-                class_source = file.read()
-            return ast.parse(class_source), class_name_snake
-        except (FileNotFoundError, OSError) as e:
-            logging.warning(
-                f"Could not read {class_name} from {absolute_module}: {e}"
-            )
-            return None
+        for node in ast.walk(module):
+            if isinstance(node, ast.ImportFrom):
+                for alias in node.names:
+                    if isinstance(alias, ast.alias) and alias.name == class_name and node.module:
+                        absolute_module = f"graphpyshop.client.{node.module}"
+                        try:
+                            # Get the file path of the module
+                            module_file_path = absolute_module.replace(".", "/") + ".py"
+                            with open(module_file_path, "r") as file:
+                                class_source = file.read()
+                            return ast.parse(class_source), node.module
+                        except (FileNotFoundError, OSError) as e:
+                            logging.warning(
+                                f"Could not read {class_name} from {absolute_module}: {e}"
+                            )
+                            return None
+        return None
 
     def _find_class_in_ast(
         self, class_name: str, class_ast: ast.Module
@@ -289,10 +288,26 @@ class ShopifyBulkQueriesPlugin(Plugin):
             ),
         )
         return bulk_method_def
-
+    
+    def _create_import_statement(self, class_name: str, module_name: str):
+        return ast.ImportFrom(
+            module=module_name,
+            names=[ast.alias(name=class_name, asname=None)],
+            level=0
+        )
+    
     def _generate_bulk_method_body(
         self, method_def: ast.AsyncFunctionDef, gql_var_name: str, module_name: str
     ):
+        # Create import statements
+        import_stmt_bulk_operation = ast.ImportFrom(
+            module=".bulk_operation",
+            names=[
+                ast.alias(name="BulkOperationNodeBulkOperation", asname=None),
+            ],
+            level=0
+        )
+
         # Generate the variables assignment dynamically based on the method definition, excluding 'self'
         variables_assignment = ast.AnnAssign(
             target=ast.Name(id="variables", ctx=ast.Store()),
@@ -368,4 +383,4 @@ class ShopifyBulkQueriesPlugin(Plugin):
             orelse=[],
         )
 
-        return [variables_assignment, async_for_loop]
+        return [import_stmt_bulk_operation, variables_assignment, async_for_loop]
