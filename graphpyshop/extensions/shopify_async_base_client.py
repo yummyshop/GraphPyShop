@@ -6,6 +6,8 @@ import json
 import logging
 import re
 import time
+import importlib
+
 from datetime import datetime, timezone
 from typing import Any, AsyncGenerator, Awaitable, Callable, Dict, List, Optional, Union
 
@@ -311,7 +313,7 @@ class ShopifyAsyncBaseClient(AsyncBaseClient):
         variables: Dict[str, Any],
         bulk_operation_status: Any,
         bulk_operation_node_bulk_operation: Any,
-        return_type: Any,
+        typename_to_class_map: Dict[str, str]
     ) -> AsyncGenerator[Any, None]:
         query_name = parse_query_name(gql_query)
         response = await self.try_create_bulk_query(
@@ -356,12 +358,13 @@ class ShopifyAsyncBaseClient(AsyncBaseClient):
                             f"[{query_name}] Retrieving JSONL file for job {status_response.id}"
                         )
                         async for item in self.get_jsonl(
-                            status_response.url, return_type
+                            status_response.url,
+                            typename_to_class_map
                         ):
                             yield item
 
     # TODO: Refactor this to automatically detect types from jsonl and stitch connections together
-    async def get_jsonl(self, url: str, return_type: Any):
+    async def get_jsonl(self, url: str, typename_to_class_map: Dict[str, str]):
         parent_objects: dict[str, Any] = {}
         last_parent_id = None
         missing_fields: dict[str, str] = {}
@@ -371,61 +374,43 @@ class ShopifyAsyncBaseClient(AsyncBaseClient):
             async for line in response.aiter_lines():
                 parsed_line = json.loads(line)
                 if "__parentId" in parsed_line:
-                    parent_id = parsed_line.pop(
-                        "__parentId"
-                    )  # Remove __parentId from the record
+                    parent_id = parsed_line.pop("__parentId")  # Remove __parentId from the record
                     logging.debug(f"Found child with parent ID: {parent_id}")
                     if parent_id in parent_objects:
                         parent = parent_objects[parent_id]
                         logging.debug(f"Parent found for ID {parent_id}")
-                        # Dynamically determine the connection name by inspecting the return_type for list attributes
                         parent_field = missing_fields.get(parsed_line["__typename"])
                         if parent_field:
-                            logging.debug(
-                                f"Type match found for {parsed_line['__typename']} under attribute {parent_field}"
-                            )
+                            logging.debug(f"Type match found for {parsed_line['__typename']} under attribute {parent_field}")
                             parent[parent_field]["edges"].append({"node": parsed_line})
-                            logging.debug(
-                                f"Child appended to parent under {parent_field}."
-                            )
+                            logging.debug(f"Child appended to parent under {parent_field}.")
                         else:
-                            logging.warning(
-                                f"No matching field found for {parsed_line['__typename']} in missing_fields."
-                            )
-                    else:
-                        logging.debug(f"No parent object found for ID {parent_id}")
+                            logging.warning(f"No matching field found for {parsed_line['__typename']} in missing_fields.")
                 else:
-                    # New root object, yield the last one if exists
                     if last_parent_id is not None and last_parent_id in parent_objects:
-                        yield return_type.model_validate(parent_objects[last_parent_id])
+                        class_name = typename_to_class_map[parent_objects[last_parent_id]["__typename"]]
+                        module = importlib.import_module("graphpyshop.client")
+                        class_ = getattr(module, class_name)
+                        yield class_.model_validate(parent_objects[last_parent_id])
                         del parent_objects[last_parent_id]  # Free memory
 
-                    # Initialize all potential edge lists in the new parent object
                     new_parent = parsed_line.copy()
                     for field_name, field in return_type.__fields__.items():
                         field_key = field.alias or field_name
                         if field_key not in new_parent:
                             new_parent[field_key] = {"edges": []}
-                            node_class = (
-                                field.annotation.__fields__["edges"]
-                                .annotation.__args__[0]
-                                .__fields__["node"]
-                                .annotation
-                            )
-                            node_class_literal = node_class.schema()["properties"][
-                                "__typename"
-                            ]["const"]
-                            logging.debug(
-                                f"Node class for field '{field_key}': {node_class_literal}"
-                            )
+                            node_class = field.annotation.__fields__["edges"].annotation.__args__[0].__fields__["node"].annotation
+                            node_class_literal = node_class.schema()["properties"]["__typename"]["const"]
+                            logging.debug(f"Node class for field '{field_key}': {node_class_literal}")
                             if node_class_literal:
                                 missing_fields[node_class_literal] = field_key
 
                     parent_objects[parsed_line["id"]] = new_parent
                     last_parent_id = parsed_line["id"]
 
-        # Yield the last parent object if it hasn't been yielded yet
         if last_parent_id is not None and last_parent_id in parent_objects:
-            yield return_type.model_validate(parent_objects[last_parent_id])
-            # Log the missing fields
+            class_name = typename_to_class_map[parent_objects[last_parent_id]["__typename"]]
+            module = importlib.import_module("graphpyshop.client")
+            class_ = getattr(module, class_name)
+            yield class_.model_validate(parent_objects[last_parent_id])
             logging.debug(f"Missing fields: {missing_fields}")
