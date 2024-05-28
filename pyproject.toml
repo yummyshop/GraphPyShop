@@ -40,4 +40,4 @@ addopts = "-vv --tb=native --color=yes"
 testpaths = ["tests"]
 
 [tool.setuptools.packages.find]
-where = ["graphpyshop"]
+include = ["graphpyshop*"]
