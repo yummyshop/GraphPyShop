@@ -11,11 +11,43 @@ from graphql import GraphQLSchema
 class ShopifyBulkQueriesPlugin(Plugin):
     _ignore_args: set[str] = set()
     _ignore_args_full = {"self", *_ignore_args}
+    _typename_to_class_map: Dict[str, Dict[str, str]] = {}
 
     def __init__(self, schema: GraphQLSchema, config_dict: Dict[str, Any]) -> None:
         super().__init__(schema=schema, config_dict=config_dict)
         self.imported_types: dict[str, str] = {}  # Track imported types
         logging.info("ShopifyBulkQueriesPlugin initialized with schema and config.")
+
+    def get_typename_to_class_map(self, module_name: str) -> Dict[str, str]:
+        if module_name in self._typename_to_class_map:
+            return self._typename_to_class_map[module_name]
+
+        module_path = f"graphpyshop/client/{module_name.replace('.', '/')}.py"
+        try:
+            with open(module_path, "r") as file:
+                module_source = file.read()
+            module_ast = ast.parse(module_source)
+        except (FileNotFoundError, OSError) as e:
+            logging.error(f"Failed to read module {module_name}: {e}")
+            return {}
+
+        typename_to_class_map: Dict[str, str]  = {}
+        for node in ast.walk(module_ast):
+            if isinstance(node, ast.ClassDef):
+                typename_literal = self._extract_typename_literal(node)
+                if typename_literal:
+                    typename_to_class_map[typename_literal] = node.name
+
+        self._typename_to_class_map[module_name] = typename_to_class_map
+        return typename_to_class_map
+
+    def _extract_typename_literal(self, class_node: ast.ClassDef) -> Optional[str]:
+        for node in ast.walk(class_node):
+            if isinstance(node, ast.AnnAssign) and isinstance(node.target, ast.Name) and node.target.id == 'typename__':
+                if isinstance(node.annotation, ast.Subscript) and isinstance(node.annotation.value, ast.Name) and node.annotation.value.id == 'Literal':
+                    if isinstance(node.annotation.slice, ast.Constant):
+                        return node.annotation.slice.value
+        return None
 
     def generate_client_module(self, module: ast.Module) -> ast.Module:
         logging.info("Starting to generate client module.")
@@ -87,25 +119,28 @@ class ShopifyBulkQueriesPlugin(Plugin):
                     )
                     continue
 
-                return_type = self._is_list_return_type(method.returns, module)
-                if not return_type:
-                    logging.info(
-                        f"Skipping bulk method creation for: {method.name} due to it not returning a list"
-                    )
-                    continue
+                ret = self._is_list_return_type(method.returns, module)
+                if ret:
+                    return_type, module_name = ret
+                    if not return_type:
+                        logging.info(
+                            f"Skipping bulk method creation for: {method.name} due to it not returning a list"
+                        )
+                        continue
 
-                gql_var_name = f"{method.name.upper()}_GQL"
-                bulk_method = self._create_bulk_method(
-                    method, gql_var_name, module, return_type
-                )
-                if bulk_method:
-                    new_methods.append(bulk_method)
-                    logging.info(f"Bulk method created: {bulk_method.name}")
+                    gql_var_name = f"{method.name.upper()}_GQL"
+                    bulk_method = self._create_bulk_method(
+                        method, gql_var_name, module_name, return_type
+                    )
+                    if bulk_method:
+                        new_methods.append(bulk_method)
+                        logging.info(f"Bulk method created: {bulk_method.name}")
+
         return new_methods
 
     def _is_list_return_type(
         self, return_type: ast.expr, module: ast.Module
-    ) -> Optional[ast.expr]:
+    ) -> Optional[Tuple[ast.expr, str]]:
         if isinstance(return_type, ast.Name):
             class_name = return_type.id
             result = self._get_class_ast(class_name, module)
@@ -125,7 +160,7 @@ class ShopifyBulkQueriesPlugin(Plugin):
                                         #if isinstance(class_node, ast.AnnAssign) and isinstance(class_node.target, ast.Name) and class_node.target.id == 'node':
                                             # Add import to module body
                                             self._add_import_to_module(class_node.annotation, module, "."+class_module_name)
-                                            return class_node.annotation
+                                            return class_node.annotation, class_module_name
         return None
 
     def _get_class_ast(
@@ -198,7 +233,7 @@ class ShopifyBulkQueriesPlugin(Plugin):
         self,
         method_def: ast.AsyncFunctionDef,
         gql_var_name: str,
-        module: ast.Module,
+        module_name: str,
         return_type: ast.expr,
     ) -> ast.AsyncFunctionDef:
         logging.info(f"Creating bulk method for: {method_def.name}")
@@ -206,7 +241,7 @@ class ShopifyBulkQueriesPlugin(Plugin):
             name=f"bq_{method_def.name}",
             args=method_def.args,  # Preserve original args
             body=self._generate_bulk_method_body(
-                method_def, gql_var_name, module, return_type
+                method_def, gql_var_name, module_name
             ),
             decorator_list=[],
             returns=ast.Subscript(
@@ -229,8 +264,7 @@ class ShopifyBulkQueriesPlugin(Plugin):
         self,
         method_def: ast.AsyncFunctionDef,
         gql_var_name: str,
-        module: ast.Module,
-        return_type: ast.expr,
+        module_name: str
     ):
         # Generate the variables assignment dynamically based on the method definition, excluding 'self'
         variables_assignment = ast.AnnAssign(
@@ -283,7 +317,11 @@ class ShopifyBulkQueriesPlugin(Plugin):
                 ast.Name(id="variables", ctx=ast.Load()),
                 ast.Name(id="BulkOperationStatus", ctx=ast.Load()),
                 ast.Name(id="BulkOperationNodeBulkOperation", ctx=ast.Load()),
-            ],
+                ast.Dict(
+                    keys=[ast.Constant(value=key) for key in self.get_typename_to_class_map(module_name).keys()],
+                    values=[ast.Constant(value=value) for value in self.get_typename_to_class_map(module_name).values()]
+                ),
+            ], 
             keywords=[],
         )
 
