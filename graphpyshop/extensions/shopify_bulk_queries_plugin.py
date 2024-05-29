@@ -13,7 +13,9 @@ class ShopifyBulkQueriesPlugin(Plugin):
 
     def __init__(self, schema: GraphQLSchema, config_dict: Dict[str, Any]) -> None:
         super().__init__(schema=schema, config_dict=config_dict)
-        self.pending_imports: Dict[str, Set[str]] = {}  # Initialize pending imports
+        self.pending_imports: Dict[str, Set[Tuple[str, bool]]] = (
+            {}
+        )  # Initialize pending imports
         logging.info("ShopifyBulkQueriesPlugin initialized with schema and config.")
 
     def get_typename_to_class_map(self, module_name: str) -> Dict[str, str]:
@@ -79,7 +81,7 @@ class ShopifyBulkQueriesPlugin(Plugin):
             )
             for stmt in module.body
         ):
-            self._add_import("AsyncGenerator", "typing")
+            self._add_import("AsyncGenerator", "typing", False)
 
         # Ensure BulkOperationStatus from .enums is always imported
         if not any(
@@ -91,7 +93,8 @@ class ShopifyBulkQueriesPlugin(Plugin):
             )
             for stmt in module.body
         ):
-            self._add_import("BulkOperationStatus", ".enums")
+            self._add_import("BulkOperationStatus", ".enums", False)
+            self._add_import("BulkOperationNodeBulkOperation", ".bulk_operation", False)
 
     def _enhance_class_with_bulk_methods(
         self, class_def: ast.ClassDef, module: ast.Module
@@ -153,11 +156,16 @@ class ShopifyBulkQueriesPlugin(Plugin):
     def _is_list_return_type(
         self, return_type: ast.expr, module: ast.Module
     ) -> Optional[Tuple[ast.expr, str]]:
-        if isinstance(return_type, ast.Constant):
-            class_name = return_type.value
+        if isinstance(return_type, ast.Constant) or isinstance(return_type, ast.Name):
+            if isinstance(return_type, ast.Constant):
+                class_name = return_type.value
+            else:
+                class_name = return_type.id
             result = self._get_class_ast(class_name, module)
             if result:
                 class_ast, class_module_name = result
+                if isinstance(return_type, ast.Name):
+                    class_module_name = "." + class_module_name
                 class_def = self._find_class_in_ast(class_name, class_ast)
                 if class_def:
                     for node in ast.walk(class_def):
@@ -185,7 +193,6 @@ class ShopifyBulkQueriesPlugin(Plugin):
                                         ):
                                             self._add_import_to_module(
                                                 class_node.annotation,
-                                                module,
                                                 class_module_name,
                                             )
                                             return (
@@ -200,7 +207,11 @@ class ShopifyBulkQueriesPlugin(Plugin):
         for node in ast.walk(module):
             if isinstance(node, ast.ImportFrom):
                 for alias in node.names:
-                    if isinstance(alias, ast.alias) and alias.name == class_name and node.module:
+                    if (
+                        isinstance(alias, ast.alias)
+                        and alias.name == class_name
+                        and node.module
+                    ):
                         absolute_module = f"graphpyshop.client.{node.module}"
                         try:
                             # Get the file path of the module
@@ -223,9 +234,7 @@ class ShopifyBulkQueriesPlugin(Plugin):
                 return class_node
         return None
 
-    def _add_import_to_module(
-        self, class_name: ast.expr, module: ast.Module, module_name: str
-    ):
+    def _add_import_to_module(self, class_name: ast.expr, module_name: str):
         if isinstance(class_name, ast.Subscript):
             # Handle subscript case (e.g., List[str])
             if isinstance(class_name.slice, ast.Constant):
@@ -242,22 +251,44 @@ class ShopifyBulkQueriesPlugin(Plugin):
                 f"Unsupported type for class_name: {type(class_name).__name__}"
             )
 
-    def _add_import(self, name: str, module_name: str) -> None:
+    def _add_import(
+        self, name: str, module_name: str, under_type_checking: bool = True
+    ) -> None:
         if module_name not in self.pending_imports:
             self.pending_imports[module_name] = set()
 
-        self.pending_imports[module_name].add(name)
+        self.pending_imports[module_name].add((name, under_type_checking))
 
     def _flush_pending_imports(self, module: ast.Module) -> None:
         # Generate import statements for all collected names grouped by module
+        type_checking_node = None
+        for node in module.body:
+            if (
+                isinstance(node, ast.If)
+                and isinstance(node.test, ast.Name)
+                and node.test.id == "TYPE_CHECKING"
+            ):
+                type_checking_node = node
+                break
+
         for module_name, names in self.pending_imports.items():
-            import_stmt = ast.ImportFrom(
-                module=module_name,
-                names=[ast.alias(name=name, asname=None) for name in names],
-                level=0,
-            )
-            module.body.insert(0, import_stmt)
-            logging.info(f"Import for {', '.join(names)} from {module_name} added.")
+            for name, under_type_checking in names:
+                import_stmt = ast.ImportFrom(
+                    module=module_name,
+                    names=[ast.alias(name=name, asname=None)],
+                    level=0,
+                )
+                if type_checking_node and under_type_checking:
+                    type_checking_node.body.append(import_stmt)
+                    logging.info(
+                        f"Import for {name} from {module_name} added under TYPE_CHECKING."
+                    )
+                else:
+                    module.body.insert(0, import_stmt)
+                    logging.info(
+                        f"Import for {name} from {module_name} added outside TYPE_CHECKING."
+                    )
+
         self.pending_imports = {}  # Reset after flushing
 
     def _create_bulk_method(
@@ -288,25 +319,26 @@ class ShopifyBulkQueriesPlugin(Plugin):
             ),
         )
         return bulk_method_def
-    
+
     def _create_import_statement(self, class_name: str, module_name: str):
         return ast.ImportFrom(
-            module=module_name,
-            names=[ast.alias(name=class_name, asname=None)],
-            level=0
+            module=module_name, names=[ast.alias(name=class_name, asname=None)], level=0
         )
-    
+
     def _generate_bulk_method_body(
         self, method_def: ast.AsyncFunctionDef, gql_var_name: str, module_name: str
     ):
         # Create import statements
+        import_stmt_bulk_operation = [] 
+        """
         import_stmt_bulk_operation = ast.ImportFrom(
             module=".bulk_operation",
             names=[
                 ast.alias(name="BulkOperationNodeBulkOperation", asname=None),
             ],
-            level=0
+            level=0,
         )
+        """
 
         # Generate the variables assignment dynamically based on the method definition, excluding 'self'
         variables_assignment = ast.AnnAssign(
